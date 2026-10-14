@@ -1,14 +1,15 @@
 {
   "source": "NParks Jurong Lake Gardens Brochure, page 2 (2079 × 2892 raster)",
-  "coordinateSource": "Bundled OpenStreetMap bridge geometry; midpoint of each named bridge",
-  "status": "independent bridge controls; pixel centres interpreted from brochure, not survey observations",
+  "coordinateSource": "Bundled OpenStreetMap bridge geometry plus named Grand Arch building and Lone Tree artwork; bridge coordinates are midpoint of each named bridge",
+  "status": "independent named control points; pixel centres interpreted from brochure, not survey observations",
   "controls": [
     {"name": "Lanchar Bridge", "pixel": [636, 902], "coordinate": [1.3425586, 103.7218419]},
     {"name": "Jerung Bridge", "pixel": [1260, 795], "coordinate": [1.3435324, 103.7281919]},
     {"name": "White Rainbow Bridge", "pixel": [1190, 1315], "coordinate": [1.3382081, 103.7275620]},
     {"name": "Moonrise Bridge", "pixel": [1415, 1420], "coordinate": [1.3371341, 103.7299125]},
     {"name": "Double Beauty Bridge", "pixel": [1598, 1470], "coordinate": [1.3369603, 103.7316081]},
-    {"name": "Japanese Garden Bridge", "pixel": [1836, 1750], "coordinate": [1.3339791, 103.7340156]}
+    {"name": "Japanese Garden Bridge", "pixel": [1836, 1750], "coordinate": [1.3339791, 103.7340156]},
+    {"name": "The Lone Tree", "pixel": [1235.5, 1877.1], "coordinate": [1.33256, 103.72764], "osmUrl": "https://www.openstreetmap.org/node/7236529989"},
+    {"name": "Grand Arch", "pixel": [1270.4, 1326.7], "coordinate": [1.33812, 103.72815], "osmUrl": "https://www.openstreetmap.org/way/1427416429"}
   ]
 }
-
