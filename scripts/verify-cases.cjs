@@ -6,9 +6,10 @@ const root = path.resolve(__dirname, '..');
 const code = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 const research = fs.readFileSync(path.join(root, 'case-research.js'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+assert.equal(fs.readFileSync(path.join(root, 'app-a66cb6f7.js'), 'utf8'), code, 'Published versioned asset must match app.js');
 const brochureAudit = JSON.parse(fs.readFileSync(path.join(root, 'data', 'brochure-point-audit.json'), 'utf8'));
 assert(!html.includes('layer-atlas') && !code.includes('renderLayerProfiles'));
-assert(html.indexOf('case-research.js') < html.indexOf('app-29b62dc7.js'));
+assert(html.indexOf('case-research.js') < html.indexOf('app-a66cb6f7.js'));
 assert(!html.includes('<b>Spatial audit.</b>'));
 assert(html.includes('Show research markers'));
 const preMap = code.slice(0, code.indexOf('const navigationBounds ='));
@@ -80,14 +81,19 @@ assert(code.includes('if (!item.name)'), 'Coordinate fallback is restricted to u
 });
 const planRecords = features.filter(item => ['facilities', 'amenities'].includes(item.layer));
 assert.equal(planRecords.length, 67, '53 brochure attractions and 14 named amenities');
-assert(planRecords.every(item => item.spatialStatus === 'plan-derived' && item.geometry?.coordinates?.every(Number.isFinite)), 'Each plan record needs a finite audited anchor');
+const mappedPlanRecords = planRecords.filter(item => item.spatialStatus === 'plan-derived');
+const unresolvedPlanRecords = planRecords.filter(item => item.spatialStatus === 'quarantined');
+assert.equal(mappedPlanRecords.length, 65, '65 audited current anchors should be visible');
+assert(mappedPlanRecords.every(item => item.geometry?.coordinates?.every(Number.isFinite)), 'Mapped points need finite coordinates');
+assert.deepEqual(Array.from(unresolvedPlanRecords, item => item.mapCode).sort(), ['J11', 'L20']);
+assert(unresolvedPlanRecords.every(item => item.geometry === null && item.mapDisplay === 'source-only'));
 assert.equal(brochureAudit.points.length, 53);
 assert(brochureAudit.meanFitResidualMetres < 20);
 assert(brochureAudit.meanLeaveOneOutMetres < 50);
 for (const point of brochureAudit.points) {
   const feature = features.find(item => item.id === `facilities-${point.code.toLowerCase()}`);
   assert(feature, point.code);
-  if (!['C1', 'L23'].includes(point.code)) assert.deepEqual(Array.from(feature.geometry.coordinates), point.coordinate, `${point.code}: diverged from reproducible brochure audit`);
+  if (!['C1', 'L23', 'J11', 'L20'].includes(point.code)) assert.deepEqual(Array.from(feature.geometry.coordinates), point.coordinate, `${point.code}: diverged from reproducible brochure audit`);
 }
 assert.deepEqual(Array.from(features.find(item => item.id === 'amenities-f1').geometry.coordinates), Array.from(features.find(item => item.id === 'facilities-l4').geometry.coordinates));
 assert.deepEqual(Array.from(features.find(item => item.id === 'amenities-f4').geometry.coordinates), Array.from(features.find(item => item.id === 'facilities-c1').geometry.coordinates));
@@ -116,4 +122,4 @@ assert.equal(features.find(item => item.id === 'floral-community-plots').mapDisp
 assert(code.includes('properties.OBJECTID_1 ?? index'), 'NParks features need stable OBJECTID_1 IDs');
 assert(code.includes('featureBelongsToExternalLayer'), 'OSM application categories must not depend on the numeric vertical layer tag');
 assert(code.includes('featureIndexes.get(feature)'), 'External fallback labels and IDs need per-feature indexes');
-console.log(JSON.stringify({pass:true, authoredCaseDossiers:caseCount, authoredSections:sections, paragraphCitations:citationCount, thematicCases:features.filter(item => ['ecology','engineered','heritage','governance','public','hidden'].includes(item.layer)).length, facilitiesWithCaseAnalysis:features.filter(item => item.layer==='facilities' && caseDossierFor(item)).length, mappedPlanRecords:planRecords.length, brochureControlMeanResidualMetres:brochureAudit.meanFitResidualMetres, japaneseGardenAnchor:japaneseGarden.geometry.coordinates}, null, 2));
+console.log(JSON.stringify({pass:true, authoredCaseDossiers:caseCount, authoredSections:sections, paragraphCitations:citationCount, thematicCases:features.filter(item => ['ecology','engineered','heritage','governance','public','hidden'].includes(item.layer)).length, facilitiesWithCaseAnalysis:features.filter(item => item.layer==='facilities' && caseDossierFor(item)).length, mappedPlanRecords:mappedPlanRecords.length, unresolvedPlanRecords:unresolvedPlanRecords.map(item => item.mapCode), brochureControlMeanResidualMetres:brochureAudit.meanFitResidualMetres, japaneseGardenAnchor:japaneseGarden.geometry.coordinates}, null, 2));
