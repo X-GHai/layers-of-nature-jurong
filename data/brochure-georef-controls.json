@@ -1,0 +1,14 @@
+{
+  "source": "NParks Jurong Lake Gardens Brochure, page 2 (2079 × 2892 raster)",
+  "coordinateSource": "Bundled OpenStreetMap bridge geometry; midpoint of each named bridge",
+  "status": "independent bridge controls; pixel centres interpreted from brochure, not survey observations",
+  "controls": [
+    {"name": "Lanchar Bridge", "pixel": [636, 902], "coordinate": [1.3425586, 103.7218419]},
+    {"name": "Jerung Bridge", "pixel": [1260, 795], "coordinate": [1.3435324, 103.7281919]},
+    {"name": "White Rainbow Bridge", "pixel": [1190, 1315], "coordinate": [1.3382081, 103.7275620]},
+    {"name": "Moonrise Bridge", "pixel": [1415, 1420], "coordinate": [1.3371341, 103.7299125]},
+    {"name": "Double Beauty Bridge", "pixel": [1598, 1470], "coordinate": [1.3369603, 103.7316081]},
+    {"name": "Japanese Garden Bridge", "pixel": [1836, 1750], "coordinate": [1.3339791, 103.7340156]}
+  ]
+}
+
