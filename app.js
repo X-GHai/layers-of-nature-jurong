@@ -1384,3 +1384,4 @@ document.getElementById('timeline').value = '3';
 updateTimeline(3);
 renderPeriodPhotos(3);
 window.setTimeout(() => map.invalidateSize(), 250);
+
