@@ -1,65 +1,71 @@
 {
-  "method": "least-squares affine from six named OSM bridges to NParks brochure pixels",
+  "method": "least-squares affine from six named OSM bridges, Grand Arch and Lone Tree to NParks brochure pixels",
   "source": "NParks Jurong Lake Gardens Brochure, page 2; bundled OpenStreetMap bridges; bundled NParks managed-area GeoJSON",
   "status": "independent audit candidates; not yet applied to GIS",
   "pixelToWorldLngLatMatrix": [
     [
-      1.0095184501156932e-05,
-      3.392714808795564e-08
+      1.0360129708373044e-05,
+      1.0652052317333882e-07
     ],
     [
-      7.544836948258915e-08,
-      -1.0075194789356751e-05
+      -2.746221818283878e-07,
+      -1.0168865923863932e-05
     ],
     [
-      103.71540823000898,
-      1.3515331297680002
+      103.71546677065139,
+      1.3515414505707373
     ]
   ],
   "controls": [
     {
       "name": "Lanchar Bridge",
-      "fitResidualMetres": 11.9,
-      "leaveOneOutMetres": 53.3
+      "fitResidualMetres": 14.0,
+      "leaveOneOutMetres": 40.4
     },
     {
       "name": "Jerung Bridge",
-      "fitResidualMetres": 3.8,
-      "leaveOneOutMetres": 114.0
+      "fitResidualMetres": 13.9,
+      "leaveOneOutMetres": 33.9
     },
     {
       "name": "White Rainbow Bridge",
-      "fitResidualMetres": 13.7,
-      "leaveOneOutMetres": 18.6
+      "fitResidualMetres": 17.2,
+      "leaveOneOutMetres": 20.1
     },
     {
       "name": "Moonrise Bridge",
-      "fitResidualMetres": 20.0,
-      "leaveOneOutMetres": 25.0
+      "fitResidualMetres": 23.5,
+      "leaveOneOutMetres": 27.4
     },
     {
       "name": "Double Beauty Bridge",
-      "fitResidualMetres": 20.9,
-      "leaveOneOutMetres": 28.2
+      "fitResidualMetres": 21.9,
+      "leaveOneOutMetres": 28.6
     },
     {
       "name": "Japanese Garden Bridge",
-      "fitResidualMetres": 6.8,
-      "leaveOneOutMetres": 14.6
+      "fitResidualMetres": 4.3,
+      "leaveOneOutMetres": 7.9
+    },
+    {
+      "name": "The Lone Tree",
+      "fitResidualMetres": 12.7,
+      "leaveOneOutMetres": 36.3
+    },
+    {
+      "name": "Grand Arch",
+      "fitResidualMetres": 14.6,
+      "leaveOneOutMetres": 16.7
     }
   ],
-  "meanFitResidualMetres": 12.8,
-  "meanLeaveOneOutMetres": 42.3,
+  "meanFitResidualMetres": 15.3,
+  "meanLeaveOneOutMetres": 26.4,
   "outsideExpectedManagedArea": [
+    "C9",
     "C13",
     "J3",
-    "J10",
     "J11",
-    "L11",
-    "L17",
-    "L20",
-    "L25",
-    "L28"
+    "L20"
   ],
   "points": [
     {
@@ -69,8 +75,8 @@
         1326.7
       ],
       "coordinate": [
-        1.3382095,
-        103.7283332
+        1.3381857,
+        103.7282639
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -84,8 +90,8 @@
         1245.6
       ],
       "coordinate": [
-        1.3390273,
-        103.7285311
+        1.3390126,
+        103.7284955
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -99,8 +105,8 @@
         1179.9
       ],
       "coordinate": [
-        1.3396889,
-        103.7284534
+        1.3396799,
+        103.7284389
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -114,8 +120,8 @@
         1145.9
       ],
       "coordinate": [
-        1.3400337,
-        103.729108
+        1.3400326,
+        103.7291227
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -129,8 +135,8 @@
         1221.0
       ],
       "coordinate": [
-        1.3392769,
-        103.7290764
+        1.3392685,
+        103.7290638
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -144,8 +150,8 @@
         1250.6
       ],
       "coordinate": [
-        1.3389803,
-        103.729551
+        1.3389725,
+        103.7295405
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -159,8 +165,8 @@
         1318.8
       ],
       "coordinate": [
-        1.3382937,
-        103.7297207
+        1.3382807,
+        103.7296906
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -174,8 +180,8 @@
         1323.5
       ],
       "coordinate": [
-        1.3382479,
-        103.7301744
+        1.3382377,
+        103.7301545
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -189,12 +195,12 @@
         1170.1
       ],
       "coordinate": [
-        1.339796,
-        103.7309169
+        1.3398056,
+        103.7309705
       ],
       "managedArea": "CHINESE GARDENS",
-      "insideExpectedManagedArea": true,
-      "distanceOutsideManagedAreaMetres": 0,
+      "insideExpectedManagedArea": false,
+      "distanceOutsideManagedAreaMetres": 0.5,
       "status": "candidate-only; not survey-grade"
     },
     {
@@ -204,8 +210,8 @@
         1227.0
       ],
       "coordinate": [
-        1.3392243,
-        103.7313866
+        1.3392319,
+        103.7314325
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -219,8 +225,8 @@
         1369.0
       ],
       "coordinate": [
-        1.3377944,
-        103.7316285
+        1.3377903,
+        103.7316308
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -234,8 +240,8 @@
         1392.9
       ],
       "coordinate": [
-        1.3375566,
-        103.7325429
+        1.3375569,
+        103.7325608
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -249,12 +255,12 @@
         1414
       ],
       "coordinate": [
-        1.3373447,
-        103.7327474
+        1.3373445,
+        103.7327632
       ],
       "managedArea": "CHINESE GARDENS",
       "insideExpectedManagedArea": false,
-      "distanceOutsideManagedAreaMetres": 0.0,
+      "distanceOutsideManagedAreaMetres": 1.5,
       "status": "candidate-only; not survey-grade"
     },
     {
@@ -264,8 +270,8 @@
         1599
       ],
       "coordinate": [
-        1.3354709,
-        103.7298035
+        1.3354321,
+        103.7296769
       ],
       "managedArea": "JAPANESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -279,8 +285,8 @@
         1509
       ],
       "coordinate": [
-        1.3363803,
-        103.7305841
+        1.3363556,
+        103.7305097
       ],
       "managedArea": "JAPANESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -294,12 +300,12 @@
         1443
       ],
       "coordinate": [
-        1.3370472,
-        103.7311545
+        1.3370328,
+        103.7311183
       ],
       "managedArea": "JAPANESE GARDENS",
       "insideExpectedManagedArea": false,
-      "distanceOutsideManagedAreaMetres": 10.2,
+      "distanceOutsideManagedAreaMetres": 6.9,
       "status": "candidate-only; not survey-grade"
     },
     {
@@ -309,8 +315,8 @@
         1490
       ],
       "coordinate": [
-        1.336574,
-        103.7312691
+        1.336556,
+        103.7312194
       ],
       "managedArea": "JAPANESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -324,8 +330,8 @@
         1528
       ],
       "coordinate": [
-        1.3361927,
-        103.7317162
+        1.3361743,
+        103.7316648
       ],
       "managedArea": "JAPANESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -339,8 +345,8 @@
         1595
       ],
       "coordinate": [
-        1.3355154,
-        103.7310752
+        1.3354862,
+        103.7309833
       ],
       "managedArea": "JAPANESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -354,8 +360,8 @@
         1648
       ],
       "coordinate": [
-        1.3349835,
-        103.731695
+        1.3349537,
+        103.7316008
       ],
       "managedArea": "JAPANESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -369,8 +375,8 @@
         1585
       ],
       "coordinate": [
-        1.3356222,
-        103.7328713
+        1.3356068,
+        103.7328302
       ],
       "managedArea": "JAPANESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -384,8 +390,8 @@
         1698
       ],
       "coordinate": [
-        1.3344852,
-        103.7333241
+        1.3344624,
+        103.733255
       ],
       "managedArea": "JAPANESE GARDENS",
       "insideExpectedManagedArea": true,
@@ -399,12 +405,12 @@
         1698
       ],
       "coordinate": [
-        1.3344862,
-        103.7336168
+        1.3344655,
+        103.7335555
       ],
       "managedArea": "JAPANESE GARDENS",
-      "insideExpectedManagedArea": false,
-      "distanceOutsideManagedAreaMetres": 2.9,
+      "insideExpectedManagedArea": true,
+      "distanceOutsideManagedAreaMetres": 0,
       "status": "candidate-only; not survey-grade"
     },
     {
@@ -414,12 +420,12 @@
         1801
       ],
       "coordinate": [
-        1.3334499,
-        103.7340486
+        1.3334226,
+        103.7339623
       ],
       "managedArea": "JAPANESE GARDENS",
       "insideExpectedManagedArea": false,
-      "distanceOutsideManagedAreaMetres": 33.6,
+      "distanceOutsideManagedAreaMetres": 23.8,
       "status": "candidate-only; not survey-grade"
     },
     {
@@ -429,8 +435,8 @@
         755.6
       ],
       "coordinate": [
-        1.3439596,
-        103.7271474
+        1.3439811,
+        103.727248
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -444,8 +450,8 @@
         743.7
       ],
       "coordinate": [
-        1.3440754,
-        103.7259492
+        1.3440895,
+        103.7260226
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -459,8 +465,8 @@
         784.5
       ],
       "coordinate": [
-        1.3436513,
-        103.7220656
+        1.3436336,
+        103.7220227
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -474,8 +480,8 @@
         1057.0
       ],
       "coordinate": [
-        1.3409145,
-        103.7246584
+        1.3408897,
+        103.7245876
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -489,8 +495,8 @@
         1147.2
       ],
       "coordinate": [
-        1.3400033,
-        103.7239677
+        1.3399651,
+        103.723847
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -504,8 +510,8 @@
         1098.4
       ],
       "coordinate": [
-        1.3404961,
-        103.7242749
+        1.3404647,
+        103.7241795
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -519,8 +525,8 @@
         1129.9
       ],
       "coordinate": [
-        1.3401796,
-        103.7245388
+        1.3401471,
+        103.7244392
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -534,8 +540,8 @@
         1164.1
       ],
       "coordinate": [
-        1.3398364,
-        103.7249502
+        1.3398036,
+        103.7248493
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -549,8 +555,8 @@
         1205.6
       ],
       "coordinate": [
-        1.3394176,
-        103.7247595
+        1.3393796,
+        103.724639
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -564,8 +570,8 @@
         1236.5
       ],
       "coordinate": [
-        1.3391062,
-        103.7247285
+        1.339065,
+        103.7245964
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -579,12 +585,12 @@
         1235.7
       ],
       "coordinate": [
-        1.3391233,
-        103.7274279
+        1.3391016,
+        103.7273669
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
-      "insideExpectedManagedArea": false,
-      "distanceOutsideManagedAreaMetres": 0.2,
+      "insideExpectedManagedArea": true,
+      "distanceOutsideManagedAreaMetres": 0,
       "status": "candidate-only; not survey-grade"
     },
     {
@@ -594,8 +600,8 @@
         1432.7
       ],
       "coordinate": [
-        1.3371367,
-        103.7269077
+        1.3370927,
+        103.7267637
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -609,8 +615,8 @@
         1515.9
       ],
       "coordinate": [
-        1.336298,
-        103.7267979
+        1.3362454,
+        103.7266217
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -624,8 +630,8 @@
         1565.7
       ],
       "coordinate": [
-        1.3357986,
-        103.7274902
+        1.3357463,
+        103.7273146
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -639,8 +645,8 @@
         1614.1
       ],
       "coordinate": [
-        1.3353122,
-        103.7278502
+        1.3352579,
+        103.727667
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -654,8 +660,8 @@
         1638.1
       ],
       "coordinate": [
-        1.3350681,
-        103.7271908
+        1.3350069,
+        103.7269818
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -669,12 +675,12 @@
         1656.5
       ],
       "coordinate": [
-        1.334888,
-        103.728767
+        1.3348364,
+        103.728593
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
-      "insideExpectedManagedArea": false,
-      "distanceOutsideManagedAreaMetres": 1.9,
+      "insideExpectedManagedArea": true,
+      "distanceOutsideManagedAreaMetres": 0,
       "status": "candidate-only; not survey-grade"
     },
     {
@@ -684,8 +690,8 @@
         1694.6
       ],
       "coordinate": [
-        1.3345004,
-        103.7276483
+        1.3344371,
+        103.7274315
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -699,8 +705,8 @@
         1740.9
       ],
       "coordinate": [
-        1.334034,
-        103.7276629
+        1.3339664,
+        103.7274302
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -714,12 +720,12 @@
         1726.4
       ],
       "coordinate": [
-        1.3341855,
-        103.7292841
+        1.334131,
+        103.729099
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": false,
-      "distanceOutsideManagedAreaMetres": 48.1,
+      "distanceOutsideManagedAreaMetres": 26.9,
       "status": "candidate-only; not survey-grade"
     },
     {
@@ -729,8 +735,8 @@
         1800.0
       ],
       "coordinate": [
-        1.3334342,
-        103.7263711
+        1.3333517,
+        103.7260837
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -744,8 +750,8 @@
         1861.5
       ],
       "coordinate": [
-        1.3328175,
-        103.7272621
+        1.3327357,
+        103.7269764
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -759,8 +765,8 @@
         1877.1
       ],
       "coordinate": [
-        1.3326629,
-        103.7280225
+        1.3325851,
+        103.7277512
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -774,8 +780,8 @@
         1895.3
       ],
       "coordinate": [
-        1.3324768,
-        103.7272091
+        1.3323914,
+        103.7269102
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -789,12 +795,12 @@
         1950.3
       ],
       "coordinate": [
-        1.3319265,
-        103.7283712
+        1.3318443,
+        103.7280834
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
-      "insideExpectedManagedArea": false,
-      "distanceOutsideManagedAreaMetres": 9.1,
+      "insideExpectedManagedArea": true,
+      "distanceOutsideManagedAreaMetres": 0,
       "status": "candidate-only; not survey-grade"
     },
     {
@@ -804,8 +810,8 @@
         1952.4
       ],
       "coordinate": [
-        1.3318962,
-        103.7256477
+        1.3317942,
+        103.7252876
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -819,8 +825,8 @@
         2101.7
       ],
       "coordinate": [
-        1.3303925,
-        103.7258003
+        1.3302775,
+        103.7253917
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -834,12 +840,12 @@
         2096.8
       ],
       "coordinate": [
-        1.330449,
-        103.727926
+        1.3303498,
+        103.7275748
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
-      "insideExpectedManagedArea": false,
-      "distanceOutsideManagedAreaMetres": 21.8,
+      "insideExpectedManagedArea": true,
+      "distanceOutsideManagedAreaMetres": 0,
       "status": "candidate-only; not survey-grade"
     },
     {
@@ -849,8 +855,8 @@
         2152.1
       ],
       "coordinate": [
-        1.3298878,
-        103.7267147
+        1.3297746,
+        103.7263123
       ],
       "managedArea": "JLG: LAKESIDE GARDEN",
       "insideExpectedManagedArea": true,
@@ -859,4 +865,3 @@
     }
   ]
 }
-
