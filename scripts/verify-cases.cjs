@@ -8,7 +8,7 @@ const research = fs.readFileSync(path.join(root, 'case-research.js'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const brochureAudit = JSON.parse(fs.readFileSync(path.join(root, 'data', 'brochure-point-audit.json'), 'utf8'));
 assert(!html.includes('layer-atlas') && !code.includes('renderLayerProfiles'));
-assert(html.indexOf('case-research.js') < html.indexOf('app.js'));
+assert(html.indexOf('case-research.js') < html.indexOf('app-29b62dc7.js'));
 assert(!html.includes('<b>Spatial audit.</b>'));
 assert(html.includes('Show research markers'));
 const preMap = code.slice(0, code.indexOf('const navigationBounds ='));
@@ -117,4 +117,3 @@ assert(code.includes('properties.OBJECTID_1 ?? index'), 'NParks features need st
 assert(code.includes('featureBelongsToExternalLayer'), 'OSM application categories must not depend on the numeric vertical layer tag');
 assert(code.includes('featureIndexes.get(feature)'), 'External fallback labels and IDs need per-feature indexes');
 console.log(JSON.stringify({pass:true, authoredCaseDossiers:caseCount, authoredSections:sections, paragraphCitations:citationCount, thematicCases:features.filter(item => ['ecology','engineered','heritage','governance','public','hidden'].includes(item.layer)).length, facilitiesWithCaseAnalysis:features.filter(item => item.layer==='facilities' && caseDossierFor(item)).length, mappedPlanRecords:planRecords.length, brochureControlMeanResidualMetres:brochureAudit.meanFitResidualMetres, japaneseGardenAnchor:japaneseGarden.geometry.coordinates}, null, 2));
-
