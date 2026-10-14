@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Layers of Nature · Jurong Lake Gardens GIS</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <span class="eyebrow">TIME-ENABLED POLITICAL ECOLOGY GIS</span>
+      <h1>Layers of Nature</h1>
+      <p>Jurong Lake Gardens · Singapore</p>
+    </div>
+    <div class="topbar-note">A single map for reading how water, gardens, infrastructure, memory and public use have been made over time.</div>
+  </header>
+
+  <main class="shell">
+    <section class="research-strip">
+      <div>
+        <span class="section-kicker">RESEARCH QUESTION</span>
+        <h2>What looks natural here — and who decided it should look this way?</h2>
+      </div>
+      <p>Move through time, combine spatial layers, then select a mapped feature. Every visible object states whether it is official geometry, an open-data reference or a location anchor.</p>
+    </section>
+
+    <section class="gis-workbench">
+      <aside class="layer-panel">
+        <div class="panel-heading"><span class="section-kicker">01 · LAYERS</span><h2>Spatial lenses</h2></div>
+        <p class="panel-intro">Explore independently: combine layers, move through time, and select a place for its evidence and in-depth case analysis on the right. Current facilities and reference geometry are not projected onto historical maps.</p>
+        <div id="layer-controls" class="layer-controls"></div>
+        <div class="layer-actions" role="group" aria-label="Layer selection actions">
+          <button id="select-all-layers" class="layer-action" type="button">Select all</button>
+          <button id="clear-all-layers" class="layer-action" type="button">Clear all</button>
+        </div>
+        <div class="panel-divider"></div>
+        <label class="research-toggle">
+          <input id="show-research-leads" type="checkbox" />
+          <span class="research-toggle-mark"></span>
+          <span>Show research markers</span>
+        </label>
+        <div class="map-key"><b class="map-key-heading">How to read the spatial evidence</b>
+          <div><span class="key-swatch historical"></span><span><b>Historical base</b><small>NUS georeferenced map</small></span></div>
+          <div><span class="key-swatch current"></span><span><b>Current base</b><small>OneMap present-day reference</small></span></div>
+          <div><span class="key-swatch orientation"></span><span><b>Named-place anchor</b><small>cross-checked point, not a boundary</small></span></div>
+          <div><span class="key-swatch facility"></span><span><b>Facility</b><small>NParks plan-derived point</small></span></div>
+          <div><span class="key-swatch amenity"></span><span><b>Amenity / access</b><small>named current service point</small></span></div>
+          <div><span class="key-swatch vector"></span><span><b>Vector reference</b><small>official or open-data geometry</small></span></div>
+        </div>
+        <div class="panel-note">The old map is not a decorative overlay: the timeline changes the map canvas itself. Between documented years, the interface crossfades the two nearest dated maps and labels that interval as a visual transition.</div>
+      </aside>
+
+      <section class="map-column">
+        <div class="map-toolbar">
+          <div>
+            <span class="section-kicker">02 · MAP CANVAS</span>
+            <h2 id="map-title">Jurong Lake Gardens · 1975</h2>
+            <p class="base-map-label" id="base-map-label">Base map: NUS 1975 georeferenced raster</p>
+          </div>
+          <div class="map-toolbar-actions">
+            <button id="reset-view" class="tool-button" type="button">Reset view</button>
+            <button id="play-time" class="tool-button primary" type="button" aria-pressed="false">Play change</button>
+          </div>
+        </div>
+        <div id="map" class="map-canvas" aria-label="Time-enabled Jurong Lake Gardens map"></div>
+        <div class="timeline-dock">
+          <div class="timeline-topline"><strong id="timeline-year">1975</strong><span id="timeline-context">Chinese Garden opens</span><span class="timeline-status" id="timeline-status">documented state</span></div>
+          <input id="timeline" type="range" min="0" max="5" step="0.01" value="3" aria-label="Move through documented landscape states" />
+          <div class="timeline-years"><span>1953</span><span>1963</span><span>1971</span><span>1975</span><span>2019</span><span>2024</span></div>
+          <p id="timeline-description">The Chinese Garden was completed in 1975 on land described by NHB as formerly occupied by fish and prawn ponds beside Jurong River.</p>
+        </div>
+        <div class="map-footer"><span class="live-dot"></span><span id="map-status">Current OneMap base · click a mapped object to inspect its evidence</span><span class="map-caution">visual fades between documented states do not invent intermediate boundaries</span></div>
+      </section>
+
+      <aside class="evidence-panel" id="evidence-panel" tabindex="0" aria-label="Selected place evidence and case analysis">
+        <div class="empty-state">
+          <span class="section-kicker">03 · SELECTED SPACE</span>
+          <h2>Select an area, line or point.</h2>
+          <p>The right panel explains what the selected spatial object represents, which period it belongs to, which source supports it and what remains uncertain.</p>
+          <div class="prompt-list">
+            <div><span>→</span> How did water become a lake?</div>
+            <div><span>→</span> Who was the space designed for?</div>
+            <div><span>→</span> What history is underneath the garden?</div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="photo-section">
+      <div class="photo-section-heading">
+        <div>
+          <span class="section-kicker">04 · PERIOD IMAGES</span>
+          <h2>What did the landscape look like in the selected period?</h2>
+        </div>
+        <p>The cards update with the selected timeline year. Official records are supplemented by community photographs and videos when the post, upload date or capture date can be stated. A card is labelled <em>exactly dated</em> only when the source dates the image to that state; otherwise it is shown as a nearest dated reference. Community previews remain linked to the original post and retain the creator’s copyright.</p>
+      </div>
+      <div id="period-photos" class="period-photos"></div>
+    </section>
+
+    <section class="facility-section">
+      <div>
+        <span class="section-kicker">05 · FACILITIES AND AMENITIES</span>
+        <h2>Every named facility is recorded — without inventing coordinates.</h2>
+        <p id="facility-note">The register follows the NParks Jurong Lake Gardens brochure and turns named attractions, amenity nodes and access points into clickable map objects. These are plan-derived orientation points, not authoritative survey coordinates. A point hidden before 2024 marks an evidence boundary: it does not mean the site was empty or unused.</p>
+      </div>
+      <div id="facility-register" class="facility-register"></div>
+    </section>
+
+    <section class="method-section">
+      <div>
+          <span class="section-kicker">06 · METHOD AND SOURCES</span>
+        <h2>Every mapped object has a source status.</h2>
+        <p>The map is deliberately conservative. A source can document a feature without giving us a survey-grade polygon. Those cases are either shown as audited point anchors with no boundary claim, or retained as source-only narratives when even a defensible anchor cannot be identified.</p>
+      </div>
+      <details class="source-details">
+        <summary>Open source register</summary>
+        <div id="source-ledger" class="source-list"></div>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer">Layers of Nature · Jurong Lake Gardens · time-enabled political ecology GIS · research prototype</footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="case-research.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
