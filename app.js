@@ -548,7 +548,7 @@ let historicalRasterErrors = 0;
 let historicalRasterLoaded = false;
 let playing = false;
 let playTimer = null;
-let showResearchLeads = false;
+let showResearchLeads = true;
 
 const escapeHtml = (value) => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 const sourceLink = (source, label = source.title) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a>`;
@@ -803,6 +803,24 @@ function makeFeatureLayer(item, opacity) {
   return layer;
 }
 
+function makeProvisionalPlanLayer(item, opacity) {
+  const color = layers[item.layer].color;
+  const selected = selectedFeatureId === item.id;
+  const layer = L.circleMarker(item.navigationCoordinate, {
+    color: '#a65032',
+    weight: selected ? 4 : 2,
+    dashArray: '4 4',
+    fillColor: color,
+    fillOpacity: selected ? .58 : .22,
+    opacity: Math.min(1, opacity + .2),
+    radius: selected ? 9 : 6
+  });
+  bindInteractiveHoverCard(layer, item);
+  layer.on('mouseover', () => layer.setStyle({ weight: 4, fillOpacity: .45 }));
+  layer.on('mouseout', () => layer.setStyle({ weight: selectedFeatureId === item.id ? 4 : 2, fillOpacity: selectedFeatureId === item.id ? .58 : .22 }));
+  return layer;
+}
+
 function geometryCoordinates(geometry) {
   const coordinates = [];
   const walk = (value) => {
@@ -1003,9 +1021,9 @@ async function ensureExternalLayer(id) {
 
 function renderFeatures() {
   featureGroup.clearLayers();
-  features.filter((item) => enabledLayers.has(item.layer) && item.mapDisplay !== 'source-only' && (!item.researchOnly || showResearchLeads)).forEach((item) => {
+  features.filter((item) => enabledLayers.has(item.layer) && (!item.researchOnly || showResearchLeads) && (item.mapDisplay !== 'source-only' || (item.spatialStatus === 'quarantined' && item.navigationCoordinate))).forEach((item) => {
     const opacity = spatialOpacity(item, timeValue);
-    if (opacity > .03) featureGroup.addLayer(makeFeatureLayer(item, opacity));
+    if (opacity > .03) featureGroup.addLayer(item.mapDisplay === 'source-only' ? makeProvisionalPlanLayer(item, opacity) : makeFeatureLayer(item, opacity));
   });
   updateExternalLayerVisibility();
 }
