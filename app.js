@@ -1021,7 +1021,7 @@ async function ensureExternalLayer(id) {
 
 function renderFeatures() {
   featureGroup.clearLayers();
-  features.filter((item) => enabledLayers.has(item.layer) && (!item.researchOnly || showResearchLeads) && (item.mapDisplay !== 'source-only' || (item.spatialStatus === 'quarantined' && item.navigationCoordinate))).forEach((item) => {
+  features.filter((item) => enabledLayers.has(item.layer) && (!item.researchOnly || showResearchLeads) && item.spatialStatus !== 'quarantined' && item.mapDisplay !== 'source-only').forEach((item) => {
     const opacity = spatialOpacity(item, timeValue);
     if (opacity > .03) featureGroup.addLayer(item.mapDisplay === 'source-only' ? makeProvisionalPlanLayer(item, opacity) : makeFeatureLayer(item, opacity));
   });
@@ -1324,19 +1324,19 @@ function renderFacilityRegister() {
     const pageSource = garden === 'Chinese Garden' ? sources.nparksChinese : garden === 'Japanese Garden' ? sources.nparksJapanese : sources.nparksLakeside;
     const items = facilityNames.filter((item) => item.garden === garden).map((item) => {
       const point = planFacilityByName.get(item.name);
-      const clickable = Boolean(point && (point.geometry?.coordinates || point.navigationCoordinate));
+      const clickable = Boolean(point?.geometry?.coordinates);
       return `<li class="${clickable ? 'mapped' : 'unmapped'}"${clickable ? '' : ' title="Source-listed facility; no plan position available"'}><span>${clickable ? `<button class="facility-jump" type="button" data-feature-id="${escapeHtml(point.id)}">${escapeHtml(item.name)}</button>` : escapeHtml(item.name)}</span><em>${escapeHtml(item.type)}</em></li>`;
     }).join('');
     const clickableCount = facilityNames.filter((item) => {
       if (item.garden !== garden) return false;
       const point = planFacilityByName.get(item.name);
-      return Boolean(point && (point.geometry?.coordinates || point.navigationCoordinate));
+      return Boolean(point?.geometry?.coordinates);
     }).length;
     return `<section class="facility-group"><div class="facility-group-head"><h3>${escapeHtml(garden)}</h3><div>${sourceLink(pageSource, 'NParks page')} · ${sourceLink(sources.nparksBrochure, 'brochure map')}</div></div><span class="facility-status">${clickableCount} named plan positions available for navigation. Click a name to focus the map; items without surveyed geometry appear as a temporary locator only.</span><ul>${items}</ul></section>`;
   }).join('');
   const amenities = amenityNames.map((item) => {
     const point = planAmenityByLegend.get(item.name);
-    const clickable = Boolean(point && (point.geometry?.coordinates || point.navigationCoordinate));
+    const clickable = Boolean(point?.geometry?.coordinates);
     return `<li class="${clickable ? 'mapped' : 'unmapped'}"><span>${clickable ? `<button class="facility-jump" type="button" data-feature-id="${escapeHtml(point.id)}">${escapeHtml(item.name)}</button>` : escapeHtml(item.name)}</span><em>${escapeHtml(item.type)}</em></li>`;
   }).join('');
   document.getElementById('facility-register').innerHTML = `${groups}<section class="facility-group amenities-group"><div class="facility-group-head"><h3>Brochure legend · amenities and access</h3><div>${sourceLink(sources.nparksBrochure, 'NParks brochure map')}</div></div><span class="facility-status">Named amenity nodes are clickable where the brochure gives a location; generic symbols remain listed without a map point.</span><ul>${amenities}</ul></section>`;
@@ -1347,13 +1347,10 @@ function renderFacilityRegister() {
     renderLayerControls();
     document.getElementById('timeline').value = String(item.from);
     updateTimeline(item.from);
-    const coordinate = item.geometry?.coordinates || item.navigationCoordinate;
+    const coordinate = item.geometry?.coordinates;
+    if (!coordinate) return;
     map.setView(coordinate, 16.5);
-    if (item.spatialStatus === 'quarantined') {
-      clearProvisionalLocator();
-      provisionalLocator = L.circleMarker(coordinate, { radius: 11, color: '#a65032', weight: 3, dashArray: '5 5', fillColor: '#fffaf0', fillOpacity: .35, className: 'provisional-locator' })
-        .addTo(map);
-    } else clearProvisionalLocator();
+    clearProvisionalLocator();
     selectFeature(item);
     document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }));
