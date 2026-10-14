@@ -84,8 +84,8 @@ def main():
     controls = json.loads(CONTROLS.read_text(encoding="utf-8"))["controls"]
     pixels = json.loads(PIXELS.read_text(encoding="utf-8"))["points"]
     parks = json.loads(PARKS.read_text(encoding="utf-8"))["features"]
-    if len(pixels) != 53 or len(controls) < 6:
-        raise ValueError("Expected all 53 brochure attractions and at least six bridge controls")
+    if len(pixels) != 53 or len(controls) < 8:
+        raise ValueError("Expected all 53 brochure attractions and eight independent controls")
 
     fit = model(controls)
     control_audit = []
@@ -121,7 +121,7 @@ def main():
         })
 
     result = {
-        "method": "least-squares affine from six named OSM bridges to NParks brochure pixels",
+        "method": "least-squares affine from six named OSM bridges, Grand Arch and Lone Tree to NParks brochure pixels",
         "source": "NParks Jurong Lake Gardens Brochure, page 2; bundled OpenStreetMap bridges; bundled NParks managed-area GeoJSON",
         "status": "independent audit candidates; not yet applied to GIS",
         "pixelToWorldLngLatMatrix": fit.tolist(),
@@ -140,4 +140,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
