@@ -84,6 +84,9 @@ const sources = {
   osmReference: { institution: 'OpenStreetMap contributors', title: 'OpenStreetMap · open reference geometries for roads, paths, waterways and woodland', url: 'https://www.openstreetmap.org/copyright' },
   osmGrandArch: { institution: 'OpenStreetMap contributors', title: 'Grand Arch Building · named building footprint (way 1427416429)', url: 'https://www.openstreetmap.org/way/1427416429' },
   osmLoneTree: { institution: 'OpenStreetMap contributors', title: 'The Lone Tree · named artwork point (node 7236529989)', url: 'https://www.openstreetmap.org/node/7236529989' },
+  wikidataLakesideMRT: { institution: 'Wikidata contributors', title: 'Lakeside MRT station (Q3272255) · coordinate reference', url: 'https://www.wikidata.org/wiki/Q3272255' },
+  osmChineseMRT: { institution: 'OpenStreetMap contributors', title: 'Chinese Garden MRT station · named building footprint', url: 'https://www.openstreetmap.org/way/152338067' },
+  osmJurongEastMRT: { institution: 'OpenStreetMap contributors', title: 'Jurong East MRT station · named reference point', url: 'https://www.openstreetmap.org/node/209451066' },
   onemap: { institution: 'Singapore Land Authority', title: 'OneMap map service', url: 'https://www.onemap.gov.sg/docs/maps/index.html' }
 };
 Object.values(sources).forEach((source) => { source.date = checkedOn; });
@@ -248,21 +251,80 @@ const amenityEvidence = {
   'Jurong East MRT': { purpose: 'NParks identifies Jurong East MRT as a twenty-minute walk to Japanese Garden Bridge and a twenty-three-minute walk to the Water Lily Pavilion information counter.', source: sources.nparksGettingHere }
 };
 
-// These points are digitised from the current NParks 1:2500 brochure plan (page 2).
-// They are shown as plan-derived orientation points, not as official survey coordinates.
+// Named records from the NParks brochure (page 2). Coordinates are assigned
+// separately after independent bridge-based georeferencing below.
 const facilityPlanRows = [
-  ['C1', 'Grand Arch', 'Chinese Garden', 'landmark', 1.33812, 103.72815], ['C2', 'Edible Garden', 'Chinese Garden', 'garden / learning', 1.3410, 103.7311], ['C3', 'Twin Pagoda', 'Chinese Garden', 'landmark', 1.3403, 103.7334], ['C4', 'Water Wall Court', 'Chinese Garden', 'water feature', 1.3409, 103.7328], ['C5', 'Stoneboat', 'Chinese Garden', 'landmark', 1.3399, 103.7340], ['C6', 'Tea Pavilion', 'Chinese Garden', 'pavilion', 1.3396, 103.7335], ['C7', 'Bamboo Grove and Waterfall', 'Chinese Garden', 'garden / water feature', 1.3400, 103.7325], ['C8', 'Bonsai Garden', 'Chinese Garden', 'garden', 1.3401, 103.7346], ['C9', 'Pagoda Plaza', 'Chinese Garden', 'public space', 1.3415, 103.7324], ['C10', 'Cloud Pagoda', 'Chinese Garden', 'landmark', 1.3419, 103.7332], ['C11', 'Harvest Moon Terrace', 'Chinese Garden', 'viewing terrace', 1.3398, 103.7357], ['C12', 'Cascading Creek', 'Chinese Garden', 'water feature', 1.3395, 103.7352], ['C13', 'Cascade Pavilion', 'Chinese Garden', 'pavilion', 1.3405, 103.7360],
-  ['J1', 'Floral Garden', 'Japanese Garden', 'garden', 1.3368, 103.7361], ['J2', 'Teahouse', 'Japanese Garden', 'pavilion', 1.3371, 103.7368], ['J3', 'Silver Moon Terrace', 'Japanese Garden', 'viewing terrace', 1.3378, 103.7374], ['J4', 'Guesthouse', 'Japanese Garden', 'building', 1.3370, 103.7383], ['J5', 'Guest Pavilion', 'Japanese Garden', 'pavilion', 1.3366, 103.7388], ['J6', 'Sunken Garden', 'Japanese Garden', 'garden', 1.3360, 103.7384], ['J7', 'Resthouse', 'Japanese Garden', 'building', 1.3355, 103.7392], ['J8', 'Floral Ridge', 'Japanese Garden', 'garden', 1.3372, 103.7398], ['J9', 'Water Lily Garden', 'Japanese Garden', 'garden', 1.3360, 103.7400], ['J10', 'Water Lily Pavilion', 'Japanese Garden', 'pavilion', 1.3355, 103.7405], ['J11', 'Breathing Gallery', 'Japanese Garden', 'public space', 1.3352, 103.7397],
-  ['L1', 'SkatePark @ Lakeside Garden', 'Lakeside Garden', 'sport', 1.3425, 103.7192], ['L2', 'Rainforest Pavilion', 'Lakeside Garden', 'pavilion', 1.3412, 103.7201], ['L3', 'Lakeside House', 'Lakeside Garden', 'building / F&B', 1.3400, 103.7208], ['L4', 'Ecopond', 'Lakeside Garden', 'water feature', 1.3368, 103.7209], ['L5', 'North Carpark', 'Lakeside Garden', 'transport', 1.3406, 103.7192], ['L6', 'Clusia Cove Pavilion', 'Lakeside Garden', 'pavilion', 1.3370, 103.7224], ['L7', 'Water Play at Clusia Cove', 'Lakeside Garden', 'play / water', 1.3366, 103.7230], ['L8', 'Cleansing Biotope', 'Lakeside Garden', 'water infrastructure', 1.3355, 103.7247], ['L9', 'The Canyon', 'Lakeside Garden', 'landscape feature', 1.3358, 103.7255], ['L10', 'Entrance Pavilion', 'Lakeside Garden', 'access / information', 1.3353, 103.7228], ['L11', 'PAssion WaVe @ Jurong Lake Gardens', 'Lakeside Garden', 'water recreation', 1.3345, 103.7245], ['L12', 'Forest Ramble (Children’s Playground)', 'Lakeside Garden', 'play', 1.3338, 103.7222], ['L13', 'Play Pavilion', 'Lakeside Garden', 'play / shelter', 1.3330, 103.7220], ['L14', 'Butterfly Maze', 'Lakeside Garden', 'play / learning', 1.3318, 103.7227], ['L15', 'Therapeutic Garden', 'Lakeside Garden', 'care / accessibility', 1.3320, 103.7213], ['L16', 'The Logs Trail', 'Lakeside Garden', 'trail', 1.3316, 103.7240], ['L17', 'Freshwater Swamp', 'Lakeside Garden', 'habitat', 1.3308, 103.7220], ['L18', 'Allotment Gardens', 'Lakeside Garden', 'community gardening', 1.3297, 103.7210], ['L19', 'Gardenhouse', 'Lakeside Garden', 'venue', 1.3290, 103.7200], ['L20', 'Alstonia Island', 'Lakeside Garden', 'habitat', 1.3288, 103.7219], ['L21', 'Dog Run', 'Lakeside Garden', 'recreation', 1.3285, 103.7233], ['L22', 'Bird Hides', 'Lakeside Garden', 'wildlife viewing', 1.3284, 103.7247], ['L23', 'The Lone Tree', 'Lakeside Garden', 'memory / sculpture', 1.3291, 103.7252], ['L24', 'Grasslands', 'Lakeside Garden', 'habitat', 1.3298, 103.7257], ['L25', 'Rasau Walk', 'Lakeside Garden', 'boardwalk', 1.3290, 103.7264], ['L26', 'South Carpark', 'Lakeside Garden', 'transport', 1.3278, 103.7200], ['L27', 'ActiveSG Park @ Jurong Lake Gardens', 'Lakeside Garden', 'sport / recreation', 1.3271, 103.7207], ['L28', 'Heron Island', 'Lakeside Garden', 'habitat', 1.3276, 103.7233], ['L29', 'Neram Streams', 'Lakeside Garden', 'naturalised waterway', 1.3269, 103.7240]
+  ['C1', 'Grand Arch', 'Chinese Garden', 'landmark'], ['C2', 'Edible Garden', 'Chinese Garden', 'garden / learning'], ['C3', 'Twin Pagoda', 'Chinese Garden', 'landmark'], ['C4', 'Water Wall Court', 'Chinese Garden', 'water feature'], ['C5', 'Stoneboat', 'Chinese Garden', 'landmark'], ['C6', 'Tea Pavilion', 'Chinese Garden', 'pavilion'], ['C7', 'Bamboo Grove and Waterfall', 'Chinese Garden', 'garden / water feature'], ['C8', 'Bonsai Garden', 'Chinese Garden', 'garden'], ['C9', 'Pagoda Plaza', 'Chinese Garden', 'public space'], ['C10', 'Cloud Pagoda', 'Chinese Garden', 'landmark'], ['C11', 'Harvest Moon Terrace', 'Chinese Garden', 'viewing terrace'], ['C12', 'Cascading Creek', 'Chinese Garden', 'water feature'], ['C13', 'Cascade Pavilion', 'Chinese Garden', 'pavilion'],
+  ['J1', 'Floral Garden', 'Japanese Garden', 'garden'], ['J2', 'Teahouse', 'Japanese Garden', 'pavilion'], ['J3', 'Silver Moon Terrace', 'Japanese Garden', 'viewing terrace'], ['J4', 'Guesthouse', 'Japanese Garden', 'building'], ['J5', 'Guest Pavilion', 'Japanese Garden', 'pavilion'], ['J6', 'Sunken Garden', 'Japanese Garden', 'garden'], ['J7', 'Resthouse', 'Japanese Garden', 'building'], ['J8', 'Floral Ridge', 'Japanese Garden', 'garden'], ['J9', 'Water Lily Garden', 'Japanese Garden', 'garden'], ['J10', 'Water Lily Pavilion', 'Japanese Garden', 'pavilion'], ['J11', 'Breathing Gallery', 'Japanese Garden', 'public space'],
+  ['L1', 'SkatePark @ Lakeside Garden', 'Lakeside Garden', 'sport'], ['L2', 'Rainforest Pavilion', 'Lakeside Garden', 'pavilion'], ['L3', 'Lakeside House', 'Lakeside Garden', 'building / F&B'], ['L4', 'Ecopond', 'Lakeside Garden', 'water feature'], ['L5', 'North Carpark', 'Lakeside Garden', 'transport'], ['L6', 'Clusia Cove Pavilion', 'Lakeside Garden', 'pavilion'], ['L7', 'Water Play at Clusia Cove', 'Lakeside Garden', 'play / water'], ['L8', 'Cleansing Biotope', 'Lakeside Garden', 'water infrastructure'], ['L9', 'The Canyon', 'Lakeside Garden', 'landscape feature'], ['L10', 'Entrance Pavilion', 'Lakeside Garden', 'access / information'], ['L11', 'PAssion WaVe @ Jurong Lake Gardens', 'Lakeside Garden', 'water recreation'], ['L12', 'Forest Ramble (Children’s Playground)', 'Lakeside Garden', 'play'], ['L13', 'Play Pavilion', 'Lakeside Garden', 'play / shelter'], ['L14', 'Butterfly Maze', 'Lakeside Garden', 'play / learning'], ['L15', 'Therapeutic Garden', 'Lakeside Garden', 'care / accessibility'], ['L16', 'The Logs Trail', 'Lakeside Garden', 'trail'], ['L17', 'Freshwater Swamp', 'Lakeside Garden', 'habitat'], ['L18', 'Allotment Gardens', 'Lakeside Garden', 'community gardening'], ['L19', 'Gardenhouse', 'Lakeside Garden', 'venue'], ['L20', 'Alstonia Island', 'Lakeside Garden', 'habitat'], ['L21', 'Dog Run', 'Lakeside Garden', 'recreation'], ['L22', 'Bird Hides', 'Lakeside Garden', 'wildlife viewing'], ['L23', 'The Lone Tree', 'Lakeside Garden', 'memory / sculpture'], ['L24', 'Grasslands', 'Lakeside Garden', 'habitat'], ['L25', 'Rasau Walk', 'Lakeside Garden', 'boardwalk'], ['L26', 'South Carpark', 'Lakeside Garden', 'transport'], ['L27', 'ActiveSG Park @ Jurong Lake Gardens', 'Lakeside Garden', 'sport / recreation'], ['L28', 'Heron Island', 'Lakeside Garden', 'habitat'], ['L29', 'Neram Streams', 'Lakeside Garden', 'naturalised waterway']
 ];
 
 const amenityPlanRows = [
-  ['I-CG', 'Information · Pagoda Plaza', 'Information', 'visitor service', 1.3415, 103.7324], ['I-JG', 'Information · Water Lily Pavilion', 'Information', 'visitor service', 1.3355, 103.7405], ['I-LG', 'Information · Entrance Pavilion', 'Information', 'visitor service', 1.3353, 103.7228],
-  ['F1', 'Fusion Spoon · Ecopond', 'F&B', 'food and beverage', 1.3368, 103.7209], ['F2', 'Starbucks · Lakeside House', 'F&B', 'food and beverage', 1.3400, 103.7208], ['F3', 'Eden · Pagoda Plaza', 'F&B', 'food and beverage', 1.3415, 103.7324], ['F4', 'Canopy · Grand Arch', 'F&B', 'food and beverage', 1.33812, 103.72815], ['F5', 'BingXue · Bonsai Garden', 'F&B', 'food and beverage', 1.3401, 103.7346], ['F6', 'Ice Cream Man and Friends · Sunken Garden', 'F&B', 'food and beverage', 1.3360, 103.7384],
-  ['P-N', 'North Carpark', 'Carpark', 'transport', 1.3406, 103.7192], ['P-S', 'South Carpark', 'Carpark', 'transport', 1.3278, 103.7200], ['M-L', 'Lakeside MRT', 'MRT', 'public transport', 1.3429, 103.7197], ['M-C', 'Chinese Garden MRT', 'MRT', 'public transport', 1.3428, 103.7419], ['M-J', 'Jurong East MRT', 'MRT', 'public transport', 1.3330, 103.7420]
+  ['I-CG', 'Information · Pagoda Plaza', 'Information', 'visitor service'], ['I-JG', 'Information · Water Lily Pavilion', 'Information', 'visitor service'], ['I-LG', 'Information · Entrance Pavilion', 'Information', 'visitor service'],
+  ['F1', 'Fusion Spoon · Ecopond', 'F&B', 'food and beverage'], ['F2', 'Starbucks · Lakeside House', 'F&B', 'food and beverage'], ['F3', 'Eden · Pagoda Plaza', 'F&B', 'food and beverage'], ['F4', 'Canopy · Grand Arch', 'F&B', 'food and beverage'], ['F5', 'BingXue · Bonsai Garden', 'F&B', 'food and beverage'], ['F6', 'Ice Cream Man and Friends · Sunken Garden', 'F&B', 'food and beverage'],
+  ['P-N', 'North Carpark', 'Carpark', 'transport'], ['P-S', 'South Carpark', 'Carpark', 'transport'], ['M-L', 'Lakeside MRT', 'MRT', 'public transport'], ['M-C', 'Chinese Garden MRT', 'MRT', 'public transport'], ['M-J', 'Jurong East MRT', 'MRT', 'public transport']
 ];
 
-const planFeature = ([code, name, group, type, lat, lng], layer, legend = type) => {
+// NParks brochure page-2 numbered circles georeferenced against six named
+// OpenStreetMap bridge midpoints. Rebuild with scripts/audit-brochure-georef.py.
+// These are approximate plan anchors, not surveyed coordinates or Google POIs.
+const brochurePlanCoordinates = Object.freeze({
+  C1: [1.3382095, 103.7283332],
+  C2: [1.3390273, 103.7285311],
+  C3: [1.3396889, 103.7284534],
+  C4: [1.3400337, 103.729108],
+  C5: [1.3392769, 103.7290764],
+  C6: [1.3389803, 103.729551],
+  C7: [1.3382937, 103.7297207],
+  C8: [1.3382479, 103.7301744],
+  C9: [1.339796, 103.7309169],
+  C10: [1.3392243, 103.7313866],
+  C11: [1.3377944, 103.7316285],
+  C12: [1.3375566, 103.7325429],
+  C13: [1.3373447, 103.7327474],
+  J1: [1.3354709, 103.7298035],
+  J2: [1.3363803, 103.7305841],
+  J3: [1.3370472, 103.7311545],
+  J4: [1.336574, 103.7312691],
+  J5: [1.3361927, 103.7317162],
+  J6: [1.3355154, 103.7310752],
+  J7: [1.3349835, 103.731695],
+  J8: [1.3356222, 103.7328713],
+  J9: [1.3344852, 103.7333241],
+  J10: [1.3344862, 103.7336168],
+  J11: [1.3334499, 103.7340486],
+  L1: [1.3439596, 103.7271474],
+  L2: [1.3440754, 103.7259492],
+  L3: [1.3436513, 103.7220656],
+  L4: [1.3409145, 103.7246584],
+  L5: [1.3400033, 103.7239677],
+  L6: [1.3404961, 103.7242749],
+  L7: [1.3401796, 103.7245388],
+  L8: [1.3398364, 103.7249502],
+  L9: [1.3394176, 103.7247595],
+  L10: [1.3391062, 103.7247285],
+  L11: [1.3391233, 103.7274279],
+  L12: [1.3371367, 103.7269077],
+  L13: [1.336298, 103.7267979],
+  L14: [1.3357986, 103.7274902],
+  L15: [1.3353122, 103.7278502],
+  L16: [1.3350681, 103.7271908],
+  L17: [1.334888, 103.728767],
+  L18: [1.3345004, 103.7276483],
+  L19: [1.334034, 103.7276629],
+  L20: [1.3341855, 103.7292841],
+  L21: [1.3334342, 103.7263711],
+  L22: [1.3328175, 103.7272621],
+  L23: [1.3326629, 103.7280225],
+  L24: [1.3324768, 103.7272091],
+  L25: [1.3319265, 103.7283712],
+  L26: [1.3318962, 103.7256477],
+  L27: [1.3303925, 103.7258003],
+  L28: [1.330449, 103.727926],
+  L29: [1.3298878, 103.7267147]
+});
+
+const planFeature = ([code, name, group, type], layer, legend = type) => {
   const evidence = attractionEvidence[name] || amenityEvidence[name];
   const isFacility = layer === 'facilities';
   const purpose = evidence?.purpose || (isFacility ? `NParks names this attraction as a ${type} in the ${group} plan; the cited public source does not state a more specific operational use.` : `The NParks brochure legend classifies this as ${type}. The brochure does not publish a dated usage survey for this node.`);
@@ -278,9 +340,9 @@ const planFeature = ([code, name, group, type, lat, lng], layer, legend = type) 
     // withheld unless an independent source dates the same facility.
     from: 5,
     to: 5,
-    geometryType: 'Point',
-    geometry: { type: 'Point', coordinates: [lat, lng] },
-    spatialStatus: 'plan-derived',
+    geometryType: 'source-only facility record',
+    geometry: null,
+    spatialStatus: 'quarantined',
     source: sources.nparksBrochure,
     purpose,
     purposeSource: evidence?.source || sources.nparksBrochure,
@@ -293,11 +355,11 @@ const planFeature = ([code, name, group, type, lat, lng], layer, legend = type) 
       { label: 'Plan code', value: code },
       { label: 'Garden / zone', value: group },
       { label: 'NParks plan type', value: type },
-      { label: 'Coordinate status', value: name === 'Grand Arch' ? 'Corrected against the named Grand Arch Building footprint in OpenStreetMap; still an orientation point, not a survey dataset' : 'Digitised orientation point from the current NParks brochure; not survey-grade' }
+      { label: 'Coordinate status', value: 'Position undergoing georeferencing audit' }
     ],
     fact: `The current NParks brochure identifies ${name} in the ${group} plan. ${purpose}`,
     analysis: isFacility ? 'This point turns a named attraction into a spatially discussable public, ecological or cultural infrastructure node. Its mapped use is a designed relation between habitat, movement, learning, care or leisure.' : 'This point makes access, service provision or visitor support visible as part of the park’s political ecology. The node asks who can reach, use or benefit from the public garden and under what management conditions.',
-    limitation: 'The public brochure supplies the numbered plan position but not a downloadable coordinate dataset. This point is digitised from the formal NParks 1:2500 plan for orientation and must not be read as a survey-grade boundary or coordinate. The brochure and cited attraction pages also do not establish that this exact point or use existed in 1953, 1963, 1971, 1975 or 2019.',
+    limitation: 'The public brochure supplies a numbered plan position, not surveyed coordinates. Any point digitised from it is for present-day orientation, not a legal or survey boundary. The brochure does not establish that this exact point or use existed in 1953, 1963, 1971, 1975 or 2019.',
     periodEvidence: 'Documented in the current NParks brochure / current public attraction page only; earlier presence and historical use are not verified here.',
     question: isFacility ? 'What kind of nature, heritage, care or public use is organised at this mapped node?' : 'Who can reach, use or benefit from this service, and under what management conditions?'
   };
@@ -310,25 +372,33 @@ const planFacilityByName = new Map(facilityFeatures.map((item) => [item.name, it
 const planAmenityByLegend = new Map();
 amenityFeatures.forEach((item) => { if (!planAmenityByLegend.has(item.legend)) planAmenityByLegend.set(item.legend, item); });
 
-// Spatial audit: the brochure contains a formal 1:2500 plan, but the former
-// hand-digitised coordinate table is not registered to that plan reliably. A
-// containment check against the bundled NParks managed-area geometries found
-// broad displacement, not one defensible global offset. Keep only the Grand
-// Arch pair, which has an independent named-building cross-check; retain all
-// other records as source-linked facilities without drawing false points.
-const independentlyCrossCheckedPlanIds = new Set(['facilities-c1', 'amenities-f4']);
+// Co-located services inherit their named facility's brochure anchor. Transit
+// stations and the two named OSM landmarks have independent reference points.
+const amenityAnchorCodes = {
+  'I-CG': 'C9', 'I-JG': 'J10', 'I-LG': 'L10',
+  F1: 'L4', F2: 'L3', F3: 'C9', F4: 'C1', F5: 'C8', F6: 'J6',
+  'P-N': 'L5', 'P-S': 'L26'
+};
+const independentlyLocatedPlanPoints = {
+  C1: { coordinate: [1.33812, 103.72815], label: 'Named OpenStreetMap Grand Arch building footprint · orientation point', source: sources.osmGrandArch },
+  L23: { coordinate: [1.33256, 103.72764], label: 'Named OpenStreetMap Lone Tree artwork node', source: sources.osmLoneTree },
+  'M-L': { coordinate: [1.34461, 103.72111], label: 'Wikidata Lakeside station coordinate reference', source: sources.wikidataLakesideMRT },
+  'M-C': { coordinate: [1.34239, 103.73256], label: 'OpenStreetMap Chinese Garden station footprint', source: sources.osmChineseMRT },
+  'M-J': { coordinate: [1.33311, 103.74229], label: 'OpenStreetMap Jurong East station reference', source: sources.osmJurongEastMRT }
+};
 [...facilityFeatures, ...amenityFeatures].forEach((item) => {
   item.documentedPeriod = 'current NParks plan / webpage; checked 2026';
-  if (independentlyCrossCheckedPlanIds.has(item.id)) return;
-  item.navigationCoordinate = [...item.geometry.coordinates];
-  item.mapDisplay = 'source-only';
-  item.geometry = null;
-  item.geometryType = 'source-only facility record';
-  item.spatialStatus = 'quarantined';
+  const anchorCode = item.layer === 'amenities' ? (amenityAnchorCodes[item.mapCode] || item.mapCode) : item.mapCode;
+  const independentlyLocated = independentlyLocatedPlanPoints[anchorCode];
+  const coordinate = independentlyLocated?.coordinate || brochurePlanCoordinates[anchorCode];
+  if (!coordinate) return;
+  item.geometry = { type: 'Point', coordinates: [...coordinate] };
+  item.geometryType = 'Point';
+  item.spatialStatus = 'plan-derived';
+  item.relatedSources = [...(item.relatedSources || []), independentlyLocated?.source || sources.osmReference];
   item.details = item.details.map((detail) => detail.label === 'Coordinate status'
-    ? { ...detail, value: 'Quarantined after cross-check: the former hand-digitised point did not pass the spatial audit; no corrected coordinate is asserted' }
+    ? { ...detail, value: independentlyLocated?.label || 'Approximate NParks brochure circle, transformed using six named OSM bridges; not a surveyed coordinate' }
     : detail);
-  item.limitation = `${item.limitation} Spatial audit: the former hand-digitised coordinate is quarantined because the wider point register failed managed-area containment checks. This facility remains in the cited register but is not drawn until it is re-georeferenced from documented control points.`;
 });
 
 const feature = (data) => ({
@@ -1332,7 +1402,7 @@ function renderFacilityRegister() {
       const point = planFacilityByName.get(item.name);
       return Boolean(point?.geometry?.coordinates);
     }).length;
-    return `<section class="facility-group"><div class="facility-group-head"><h3>${escapeHtml(garden)}</h3><div>${sourceLink(pageSource, 'NParks page')} · ${sourceLink(sources.nparksBrochure, 'brochure map')}</div></div><span class="facility-status">${clickableCount} named plan positions available for navigation. Click a name to focus the map; items without surveyed geometry appear as a temporary locator only.</span><ul>${items}</ul></section>`;
+    return `<section class="facility-group"><div class="facility-group-head"><h3>${escapeHtml(garden)}</h3><div>${sourceLink(pageSource, 'NParks page')} · ${sourceLink(sources.nparksBrochure, 'brochure map')}</div></div><span class="facility-status">${clickableCount} named locations can be opened on the map. Brochure-derived markers are approximate; they are not survey coordinates.</span><ul>${items}</ul></section>`;
   }).join('');
   const amenities = amenityNames.map((item) => {
     const point = planAmenityByLegend.get(item.name);
@@ -1381,4 +1451,3 @@ document.getElementById('timeline').value = '3';
 updateTimeline(3);
 renderPeriodPhotos(3);
 window.setTimeout(() => map.invalidateSize(), 250);
-
