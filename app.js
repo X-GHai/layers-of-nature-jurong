@@ -1179,6 +1179,12 @@ function selectFeature(item) {
     const related = features.find((entry) => entry.id === button.dataset.relatedCase);
     if (related) selectFeature(related);
   }));
+  document.querySelectorAll('.facility-jump').forEach((button) => {
+    const selected = button.dataset.featureId === item.id;
+    button.closest('li')?.classList.toggle('selected', selected);
+    if (selected) button.setAttribute('aria-current', 'true');
+    else button.removeAttribute('aria-current');
+  });
   renderFeatures();
 }
 
@@ -1308,7 +1314,7 @@ function renderFacilityRegister() {
       const point = planFacilityByName.get(item.name);
       return Boolean(point && (point.geometry?.coordinates || point.navigationCoordinate));
     }).length;
-    return `<section class="facility-group"><div class="facility-group-head"><h3>${escapeHtml(garden)}</h3><div>${sourceLink(pageSource, 'NParks page')} · ${sourceLink(sources.nparksBrochure, 'brochure map')}</div></div><span class="facility-status">${clickableCount} named plan positions available for navigation. Items without surveyed geometry appear as temporary map references.</span><ul>${items}</ul></section>`;
+    return `<section class="facility-group"><div class="facility-group-head"><h3>${escapeHtml(garden)}</h3><div>${sourceLink(pageSource, 'NParks page')} · ${sourceLink(sources.nparksBrochure, 'brochure map')}</div></div><span class="facility-status">${clickableCount} named plan positions available for navigation. Click a name to focus the map; items without surveyed geometry appear as a temporary locator only.</span><ul>${items}</ul></section>`;
   }).join('');
   const amenities = amenityNames.map((item) => {
     const point = planAmenityByLegend.get(item.name);
@@ -1319,6 +1325,8 @@ function renderFacilityRegister() {
   document.querySelectorAll('.facility-jump').forEach((button) => button.addEventListener('click', () => {
     const item = features.find((featureItem) => featureItem.id === button.dataset.featureId);
     if (!item) return;
+    enabledLayers.add(item.layer);
+    renderLayerControls();
     document.getElementById('timeline').value = String(item.from);
     updateTimeline(item.from);
     const coordinate = item.geometry?.coordinates || item.navigationCoordinate;
