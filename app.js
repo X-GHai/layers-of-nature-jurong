@@ -266,62 +266,62 @@ const amenityPlanRows = [
 ];
 
 // NParks brochure page-2 numbered circles georeferenced against six named
-// OpenStreetMap bridge midpoints. Rebuild with scripts/audit-brochure-georef.py.
+// OSM bridges plus Grand Arch and Lone Tree. Rebuild with the audit script.
 // These are approximate plan anchors, not surveyed coordinates or Google POIs.
 const brochurePlanCoordinates = Object.freeze({
-  C1: [1.3382095, 103.7283332],
-  C2: [1.3390273, 103.7285311],
-  C3: [1.3396889, 103.7284534],
-  C4: [1.3400337, 103.729108],
-  C5: [1.3392769, 103.7290764],
-  C6: [1.3389803, 103.729551],
-  C7: [1.3382937, 103.7297207],
-  C8: [1.3382479, 103.7301744],
-  C9: [1.339796, 103.7309169],
-  C10: [1.3392243, 103.7313866],
-  C11: [1.3377944, 103.7316285],
-  C12: [1.3375566, 103.7325429],
-  C13: [1.3373447, 103.7327474],
-  J1: [1.3354709, 103.7298035],
-  J2: [1.3363803, 103.7305841],
-  J3: [1.3370472, 103.7311545],
-  J4: [1.336574, 103.7312691],
-  J5: [1.3361927, 103.7317162],
-  J6: [1.3355154, 103.7310752],
-  J7: [1.3349835, 103.731695],
-  J8: [1.3356222, 103.7328713],
-  J9: [1.3344852, 103.7333241],
-  J10: [1.3344862, 103.7336168],
-  J11: [1.3334499, 103.7340486],
-  L1: [1.3439596, 103.7271474],
-  L2: [1.3440754, 103.7259492],
-  L3: [1.3436513, 103.7220656],
-  L4: [1.3409145, 103.7246584],
-  L5: [1.3400033, 103.7239677],
-  L6: [1.3404961, 103.7242749],
-  L7: [1.3401796, 103.7245388],
-  L8: [1.3398364, 103.7249502],
-  L9: [1.3394176, 103.7247595],
-  L10: [1.3391062, 103.7247285],
-  L11: [1.3391233, 103.7274279],
-  L12: [1.3371367, 103.7269077],
-  L13: [1.336298, 103.7267979],
-  L14: [1.3357986, 103.7274902],
-  L15: [1.3353122, 103.7278502],
-  L16: [1.3350681, 103.7271908],
-  L17: [1.334888, 103.728767],
-  L18: [1.3345004, 103.7276483],
-  L19: [1.334034, 103.7276629],
-  L20: [1.3341855, 103.7292841],
-  L21: [1.3334342, 103.7263711],
-  L22: [1.3328175, 103.7272621],
-  L23: [1.3326629, 103.7280225],
-  L24: [1.3324768, 103.7272091],
-  L25: [1.3319265, 103.7283712],
-  L26: [1.3318962, 103.7256477],
-  L27: [1.3303925, 103.7258003],
-  L28: [1.330449, 103.727926],
-  L29: [1.3298878, 103.7267147]
+  C1: [1.3381857, 103.7282639],
+  C2: [1.3390126, 103.7284955],
+  C3: [1.3396799, 103.7284389],
+  C4: [1.3400326, 103.7291227],
+  C5: [1.3392685, 103.7290638],
+  C6: [1.3389725, 103.7295405],
+  C7: [1.3382807, 103.7296906],
+  C8: [1.3382377, 103.7301545],
+  C9: [1.3398056, 103.7309705],
+  C10: [1.3392319, 103.7314325],
+  C11: [1.3377903, 103.7316308],
+  C12: [1.3375569, 103.7325608],
+  C13: [1.3373445, 103.7327632],
+  J1: [1.3354321, 103.7296769],
+  J2: [1.3363556, 103.7305097],
+  J3: [1.3370328, 103.7311183],
+  J4: [1.336556, 103.7312194],
+  J5: [1.3361743, 103.7316648],
+  J6: [1.3354862, 103.7309833],
+  J7: [1.3349537, 103.7316008],
+  J8: [1.3356068, 103.7328302],
+  J9: [1.3344624, 103.733255],
+  J10: [1.3344655, 103.7335555],
+  J11: [1.3334226, 103.7339623],
+  L1: [1.3439811, 103.727248],
+  L2: [1.3440895, 103.7260226],
+  L3: [1.3436336, 103.7220227],
+  L4: [1.3408897, 103.7245876],
+  L5: [1.3399651, 103.723847],
+  L6: [1.3404647, 103.7241795],
+  L7: [1.3401471, 103.7244392],
+  L8: [1.3398036, 103.7248493],
+  L9: [1.3393796, 103.724639],
+  L10: [1.339065, 103.7245964],
+  L11: [1.3391016, 103.7273669],
+  L12: [1.3370927, 103.7267637],
+  L13: [1.3362454, 103.7266217],
+  L14: [1.3357463, 103.7273146],
+  L15: [1.3352579, 103.727667],
+  L16: [1.3350069, 103.7269818],
+  L17: [1.3348364, 103.728593],
+  L18: [1.3344371, 103.7274315],
+  L19: [1.3339664, 103.7274302],
+  L20: [1.334131, 103.729099],
+  L21: [1.3333517, 103.7260837],
+  L22: [1.3327357, 103.7269764],
+  L23: [1.3325851, 103.7277512],
+  L24: [1.3323914, 103.7269102],
+  L25: [1.3318443, 103.7280834],
+  L26: [1.3317942, 103.7252876],
+  L27: [1.3302775, 103.7253917],
+  L28: [1.3303498, 103.7275748],
+  L29: [1.3297746, 103.7263123]
 });
 
 const planFeature = ([code, name, group, type], layer, legend = type) => {
@@ -386,9 +386,19 @@ const independentlyLocatedPlanPoints = {
   'M-C': { coordinate: [1.34239, 103.73256], label: 'OpenStreetMap Chinese Garden station footprint', source: sources.osmChineseMRT },
   'M-J': { coordinate: [1.33311, 103.74229], label: 'OpenStreetMap Jurong East station reference', source: sources.osmJurongEastMRT }
 };
+// These two brochure circles still fall in open water on the current base,
+// beyond the expected managed-area edge. Keep their narratives, not a false pin.
+const unresolvedBrochureCodes = new Set(['J11', 'L20']);
 [...facilityFeatures, ...amenityFeatures].forEach((item) => {
   item.documentedPeriod = 'current NParks plan / webpage; checked 2026';
   const anchorCode = item.layer === 'amenities' ? (amenityAnchorCodes[item.mapCode] || item.mapCode) : item.mapCode;
+  if (unresolvedBrochureCodes.has(anchorCode)) {
+    item.mapDisplay = 'source-only';
+    item.details = item.details.map((detail) => detail.label === 'Coordinate status'
+      ? { ...detail, value: 'The brochure identifies this place, but its transformed circle does not align with current land geometry; no map pin is asserted' }
+      : detail);
+    return;
+  }
   const independentlyLocated = independentlyLocatedPlanPoints[anchorCode];
   const coordinate = independentlyLocated?.coordinate || brochurePlanCoordinates[anchorCode];
   if (!coordinate) return;
@@ -397,7 +407,7 @@ const independentlyLocatedPlanPoints = {
   item.spatialStatus = 'plan-derived';
   item.relatedSources = [...(item.relatedSources || []), independentlyLocated?.source || sources.osmReference];
   item.details = item.details.map((detail) => detail.label === 'Coordinate status'
-    ? { ...detail, value: independentlyLocated?.label || 'Approximate NParks brochure circle, transformed using six named OSM bridges; not a surveyed coordinate' }
+    ? { ...detail, value: independentlyLocated?.label || 'Approximate NParks brochure circle, transformed using eight named control points; not a surveyed coordinate' }
     : detail);
 });
 
@@ -1395,7 +1405,7 @@ function renderFacilityRegister() {
     const items = facilityNames.filter((item) => item.garden === garden).map((item) => {
       const point = planFacilityByName.get(item.name);
       const clickable = Boolean(point?.geometry?.coordinates);
-      return `<li class="${clickable ? 'mapped' : 'unmapped'}"${clickable ? '' : ' title="Source-listed facility; no plan position available"'}><span>${clickable ? `<button class="facility-jump" type="button" data-feature-id="${escapeHtml(point.id)}">${escapeHtml(item.name)}</button>` : escapeHtml(item.name)}</span><em>${escapeHtml(item.type)}</em></li>`;
+      return `<li class="${clickable ? 'mapped' : 'unmapped'}"${clickable ? '' : ' title="Brochure-listed facility; location needs further spatial checking"'}><span>${clickable ? `<button class="facility-jump" type="button" data-feature-id="${escapeHtml(point.id)}">${escapeHtml(item.name)}</button>` : escapeHtml(item.name)}</span><em>${escapeHtml(item.type)}</em></li>`;
     }).join('');
     const clickableCount = facilityNames.filter((item) => {
       if (item.garden !== garden) return false;
