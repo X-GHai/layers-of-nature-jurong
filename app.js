@@ -383,8 +383,6 @@ const facilityFeatures = facilityPlanRows.map((row) => planFeature(row, 'facilit
 const amenityFeatures = amenityPlanRows.map((row) => planFeature(row, 'amenities', row[2]));
 const planFeatureByName = new Map([...facilityFeatures, ...amenityFeatures].map((item) => [item.name, item]));
 const planFacilityByName = new Map(facilityFeatures.map((item) => [item.name, item]));
-const planAmenityByLegend = new Map();
-amenityFeatures.forEach((item) => { if (!planAmenityByLegend.has(item.legend)) planAmenityByLegend.set(item.legend, item); });
 
 // Co-located services inherit their named facility's brochure anchor. Transit
 // stations and the two named OSM landmarks have independent reference points.
@@ -1418,7 +1416,7 @@ function renderFacilityRegister() {
     if (!point) return `<li class="unmapped"><span>${escapeHtml(item.name)}</span><em>${escapeHtml(item.type)}</em></li>`;
     const clickable = Boolean(point?.geometry?.coordinates);
     const lens = layers[point.primaryLens];
-    return `<li class="${clickable ? 'mapped' : 'unmapped'}"${clickable ? '' : ' title="Brochure-listed facility; location needs further spatial checking"'}><span>${clickable ? `<button class="facility-jump" type="button" data-feature-id="${escapeHtml(point.id)}"><b class="facility-code">${escapeHtml(point.mapCode)}</b>${escapeHtml(item.name)}</button>` : `<b class="facility-code">${escapeHtml(point.mapCode)}</b>${escapeHtml(item.name)}`}</span><em><span class="facility-lens" style="--lens-color:${lens.color}">${escapeHtml(lens.label)}</span><small>${escapeHtml(item.type)}</small></em></li>`;
+    return `<li class="${clickable ? 'mapped' : 'unmapped'}"${clickable ? '' : ' title="Brochure-listed facility; location needs further spatial checking"'}><span>${clickable ? `<button class="facility-jump" type="button" data-feature-id="${escapeHtml(point.id)}"><b class="facility-code">${escapeHtml(point.mapCode)}</b> ${escapeHtml(item.name)}</button>` : `<b class="facility-code">${escapeHtml(point.mapCode)}</b> ${escapeHtml(item.name)}`}</span><em><span class="facility-lens" style="--lens-color:${lens.color}">${escapeHtml(lens.label)}</span><small>${escapeHtml(item.type)}</small></em></li>`;
   };
   const groups = ['Chinese Garden', 'Japanese Garden', 'Lakeside Garden'].map((garden) => {
     const pageSource = garden === 'Chinese Garden' ? sources.nparksChinese : garden === 'Japanese Garden' ? sources.nparksJapanese : sources.nparksLakeside;
@@ -1433,11 +1431,9 @@ function renderFacilityRegister() {
     }).length;
     return `<section class="facility-group"><div class="facility-group-head"><h3>${escapeHtml(garden)}</h3><div>${sourceLink(pageSource, 'NParks page')} · ${sourceLink(sources.nparksBrochure, 'brochure map')}</div></div><span class="facility-status">${clickableCount} named locations can be opened on the map. Colours show our primary interpretive lens; brochure-derived positions are approximate.</span><ul>${items}</ul></section>`;
   }).join('');
-  const amenities = amenityNames.map((item) => {
-    const point = planAmenityByLegend.get(item.name);
-    return registerItem(item, point);
-  }).join('');
-  document.getElementById('facility-register').innerHTML = `${groups}<section class="facility-group amenities-group"><div class="facility-group-head"><h3>Brochure legend · amenities and access</h3><div>${sourceLink(sources.nparksBrochure, 'NParks brochure map')}</div></div><span class="facility-status">Named amenity nodes are clickable where the brochure gives a location; generic symbols remain listed without a map point.</span><ul>${amenities}</ul></section>`;
+  const amenities = amenityFeatures.map((point) => registerItem(point, point)).join('');
+  const brochureSymbols = amenityNames.map((item) => `<li><span>${escapeHtml(item.name)}</span><em>${escapeHtml(item.type)}</em></li>`).join('');
+  document.getElementById('facility-register').innerHTML = `${groups}<section class="facility-group amenities-group"><div class="facility-group-head"><h3>Named amenities & access</h3><div>${sourceLink(sources.nparksBrochure, 'NParks brochure map')}</div></div><span class="facility-status">14 named service and access points are linked to the map. Colours show our primary interpretive lens; coordinates remain separate from the thematic classification.</span><ul>${amenities}</ul><details class="brochure-symbols"><summary>Brochure symbol key</summary><ul>${brochureSymbols}</ul></details></section>`;
   document.querySelectorAll('.facility-jump').forEach((button) => button.addEventListener('click', () => {
     const item = features.find((featureItem) => featureItem.id === button.dataset.featureId);
     if (!item) return;
