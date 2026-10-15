@@ -765,11 +765,12 @@ function buildHoverCard(item) {
   const layer = layers[item.layer];
   const preview = item.image
     ? `<div class="map-hover-media"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" /><span>${escapeHtml(item.imageLabel)}</span></div>`
-    : '<div class="map-hover-media map-hover-media-empty"><span>Open Google Maps below<br>for its live place photos.</span></div>';
+    : `<div class="map-hover-media map-hover-media-empty"><span>${googleMapsLink(item) ? 'Open Google Maps below<br>for its live place photos.' : 'OpenStreetMap reference point<br>No verified place photos.'}</span></div>`;
   return `<div class="map-hover-card" style="--feature-color:${layer.color}">
     ${preview}
     <div class="map-hover-body"><span class="map-hover-kicker">${escapeHtml(item.mapCode || layer.icon)} · ${escapeHtml(layer.label)}</span>
-    <b>${escapeHtml(item.name)}</b>
+    <b>${escapeHtml(item.displayTitle || item.name)}</b>
+    ${item.displaySubtitle ? `<span class="map-hover-name">${escapeHtml(item.displaySubtitle)}</span>` : ''}
     <span class="map-hover-purpose">${escapeHtml(item.purpose || item.fact)}</span>
     <span class="map-hover-status">${escapeHtml(item.spatialStatus)} · ${escapeHtml(item.from === 5 ? 'current reference only' : periodLabel(item))}</span>
     <span class="map-hover-links">${googleMapsAction(item)}${googleMapsLink(item) ? ' · ' : ''}${sourceLink(item.purposeSource || item.source, 'official source')}</span>
@@ -1004,7 +1005,8 @@ function externalFeatureItem(id, feature, index) {
   const definition = externalLayerDefinitions[id];
   const properties = feature.properties || {};
   const fallbackName = `${definition.title} feature ${index + 1}`;
-  const name = properties.NAME || properties.name || properties.ref || fallbackName;
+  const mappedName = properties.NAME || properties.name || properties.ref || null;
+  const name = mappedName || fallbackName;
   const geometryType = feature.geometry?.type || 'unknown';
   const fact = id === 'amenities_ref'
     ? `OpenStreetMap maps this current amenity reference point as ${properties.amenity || 'a public amenity'}${name && name !== `${definition.title} feature ${index + 1}` ? ` named ${name}` : ''}.`
@@ -1028,6 +1030,8 @@ function externalFeatureItem(id, feature, index) {
     id: `external-${id}-${properties.osm_id ?? properties.OBJECTID ?? properties.OBJECTID_1 ?? index}`,
     mapCode: id.slice(0, 3).toUpperCase(),
     name,
+    displayTitle: id === 'amenities_ref' ? properties.amenity : null,
+    displaySubtitle: id === 'amenities_ref' ? (mappedName || `Unnamed in OSM · feature ${index + 1}${properties.osm_id ? ` · OSM ID ${properties.osm_id}` : ''}`) : null,
     group: definition.title,
     type: id,
     legend: id,
@@ -1268,13 +1272,14 @@ function selectFeature(item) {
   const layer = layers[item.primaryLens || item.layer];
   panel.innerHTML = `<div class="feature-card" style="--feature-color:${layer.color}">
     <div class="feature-kicker">${layer.icon} ${escapeHtml(layers[item.layer].label)}${item.primaryLens ? ` · ${escapeHtml(layer.label)}` : ''}</div>
-    <h2>${escapeHtml(item.name)}</h2>
+    <h2>${escapeHtml(item.displayTitle || item.name)}</h2>
+    ${item.displaySubtitle ? `<div class="feature-subtitle feature-place-name">${escapeHtml(item.displaySubtitle)}</div>` : ''}
     <div class="feature-subtitle">Mapped period: ${escapeHtml(periodLabel(item))} · geometry: ${escapeHtml(item.geometryType)}</div>
     <div class="evidence-badges"><span class="evidence-badge ${escapeHtml(item.spatialStatus)}">${escapeHtml(spatialBadgeLabel(item))}</span><span class="evidence-badge">geometry: ${escapeHtml(item.geometryType)}</span><span class="evidence-badge evidence-status">${escapeHtml(verificationLabel(item))}</span></div>
     <div class="feature-actions">${googleMapsAction(item, 'feature-map-link')}</div>
     ${renderFeatureDetails(item)}
     ${item.image ? `<div class="feature-image-credit">Image source: ${sourceLink(item.imageSource || item.source)}</div>` : ''}
-    ${!item.image && ['facilities', 'amenities', 'amenities_ref'].includes(item.layer) ? `<p class="feature-image-note">Live place photographs remain in Google Maps and are not copied into this research archive. ${googleMapsLinkKind(item) === 'name-search' ? 'This link searches the official name and garden context; it is not presented as a verified Place Details match.' : 'The button above uses a verified place record when one is available.'}</p>` : ''}
+    ${!item.image && ['facilities', 'amenities'].includes(item.layer) ? `<p class="feature-image-note">Live place photographs remain in Google Maps and are not copied into this research archive. ${googleMapsLinkKind(item) === 'name-search' ? 'This link searches the official name and garden context; it is not presented as a verified Place Details match.' : 'The button above uses a verified place record when one is available.'}</p>` : ''}
     <h3>What this map object represents</h3><p>${escapeHtml(item.fact)} ${inlineCitations([item.source])}</p>
     ${item.purpose ? `<h3>Documented purpose / use</h3><p>${escapeHtml(item.purpose)} ${inlineCitations([item.purposeSource || item.source])}</p>` : ''}
     ${renderEvidenceStory(item)}
