@@ -144,6 +144,16 @@ button, input, select { font: inherit; }
 .inline-citations a { color: var(--green); text-decoration: underline; text-decoration-color: #9bbbaa; text-underline-offset: 2px; }
 .inline-citations a:hover { text-decoration-color: var(--green); }
 .references-context { margin: 0 0 11px; color: var(--muted); font-size: .68rem; font-weight: 500; line-height: 1.4; }
+.further-reading-heading { margin-top: 19px; }
+.featured-case .case-section { margin: 17px 0; padding-top: 12px; }
+.featured-case .case-section h4 { font-size: 1.08rem; }
+.featured-case .case-section p { line-height: 1.58; }
+.compact-case { margin-top: 18px; }
+.compact-case .case-section { margin: 0; padding-top: 9px; }
+.compact-case .case-section h4 { display: none; }
+.research-status { margin: 18px 0; padding: 11px 12px; border: 1px solid var(--line); color: var(--muted); font-size: .67rem; line-height: 1.48; }
+.research-status summary { color: var(--green); font-weight: 800; cursor: pointer; }
+.research-status p { margin-top: 9px; font-size: inherit; }
 .related-cases { display: grid; gap: 7px; margin: 15px 0 23px; }
 .related-cases h4 { margin: 0 0 3px; color: var(--muted); font-size: .64rem; }
 .related-cases button { padding: 9px 11px; text-align: left; color: var(--green); background: #eef3e7; border: 1px solid var(--line); font: inherit; font-size: .7rem; cursor: pointer; }
@@ -288,6 +298,8 @@ button, input, select { font: inherit; }
   .timeline-years { font-size: .53rem; }
   .evidence-panel { min-height: 0; max-height: none; overflow: visible; padding: 22px 17px; }
   .feature-card h2 { font-size: 1.75rem; }
+  .featured-case .case-section p { font-size: .85rem; line-height: 1.62; }
+  .featured-case .inline-citations { font-size: .73rem; }
   .map-hover-popup .leaflet-popup-content { width: min(248px, calc(100vw - 44px)) !important; }
   .map-caution { margin-left: 0; }
   .facility-group-head { display: grid; align-items: start; }

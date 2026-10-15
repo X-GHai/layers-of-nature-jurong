@@ -49,10 +49,21 @@ for (const item of features) {
   const bibliography = new Set(relatedSourcesFor(item).map(source => source.url));
   dossier.sections.forEach(section => section.refs.forEach(id => assert(bibliography.has(sources[id].url), `${item.id}: truncated reference ${id}`)));
   const rendered = renderEvidenceStory(item);
-  assert(rendered.includes('In-depth case analysis'), item.id);
+  assert(rendered.includes(dossier.featured ? 'Place story and analysis' : dossier.compact ? 'Research question' : 'In-depth case analysis'), item.id);
   assert(!rendered.includes('undefined'), item.id);
 }
 assert(features.filter(item => item.layer === 'facilities').every(item => caseDossierFor(item)));
+for (const name of ['Stoneboat', 'Freshwater Swamp', 'The Lone Tree', 'Floral Garden', 'Cleansing Biotope']) {
+  const item = features.find(feature => feature.name === name && feature.layer === 'facilities');
+  assert(item && caseDossierFor(item).featured, `${name}: missing authored place study`);
+  const cited = new Set(relatedSourcesFor(item).map(source => source.key));
+  caseDossierFor(item).sections.forEach(section => section.refs.forEach(id => assert(cited.has(id), `${name}: missing cited reference ${id}`)));
+}
+assert(caseDossierFor(features.find(item => item.id === 'former-fish-ponds')).featured);
+assert(renderEvidenceStory(features.find(item => item.name === 'Stoneboat')).includes('Registrar of Marriage'));
+assert(!caseDossierFor(features.find(item => item.name === 'Tea Pavilion')).featured, 'Neighbouring landmark must not inherit Stoneboat history');
+assert.equal(features.find(item => item.name === 'Stoneboat').details[0].label, 'Internal feature ID');
+assert.equal(features.find(item => item.name === 'Stoneboat').details[1].value, '5');
 assert.equal(features.find(item => item.id === 'living-lab-governance').source.key, 'nparksSmart');
 assert(renderEvidenceStory(features.find(item => item.id === 'therapeutic-garden')).includes('not a claim that visiting treats dementia'));
 

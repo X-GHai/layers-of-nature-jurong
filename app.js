@@ -118,6 +118,7 @@ Object.assign(sources.straits2024Preview, { apa: 'The Straits Times. (2024, July
 Object.entries(caseResearch.newSources).forEach(([id, [title, path]]) => {
   sources[id] = { institution: 'National Parks Board', title, url: `https://juronglakegardens.nparks.gov.sg/discover/${path}`, date: checkedOn, evidenceScope: 'Current attraction description checked in 2026; not a dated 2024 observation.' };
 });
+sources.nparksFloral = { institution: 'National Parks Board', title: 'Floral Garden', url: 'https://juronglakegardens.nparks.gov.sg/floral-garden/', date: checkedOn, evidenceScope: 'Current attraction description checked in 2026; not a dated 2024 observation.' };
 sources.nhbPioneers = { institution: 'National Heritage Board', title: 'Celebrating Jurong and its industrious pioneers', url: 'https://www.roots.gov.sg/stories-landing/stories/celebrating-jurong-and-its-industrious-pioneers/story', date: checkedOn };
 sources.academicNg = { institution: 'International Journal of Environmental Research and Public Health', title: 'Effects of horticultural therapy on Asian older adults: A randomized controlled trial', url: 'https://doi.org/10.3390/ijerph15081705', date: checkedOn, inTextAuthor: 'Ng et al.', apa: 'Ng, K. S. T., Sia, A., Ng, M. K. W., Tan, C. T. Y., Chan, H. Y., Tan, C. H., Rawtaer, I., Feng, L., Mahendran, R., Larbi, A., Kua, E. H., & Ho, R. C. M. (2018). Effects of horticultural therapy on Asian older adults: A randomized controlled trial. International Journal of Environmental Research and Public Health, 15(8), Article 1705. https://doi.org/10.3390/ijerph15081705', evidenceScope: 'Contextual programme study; not an evaluation of the mapped Jurong Lake Gardens feature.' };
 sources.academicStokols.inTextAuthor = 'Stokols';
@@ -201,7 +202,7 @@ const attractionEvidence = {
   'Bonsai Garden': { purpose: 'NParks presents the Bonsai Garden as a Suzhou-style retreat displaying miniature Asian landscapes and bonsai within the Chinese Garden.', source: sources.nparksChinese },
   'Cloud Pagoda': { purpose: 'NParks identifies the Cloud Pagoda as a seven-storey Chinese Garden landmark with a 360-degree view and twelve Chinese Zodiac statues.', source: sources.nparksChinese },
   'Water Wall Court': { purpose: 'NParks describes Water Wall Court through its changing water wall, golden streams and views across the garden; it is both a designed water feature and a visual threshold.', source: sources.nparksChinese },
-  'Stoneboat': { purpose: 'NParks places the Stoneboat and Tea Pavilion beside the Lotus Pond as a traditional garden composition combining a landmark, water edge and visitor pause space.', source: sources.nparksChinese },
+  'Stoneboat': { purpose: 'NParks describes this two-storey Lotus Pond landmark as a former branch of the Registrar of Marriage and a present garden attraction.', source: sources.nparksStoneboat },
   'Tea Pavilion': { purpose: 'NParks places the Tea Pavilion with the Stoneboat beside the Lotus Pond, linking a pavilion for pause and viewing to the Chinese Garden’s traditional landscape vocabulary.', source: sources.nparksChinese },
   'Floral Garden': { purpose: 'NParks describes the Floral Garden as a Japanese-inspired landscape designed by students, making planting and interpretation part of the rejuvenated Japanese Garden.', source: sources.nparksJapanese },
   'Sunken Garden': { purpose: 'NParks presents the Sunken Garden as a Japanese-inspired planted space within the rejuvenated garden.', source: sources.nparksJapanese, image: 'https://isomer-user-content.by.gov.sg/318/6a0b7d10-76f7-48b6-9f9f-5bf2dd24f057/Sunken%20Garden.webp', previewLabel: 'Official NParks facility image' },
@@ -366,7 +367,8 @@ const planFeature = ([code, name, group, type], layer, legend = type) => {
     imageSource: evidence?.imageSource || evidence?.source || sources.nparksBrochure,
     imageLabel: evidence?.previewLabel || 'No facility-specific reusable image found in the cited source register; use the Google Maps photo gallery link below.',
     details: [
-      { label: 'Plan code', value: code },
+      { label: 'Internal feature ID', value: code },
+      ...(isFacility ? [{ label: 'Brochure legend number', value: code.slice(1) }] : []),
       { label: 'Garden / zone', value: group },
       { label: 'NParks plan type', value: type },
       { label: 'Coordinate status', value: 'Position undergoing georeferencing audit' }
@@ -1188,10 +1190,19 @@ function relatedSourcesFor(item) {
   return [...new Map(related.filter(Boolean).map((source) => [source.url, source])).values()].sort((a, b) => apaCitation(a).localeCompare(apaCitation(b)));
 }
 
+function citedSourcesFor(item) {
+  const dossier = caseDossierFor(item);
+  const cited = [item.source, item.purposeSource, item.imageSource, ...(dossier?.sections.flatMap((section) => section.refs.map((id) => sources[id])) || []), ...(!dossier ? (item.storySources || []) : [])];
+  return [...new Map(cited.filter(Boolean).map((source) => [source.url, source])).values()];
+}
+
 function renderRelatedSources(item) {
   const related = relatedSourcesFor(item);
   if (!related.length) return '';
-  return `<h3>References</h3><h4 class="references-context">Further reading / corroborating context</h4><div class="related-sources">${related.map((source) => `<div data-source-id="${escapeHtml(source.key)}"><b>${escapeHtml(source.institution)}</b>${sourceLink(source)}<span class="apa-citation">${escapeHtml(apaCitation(source))}</span>${source.evidenceScope ? `<small>${escapeHtml(source.evidenceScope)}</small>` : ''}<small>Checked ${escapeHtml(source.date)}</small></div>`).join('')}</div>`;
+  const citedUrls = new Set(citedSourcesFor(item).map((source) => source.url));
+  const render = (records) => `<div class="related-sources">${records.map((source) => `<div data-source-id="${escapeHtml(source.key)}"><b>${escapeHtml(source.institution)}</b>${sourceLink(source)}<span class="apa-citation">${escapeHtml(apaCitation(source))}</span>${source.evidenceScope ? `<small>${escapeHtml(source.evidenceScope)}</small>` : ''}<small>Checked ${escapeHtml(source.date)}</small></div>`).join('')}</div>`;
+  const further = related.filter((source) => !citedUrls.has(source.url));
+  return `<h3>References</h3><h4 class="references-context">Cited in this card</h4>${render(related.filter((source) => citedUrls.has(source.url)))}${further.length ? `<h4 class="references-context further-reading-heading">Further reading / corroborating context</h4>${render(further)}` : ''}`;
 }
 
 function verificationLabel(item) {
@@ -1226,34 +1237,25 @@ function inlineCitations(records) {
 
 function caseDossierFor(item) {
   const id = caseResearch.cases[item.id] ? item.id : caseResearch.aliases[item.name];
-  if (id) return { ...caseResearch.cases[id], id, contextual: id !== item.id && !['Freshwater Swamp', 'Grasslands', 'Therapeutic Garden', 'The Lone Tree', 'Floral Garden', 'Grand Arch', 'Bonsai Garden', 'Rasau Walk', 'Neram Streams', 'Allotment Gardens', 'Water Lily Garden', 'Cascading Creek', 'Forest Ramble (Children’s Playground)'].includes(item.name) };
+  if (id) return { ...caseResearch.cases[id], id, contextual: id !== item.id && !['Stoneboat', 'Freshwater Swamp', 'Grasslands', 'Therapeutic Garden', 'The Lone Tree', 'Floral Garden', 'Grand Arch', 'Bonsai Garden', 'Rasau Walk', 'Neram Streams', 'Allotment Gardens', 'Water Lily Garden', 'Cascading Creek', 'Forest Ramble (Children’s Playground)'].includes(item.name) };
   if (!['facilities', 'amenities', 'amenities_ref'].includes(item.layer)) return null;
-  // Unspecialised objects retain their exact source attributes. Interpretation
-  // concerns the named object; unknown history is not filled with generic facts.
-  const type = `${item.type || ''} ${item.purpose || ''} ${item.fact || ''}`.toLowerCase();
-  let interpretation;
-  if (/toilet|drinking|nursing|shelter|information|water.*rental/.test(type)) interpretation = `For ${item.name}, the political-ecology issue is the infrastructure that lets a body stay in public nature. A mapped service can reduce the need to leave the garden, but availability, usability and the path to it are separate evidence. This is our interpretation of the listed function, not a measured benefit. Its maintenance, opening conditions and the experiences of caregivers or users with different mobility needs must be checked locally.`;
-  else if (/food|beverage|dining|restaurant|ice.cream|dessert/.test(type)) interpretation = `Read ${item.name} as a meeting of leisure, bodily needs and commercial service. Food provision can support longer visits, while a paid offer is not equivalent to free access to the park. Dietary provision and pet-friendliness should be attributed to the current listing, not assumed for every outlet. We have not measured prices, purchasing power or exclusion, and do not infer visitors’ incomes from this node.`;
-  else if (/sport|play|recreation|fitness|dog/.test(type)) interpretation = `At ${item.name}, design establishes a particular activity as part of public nature. Equipment, rules, maintenance and connections to everyday services condition that activity. Our reading distinguishes the intended users named by a source from the actual people who use it. A facility point cannot establish frequency, equal participation, ecological disturbance or the demographic profile of visitors.`;
-  else if (/landmark|pavilion|building|terrace|venue/.test(type)) interpretation = `At ${item.name}, architecture organises a pause, a view or a programmed encounter with the garden. Our interpretation considers both cultural form and everyday use: a structure may carry memory while also changing how people gather and move. Its present name or appearance does not prove an original construction date, continuity of use or conservation status. Those claims require this structure’s own dated records.`;
-  else interpretation = `For ${item.name}, begin with the actual function stated by the source rather than assigning a broad “green” value. Our interpretation asks how the feature links living processes, visitor access and ongoing care. Its location alone does not prove ecological function, the identity of users or an unchanged historical role. Those relationships require observations and records specific to this feature.`;
-  return { id: null, sections: [
-    { title: 'This object within the garden', kind: 'record', text: item.purpose || item.fact, refs: [(item.purposeSource || item.source).key] },
-    { title: 'Political ecology of this particular use', kind: 'interpretation', text: interpretation, refs: [] },
-    { title: 'History and achieved purpose remain separate claims', kind: 'interpretation', text: 'The present source describes a feature or intended use; it does not supply a longitudinal record. To evaluate purpose, compare what is promised with time-stamped use and condition evidence. To interpret history, find dated plans, photographs or records for this object. No opening date, historic user group or performance statistic is inferred from its appearance on the current map.', refs: [] },
-    { title: 'What remains to be checked', kind: 'gap', text: 'Cross-check the named location and identity; record service condition, access route and observation date. Document maintenance and user experience with consent. Until those records exist, this card identifies a grounded research question rather than presenting an unperformed survey as a finding.', refs: [] }
-  ], related: [] };
+  const type = `${item.type || ''} ${item.purpose || ''}`.toLowerCase();
+  let question = `How is ${item.name} used, maintained and reached in practice?`;
+  if (/toilet|drinking|nursing|shelter|information/.test(type)) question = `Who can reach and use ${item.name}, and when is it available?`;
+  else if (/food|beverage|dining|restaurant/.test(type)) question = `How does paid service at ${item.name} affect a visit to this public garden?`;
+  else if (/sport|play|recreation|fitness/.test(type)) question = `Who is the activity at ${item.name} designed for, and who uses it in practice?`;
+  return { id: null, compact: true, sections: [{ title: 'Question for this place', kind: 'interpretation', text: question, refs: [] }], related: [] };
 }
 
 function renderCaseDossier(item, dossier) {
   const label = { record: 'Documented evidence', interpretation: 'Our interpretation', gap: 'Research limit / proposed check' };
   const related = dossier.related.map((id) => features.find((entry) => entry.id === id)).filter(Boolean);
-  return `<article class="case-dossier" aria-label="In-depth case analysis">
-    <h3>In-depth case analysis</h3>
+  return `<article class="case-dossier${dossier.featured ? ' featured-case' : ''}${dossier.compact ? ' compact-case' : ''}" aria-label="${dossier.compact ? 'Research question' : 'In-depth case analysis'}">
+    <h3>${dossier.compact ? 'Research question' : dossier.featured ? 'Place story and analysis' : 'In-depth case analysis'}</h3>
     ${dossier.contextual ? '<p class="case-scope">This feature is connected to the wider case below. A record about the surrounding garden or system is not a finding about this individual point.</p>' : ''}
-    <p class="case-scope">Historical events use dated records. Current attraction descriptions explain the place as checked in 2026; they do not establish its condition in the selected map year.</p>
+    ${!dossier.featured && !dossier.compact ? '<p class="case-scope">Historical events use dated records. Current attraction descriptions explain the place as checked in 2026; they do not establish its condition in the selected map year.</p>' : ''}
     ${dossier.sections.map((section) => `<section class="case-section ${section.kind}"><span class="case-evidence-kind">${label[section.kind]}</span><h4>${escapeHtml(section.title)}</h4><p>${escapeHtml(section.text)} ${inlineCitations(section.refs.map((id) => sources[id]))}</p></section>`).join('')}
-    ${related.length ? `<div class="related-cases"><h4>Connected cases</h4>${related.map((entry) => `<button type="button" data-related-case="${escapeHtml(entry.id)}">${escapeHtml(entry.name)} →</button>`).join('')}<small>Opens evidence only; does not move the map or draw a new boundary.</small></div>` : ''}
+    ${related.length ? `<div class="related-cases"><h4>Connected cases</h4>${related.map((entry) => `<button type="button" data-related-case="${escapeHtml(entry.id)}">${escapeHtml(entry.name)} →</button>`).join('')}<small>Mapped destinations are highlighted; research records open as text only.</small></div>` : ''}
   </article>`;
 }
 
@@ -1270,29 +1272,39 @@ function selectFeature(item) {
   selectedFeatureId = item.id;
   const panel = document.getElementById('evidence-panel');
   const layer = layers[item.primaryLens || item.layer];
+  const dossier = caseDossierFor(item);
   panel.innerHTML = `<div class="feature-card" style="--feature-color:${layer.color}">
     <div class="feature-kicker">${layer.icon} ${escapeHtml(layers[item.layer].label)}${item.primaryLens ? ` · ${escapeHtml(layer.label)}` : ''}</div>
     <h2>${escapeHtml(item.displayTitle || item.name)}</h2>
     ${item.displaySubtitle ? `<div class="feature-subtitle feature-place-name">${escapeHtml(item.displaySubtitle)}</div>` : ''}
     <div class="feature-subtitle">Mapped period: ${escapeHtml(periodLabel(item))} · geometry: ${escapeHtml(item.geometryType)}</div>
-    <div class="evidence-badges"><span class="evidence-badge ${escapeHtml(item.spatialStatus)}">${escapeHtml(spatialBadgeLabel(item))}</span><span class="evidence-badge">geometry: ${escapeHtml(item.geometryType)}</span><span class="evidence-badge evidence-status">${escapeHtml(verificationLabel(item))}</span></div>
+    <div class="evidence-badges"><span class="evidence-badge ${escapeHtml(item.spatialStatus)}">${escapeHtml(spatialBadgeLabel(item))}</span><span class="evidence-badge">geometry: ${escapeHtml(item.geometryType)}</span>${verificationLabel(item) !== spatialBadgeLabel(item) ? `<span class="evidence-badge evidence-status">${escapeHtml(verificationLabel(item))}</span>` : ''}</div>
     <div class="feature-actions">${googleMapsAction(item, 'feature-map-link')}</div>
     ${renderFeatureDetails(item)}
     ${item.image ? `<div class="feature-image-credit">Image source: ${sourceLink(item.imageSource || item.source)}</div>` : ''}
-    ${!item.image && ['facilities', 'amenities'].includes(item.layer) ? `<p class="feature-image-note">Live place photographs remain in Google Maps and are not copied into this research archive. ${googleMapsLinkKind(item) === 'name-search' ? 'This link searches the official name and garden context; it is not presented as a verified Place Details match.' : 'The button above uses a verified place record when one is available.'}</p>` : ''}
-    <h3>What this map object represents</h3><p>${escapeHtml(item.fact)} ${inlineCitations([item.source])}</p>
-    ${item.purpose ? `<h3>Documented purpose / use</h3><p>${escapeHtml(item.purpose)} ${inlineCitations([item.purposeSource || item.source])}</p>` : ''}
+    ${!item.image && ['facilities', 'amenities'].includes(item.layer) && googleMapsLinkKind(item) === 'name-search' ? '<p class="feature-image-note">Google Maps name search; place listing not verified.</p>' : ''}
+    ${dossier?.featured ? '' : dossier?.compact ? `<h3>Place and intended use</h3><p>${escapeHtml(item.purpose || item.fact)} ${inlineCitations([item.purposeSource || item.source])}</p>` : `<h3>What this map object represents</h3><p>${escapeHtml(item.fact)} ${inlineCitations([item.source])}</p>${item.purpose ? `<h3>Documented purpose / use</h3><p>${escapeHtml(item.purpose)} ${inlineCitations([item.purposeSource || item.source])}</p>` : ''}`}
     ${renderEvidenceStory(item)}
-    ${!caseDossierFor(item) ? `<h3>Political ecology reading · our interpretation</h3><p>${escapeHtml(item.analysis)}</p>` : ''}
-    ${item.periodEvidence ? `<h3>What the selected date does — and does not — establish</h3><p>${escapeHtml(item.periodEvidence)}</p>` : ''}
-    <h3>What the geometry does not prove</h3><p>${escapeHtml(item.limitation)}</p>
+    ${!dossier ? `<h3>Political ecology reading · our interpretation</h3><p>${escapeHtml(item.analysis)}</p>` : ''}
+    ${dossier?.featured ? `<details class="research-status"><summary>Research status and map position</summary>${item.periodEvidence ? `<p>${escapeHtml(item.periodEvidence)}</p>` : ''}<p>${escapeHtml(item.limitation)}</p>${item.spatialAudit?.basis ? `<p>${escapeHtml(item.spatialAudit.basis)}</p>` : ''}</details>` : `${item.periodEvidence ? `<h3>What the selected date does — and does not — establish</h3><p>${escapeHtml(item.periodEvidence)}</p>` : ''}<h3>What the geometry does not prove</h3><p>${escapeHtml(item.limitation)}</p>`}
     ${renderRelatedSources(item)}
     ${renderFeatureSource(item.source)}
   </div>`;
   panel.scrollTop = 0;
   panel.querySelectorAll('[data-related-case]').forEach((button) => button.addEventListener('click', () => {
     const related = features.find((entry) => entry.id === button.dataset.relatedCase);
-    if (related) selectFeature(related);
+    if (!related) return;
+    if (related.geometry?.type === 'Point' && related.mapDisplay !== 'source-only') {
+      enabledLayers.add(related.layer);
+      if (related.primaryLens) enabledLayers.add(related.primaryLens);
+      renderLayerControls();
+      if (timeValue < related.from || timeValue > related.to) {
+        document.getElementById('timeline').value = String(related.from);
+        updateTimeline(related.from);
+      }
+      map.setView(related.geometry.coordinates, 16.5);
+    }
+    selectFeature(related);
   }));
   document.querySelectorAll('.facility-jump').forEach((button) => {
     const selected = button.dataset.featureId === item.id;
