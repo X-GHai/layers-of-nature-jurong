@@ -104,6 +104,17 @@ assert(registerMarkup.innerHTML.includes('class="facility-code">C1</b> Grand Arc
 assert(registerMarkup.innerHTML.includes('class="facility-code">F1</b> Fusion Spoon'), 'Named amenities retain their brochure code');
 assert.equal((registerMarkup.innerHTML.match(/class="facility-jump"/g) || []).length, 65, 'Each audited point needs one direct list action');
 assert(registerMarkup.innerHTML.includes('Drop-off point'), 'Unnumbered brochure symbols must not break the register');
+const osmContext = vm.createContext({ externalLayerDefinitions: { amenities_ref: { title: 'OpenStreetMap amenity reference points', source: sources.osmReference } } });
+vm.runInContext(code.slice(code.indexOf('function externalFeatureDetails('), code.indexOf('function externalStyle(')), osmContext);
+const unnamedAmenity = vm.runInContext("externalFeatureItem('amenities_ref', { properties: { amenity: 'drinking_water', osm_id: 6775028763 }, geometry: { type: 'Point', coordinates: [103.7282713, 1.3360629] } }, 18)", osmContext);
+assert.equal(unnamedAmenity.displayTitle, 'drinking_water');
+assert.equal(unnamedAmenity.name, 'OpenStreetMap amenity reference points feature 19', 'Existing feature identity stays unchanged');
+assert.equal(unnamedAmenity.displaySubtitle, 'Unnamed in OSM · feature 19 · OSM ID 6775028763');
+const namedAmenity = vm.runInContext("externalFeatureItem('amenities_ref', { properties: { amenity: 'shelter', name: 'Garden shelter', osm_id: 123 }, geometry: { type: 'Point', coordinates: [103.7282713, 1.3360629] } }, 0)", osmContext);
+assert.equal(namedAmenity.displayTitle, 'shelter');
+assert.equal(namedAmenity.displaySubtitle, 'Garden shelter');
+assert.equal((code.match(/escapeHtml\(item\.displayTitle \|\| item\.name\)/g) || []).length, 2, 'Popup and evidence panel both show the tag first');
+assert(styles.includes('.feature-place-name') && styles.includes('.map-hover-name'), 'Original names need a second line in both cards');
 const mappedPlanRecords = planRecords.filter(item => item.spatialStatus === 'plan-derived');
 const unresolvedPlanRecords = planRecords.filter(item => item.spatialStatus === 'quarantined');
 assert.equal(mappedPlanRecords.length, 65, '65 audited current anchors should be visible');
