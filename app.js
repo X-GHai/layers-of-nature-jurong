@@ -773,7 +773,7 @@ function buildHoverCard(item) {
     ${item.displaySubtitle ? `<span class="map-hover-name">${escapeHtml(item.displaySubtitle)}</span>` : ''}
     <span class="map-hover-purpose">${escapeHtml(item.purpose || item.fact)}</span>
     <span class="map-hover-status">${escapeHtml(item.spatialStatus)} · ${escapeHtml(item.from === 5 ? 'current reference only' : periodLabel(item))}</span>
-    <span class="map-hover-links">${googleMapsAction(item)}${googleMapsLink(item) ? ' · ' : ''}${sourceLink(item.purposeSource || item.source, 'official source')}</span>
+    <span class="map-hover-links">${googleMapsAction(item)}${googleMapsLink(item) ? ' · ' : ''}${sourceLink(item.purposeSource || item.source, item.spatialStatus === 'open-reference' ? 'OpenStreetMap source' : 'official source')}</span>
     <button class="map-hover-pin" type="button">Pin this evidence card ↗</button></div>
   </div>`;
 }
