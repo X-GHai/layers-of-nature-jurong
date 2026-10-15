@@ -1415,6 +1415,7 @@ function renderPeriodPhotos(value) {
 
 function renderFacilityRegister() {
   const registerItem = (item, point) => {
+    if (!point) return `<li class="unmapped"><span>${escapeHtml(item.name)}</span><em>${escapeHtml(item.type)}</em></li>`;
     const clickable = Boolean(point?.geometry?.coordinates);
     const lens = layers[point.primaryLens];
     return `<li class="${clickable ? 'mapped' : 'unmapped'}"${clickable ? '' : ' title="Brochure-listed facility; location needs further spatial checking"'}><span>${clickable ? `<button class="facility-jump" type="button" data-feature-id="${escapeHtml(point.id)}"><b class="facility-code">${escapeHtml(point.mapCode)}</b>${escapeHtml(item.name)}</button>` : `<b class="facility-code">${escapeHtml(point.mapCode)}</b>${escapeHtml(item.name)}`}</span><em><span class="facility-lens" style="--lens-color:${lens.color}">${escapeHtml(lens.label)}</span><small>${escapeHtml(item.type)}</small></em></li>`;
