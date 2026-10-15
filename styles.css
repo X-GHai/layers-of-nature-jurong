@@ -198,6 +198,10 @@ button, input, select { font: inherit; }
 .facility-group li.selected em { color: var(--green); }
 .facility-group li span { min-width: 0; overflow-wrap: anywhere; word-break: normal; }
 .facility-group li em { min-width: 0; color: var(--muted); font-size: .55rem; font-style: normal; line-height: 1.3; text-align: right; overflow-wrap: anywhere; }
+.facility-group li em small { display: block; font-size: inherit; }
+.facility-code { display: inline-block; min-width: 2.8em; margin-right: 5px; color: var(--green); font-size: .84em; font-weight: 850; }
+.facility-lens { color: var(--lens-color); font-weight: 800; }
+.facility-lens::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 50%; background: var(--lens-color); }
 .amenities-group { grid-column: 1 / -1; }
 .footer { padding: 19px 4vw; border-top: 1px solid var(--line); color: var(--muted); font-size: .65rem; text-align: center; }
 .popup-title { margin-bottom: 4px; font: 500 1.05rem/1 Georgia, serif; }
@@ -230,7 +234,8 @@ button, input, select { font: inherit; }
 .map-hover-pin { margin-top: 3px; padding: 6px 7px; border: 1px solid var(--feature-color); background: transparent; color: var(--feature-color); font: 800 .58rem/1.1 inherit; text-align: left; cursor: pointer; }
 .map-hover-pin:hover { background: var(--feature-color); color: #fffdf8; }
 .plan-marker { display: grid; place-items: center; width: 23px; height: 23px; border: 2px solid #fffdf8; border-radius: 50%; box-shadow: 0 2px 7px rgba(23,35,30,.34); color: #fffdf8; background: var(--marker-color); font-size: .52rem; font-weight: 850; line-height: 1; }
-.plan-marker.amenity { width: 19px; height: 19px; background: #26312b; font-size: .42rem; }
+.plan-marker.amenity { width: 19px; height: 19px; font-size: .42rem; }
+.plan-marker.selected { outline: 5px solid #ffd54f; outline-offset: 2px; }
 .leaflet-marker-icon.plan-marker-wrap { background: transparent; border: 0; }
 .facility-jump { display: inline; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .facility-jump:hover { color: var(--green); text-decoration: underline; }
@@ -239,6 +244,7 @@ button, input, select { font: inherit; }
 .facility-jump::after { content: ' ↗'; color: var(--green); font-size: .56rem; opacity: .8; }
 .facility-status { display: block; margin-top: 8px; color: #805d30; font-size: .61rem; line-height: 1.35; }
 .facility-group li.mapped { background: linear-gradient(90deg, rgba(224,82,45,.05), transparent); }
+.facility-group li.mapped.selected { background: #eef4eb; }
 .facility-group li.unmapped { color: var(--muted); }
 @keyframes pulse { 0% { opacity: .35; } 100% { opacity: 1; } }
 
@@ -291,4 +297,3 @@ button, input, select { font: inherit; }
   .map-toolbar-actions { flex-direction: row; justify-content: flex-start; }
   .timeline-topline .timeline-status { width: 100%; margin-left: 0; }
 }
-
