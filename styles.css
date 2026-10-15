@@ -98,6 +98,7 @@ button, input, select { font: inherit; }
 .feature-kicker { color: var(--feature-color); font-size: .63rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
 .feature-card h2 { margin: 10px 0 6px; font: 500 2rem/.96 Georgia, serif; letter-spacing: -.045em; }
 .feature-subtitle { color: var(--muted); font-size: .7rem; line-height: 1.35; }
+.feature-place-name { margin-bottom: 5px; color: var(--feature-color); font-weight: 700; }
 .evidence-badges { display: flex; flex-wrap: wrap; gap: 5px; margin: 15px 0 0; }
 .evidence-badge { padding: 5px 7px; background: #eef3e7; color: var(--green); font-size: .6rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .evidence-badge.approximate { background: #fbf1e4; color: #805d30; }
@@ -228,6 +229,7 @@ button, input, select { font: inherit; }
 .map-hover-body { display: grid; gap: 4px; padding: 9px 10px 10px; }
 .map-hover-kicker { color: var(--green); font-size: .51rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
 .map-hover-body > b { font: 500 1.05rem/1.05 Georgia, serif; }
+.map-hover-name { color: var(--feature-color); font-size: .6rem; font-weight: 700; line-height: 1.25; }
 .map-hover-purpose { color: var(--ink); font-size: .62rem; line-height: 1.32; }
 .map-hover-status { color: var(--muted); font-size: .55rem; line-height: 1.25; }
 .map-hover-links { padding-top: 4px; border-top: 1px solid var(--line); color: var(--green); font-size: .57rem; line-height: 1.3; }
