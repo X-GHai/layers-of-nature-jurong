@@ -115,6 +115,7 @@ assert.equal(namedAmenity.displayTitle, 'shelter');
 assert.equal(namedAmenity.displaySubtitle, 'Garden shelter');
 assert.equal((code.match(/escapeHtml\(item\.displayTitle \|\| item\.name\)/g) || []).length, 2, 'Popup and evidence panel both show the tag first');
 assert(styles.includes('.feature-place-name') && styles.includes('.map-hover-name'), 'Original names need a second line in both cards');
+assert(code.includes("item.spatialStatus === 'open-reference' ? 'OpenStreetMap source' : 'official source'"), 'Community data must not be labelled as an official source');
 const mappedPlanRecords = planRecords.filter(item => item.spatialStatus === 'plan-derived');
 const unresolvedPlanRecords = planRecords.filter(item => item.spatialStatus === 'quarantined');
 assert.equal(mappedPlanRecords.length, 65, '65 audited current anchors should be visible');
