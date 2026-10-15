@@ -96,6 +96,12 @@ assert(code.includes('enabledLayers.add(item.primaryLens)'), 'List navigation mu
 assert(code.includes('class="facility-jump"') && code.includes('class="facility-code"'), 'List navigation must retain map codes');
 assert(code.includes("selectedFeatureId === item.id ? 'selected' : ''"), 'Selected list destination must highlight its marker');
 assert(styles.includes('.plan-marker.selected { outline: 5px solid'), 'Selected marker ring must be five pixels wide');
+const registerMarkup = { innerHTML: '' };
+context.document = { getElementById: () => registerMarkup, querySelectorAll: () => [] };
+vm.runInContext(code.slice(code.indexOf('function renderFacilityRegister()'), code.indexOf("document.getElementById('timeline').addEventListener")), context);
+vm.runInContext('renderFacilityRegister()', context);
+assert(registerMarkup.innerHTML.includes('class="facility-code">C1</b>Grand Arch'), 'Mapped facilities retain their brochure code');
+assert(registerMarkup.innerHTML.includes('Drop-off point'), 'Unnumbered brochure symbols must not break the register');
 const mappedPlanRecords = planRecords.filter(item => item.spatialStatus === 'plan-derived');
 const unresolvedPlanRecords = planRecords.filter(item => item.spatialStatus === 'quarantined');
 assert.equal(mappedPlanRecords.length, 65, '65 audited current anchors should be visible');
