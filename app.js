@@ -265,6 +265,19 @@ const amenityPlanRows = [
   ['P-N', 'North Carpark', 'Carpark', 'transport'], ['P-S', 'South Carpark', 'Carpark', 'transport'], ['M-L', 'Lakeside MRT', 'MRT', 'public transport'], ['M-C', 'Chinese Garden MRT', 'MRT', 'public transport'], ['M-J', 'Jurong East MRT', 'MRT', 'public transport']
 ];
 
+// Interpretive primary lenses for the brochure's numbered places. These do
+// not replace NParks' facility types or alter the mapped coordinates.
+const facilityLensByCode = {
+  C1: 'heritage', C2: 'ecology', C3: 'heritage', C4: 'engineered', C5: 'heritage', C6: 'heritage', C7: 'engineered', C8: 'ecology', C9: 'public', C10: 'heritage', C11: 'heritage', C12: 'engineered', C13: 'public',
+  J1: 'ecology', J2: 'heritage', J3: 'heritage', J4: 'heritage', J5: 'heritage', J6: 'ecology', J7: 'heritage', J8: 'ecology', J9: 'ecology', J10: 'heritage', J11: 'public',
+  L1: 'public', L2: 'public', L3: 'public', L4: 'engineered', L5: 'governance', L6: 'public', L7: 'public', L8: 'engineered', L9: 'engineered', L10: 'governance', L11: 'public', L12: 'public', L13: 'public', L14: 'public', L15: 'public', L16: 'public', L17: 'ecology', L18: 'public', L19: 'public', L20: 'ecology', L21: 'public', L22: 'ecology', L23: 'hidden', L24: 'ecology', L25: 'public', L26: 'governance', L27: 'public', L28: 'ecology', L29: 'engineered'
+};
+const amenityLensByCode = {
+  'I-CG': 'governance', 'I-JG': 'governance', 'I-LG': 'governance',
+  F1: 'public', F2: 'public', F3: 'public', F4: 'public', F5: 'public', F6: 'public',
+  'P-N': 'governance', 'P-S': 'governance', 'M-L': 'public', 'M-C': 'public', 'M-J': 'public'
+};
+
 // NParks brochure page-2 numbered circles georeferenced against six named
 // OSM bridges plus Grand Arch and Lone Tree. Rebuild with the audit script.
 // These are approximate plan anchors, not surveyed coordinates or Google POIs.
@@ -336,6 +349,7 @@ const planFeature = ([code, name, group, type], layer, legend = type) => {
     type,
     legend,
     layer,
+    primaryLens: (isFacility ? facilityLensByCode : amenityLensByCode)[code],
     // These are current brochure points. Earlier visibility is intentionally
     // withheld unless an independent source dates the same facility.
     from: 5,
@@ -875,7 +889,7 @@ function makeFeatureLayer(item, opacity) {
   let layer;
   if (item.geometry.type === 'Polygon') layer = L.polygon(item.geometry.coordinates[0], style);
   else if (item.geometry.type === 'LineString') layer = L.polyline(item.geometry.coordinates, style);
-  else if (item.spatialStatus === 'plan-derived') layer = L.marker(item.geometry.coordinates, { icon: L.divIcon({ className: 'plan-marker-wrap', html: `<span class="plan-marker ${item.layer === 'amenities' ? 'amenity' : ''}" style="--marker-color:${layers[item.layer].color}">${escapeHtml(item.mapCode || layers[item.layer].icon)}</span>`, iconSize: [25, 25], iconAnchor: [12, 12] }) });
+  else if (item.spatialStatus === 'plan-derived') layer = L.marker(item.geometry.coordinates, { zIndexOffset: selectedFeatureId === item.id ? 1000 : 0, icon: L.divIcon({ className: 'plan-marker-wrap', html: `<span class="plan-marker ${item.layer === 'amenities' ? 'amenity' : ''} ${selectedFeatureId === item.id ? 'selected' : ''}" style="--marker-color:${layers[item.primaryLens].color}">${escapeHtml(item.mapCode || layers[item.layer].icon)}</span>`, iconSize: [25, 25], iconAnchor: [12, 12] }) });
   else layer = L.circleMarker(item.geometry.coordinates, { ...style, radius: selectedFeatureId === item.id ? 10 : 7, fillOpacity: Math.min(.85, opacity * .8) });
   bindInteractiveHoverCard(layer, item);
   layer.on('mouseover', () => { if (layer.setStyle) layer.setStyle({ weight: 5, fillOpacity: Math.min(.4, opacity * .35) }); else layer.getElement()?.querySelector('.plan-marker')?.classList.add('feature-pulse'); });
@@ -1101,7 +1115,7 @@ async function ensureExternalLayer(id) {
 
 function renderFeatures() {
   featureGroup.clearLayers();
-  features.filter((item) => enabledLayers.has(item.layer) && (!item.researchOnly || showResearchLeads) && item.spatialStatus !== 'quarantined' && item.mapDisplay !== 'source-only').forEach((item) => {
+  features.filter((item) => enabledLayers.has(item.layer) && (!item.primaryLens || enabledLayers.has(item.primaryLens)) && (!item.researchOnly || showResearchLeads) && item.spatialStatus !== 'quarantined' && item.mapDisplay !== 'source-only').forEach((item) => {
     const opacity = spatialOpacity(item, timeValue);
     if (opacity > .03) featureGroup.addLayer(item.mapDisplay === 'source-only' ? makeProvisionalPlanLayer(item, opacity) : makeFeatureLayer(item, opacity));
   });
@@ -1253,9 +1267,9 @@ function spatialBadgeLabel(item) {
 function selectFeature(item) {
   selectedFeatureId = item.id;
   const panel = document.getElementById('evidence-panel');
-  const layer = layers[item.layer];
+  const layer = layers[item.primaryLens || item.layer];
   panel.innerHTML = `<div class="feature-card" style="--feature-color:${layer.color}">
-    <div class="feature-kicker">${layer.icon} ${escapeHtml(layer.label)}</div>
+    <div class="feature-kicker">${layer.icon} ${escapeHtml(layers[item.layer].label)}${item.primaryLens ? ` · ${escapeHtml(layer.label)}` : ''}</div>
     <h2>${escapeHtml(item.name)}</h2>
     <div class="feature-subtitle">Mapped period: ${escapeHtml(periodLabel(item))} · geometry: ${escapeHtml(item.geometryType)}</div>
     <div class="evidence-badges"><span class="evidence-badge ${escapeHtml(item.spatialStatus)}">${escapeHtml(spatialBadgeLabel(item))}</span><span class="evidence-badge">geometry: ${escapeHtml(item.geometryType)}</span><span class="evidence-badge evidence-status">${escapeHtml(verificationLabel(item))}</span></div>
@@ -1400,30 +1414,34 @@ function renderPeriodPhotos(value) {
 }
 
 function renderFacilityRegister() {
+  const registerItem = (item, point) => {
+    const clickable = Boolean(point?.geometry?.coordinates);
+    const lens = layers[point.primaryLens];
+    return `<li class="${clickable ? 'mapped' : 'unmapped'}"${clickable ? '' : ' title="Brochure-listed facility; location needs further spatial checking"'}><span>${clickable ? `<button class="facility-jump" type="button" data-feature-id="${escapeHtml(point.id)}"><b class="facility-code">${escapeHtml(point.mapCode)}</b>${escapeHtml(item.name)}</button>` : `<b class="facility-code">${escapeHtml(point.mapCode)}</b>${escapeHtml(item.name)}`}</span><em><span class="facility-lens" style="--lens-color:${lens.color}">${escapeHtml(lens.label)}</span><small>${escapeHtml(item.type)}</small></em></li>`;
+  };
   const groups = ['Chinese Garden', 'Japanese Garden', 'Lakeside Garden'].map((garden) => {
     const pageSource = garden === 'Chinese Garden' ? sources.nparksChinese : garden === 'Japanese Garden' ? sources.nparksJapanese : sources.nparksLakeside;
     const items = facilityNames.filter((item) => item.garden === garden).map((item) => {
       const point = planFacilityByName.get(item.name);
-      const clickable = Boolean(point?.geometry?.coordinates);
-      return `<li class="${clickable ? 'mapped' : 'unmapped'}"${clickable ? '' : ' title="Brochure-listed facility; location needs further spatial checking"'}><span>${clickable ? `<button class="facility-jump" type="button" data-feature-id="${escapeHtml(point.id)}">${escapeHtml(item.name)}</button>` : escapeHtml(item.name)}</span><em>${escapeHtml(item.type)}</em></li>`;
+      return registerItem(item, point);
     }).join('');
     const clickableCount = facilityNames.filter((item) => {
       if (item.garden !== garden) return false;
       const point = planFacilityByName.get(item.name);
       return Boolean(point?.geometry?.coordinates);
     }).length;
-    return `<section class="facility-group"><div class="facility-group-head"><h3>${escapeHtml(garden)}</h3><div>${sourceLink(pageSource, 'NParks page')} · ${sourceLink(sources.nparksBrochure, 'brochure map')}</div></div><span class="facility-status">${clickableCount} named locations can be opened on the map. Brochure-derived markers are approximate; they are not survey coordinates.</span><ul>${items}</ul></section>`;
+    return `<section class="facility-group"><div class="facility-group-head"><h3>${escapeHtml(garden)}</h3><div>${sourceLink(pageSource, 'NParks page')} · ${sourceLink(sources.nparksBrochure, 'brochure map')}</div></div><span class="facility-status">${clickableCount} named locations can be opened on the map. Colours show our primary interpretive lens; brochure-derived positions are approximate.</span><ul>${items}</ul></section>`;
   }).join('');
   const amenities = amenityNames.map((item) => {
     const point = planAmenityByLegend.get(item.name);
-    const clickable = Boolean(point?.geometry?.coordinates);
-    return `<li class="${clickable ? 'mapped' : 'unmapped'}"><span>${clickable ? `<button class="facility-jump" type="button" data-feature-id="${escapeHtml(point.id)}">${escapeHtml(item.name)}</button>` : escapeHtml(item.name)}</span><em>${escapeHtml(item.type)}</em></li>`;
+    return registerItem(item, point);
   }).join('');
   document.getElementById('facility-register').innerHTML = `${groups}<section class="facility-group amenities-group"><div class="facility-group-head"><h3>Brochure legend · amenities and access</h3><div>${sourceLink(sources.nparksBrochure, 'NParks brochure map')}</div></div><span class="facility-status">Named amenity nodes are clickable where the brochure gives a location; generic symbols remain listed without a map point.</span><ul>${amenities}</ul></section>`;
   document.querySelectorAll('.facility-jump').forEach((button) => button.addEventListener('click', () => {
     const item = features.find((featureItem) => featureItem.id === button.dataset.featureId);
     if (!item) return;
     enabledLayers.add(item.layer);
+    enabledLayers.add(item.primaryLens);
     renderLayerControls();
     document.getElementById('timeline').value = String(item.from);
     updateTimeline(item.from);
@@ -1443,6 +1461,10 @@ document.getElementById('play-time').addEventListener('click', (event) => {
   event.currentTarget.setAttribute('aria-pressed', String(playing));
   event.currentTarget.textContent = playing ? 'Pause change' : 'Play change';
   if (playing) {
+    if (timeValue >= 5) {
+      document.getElementById('timeline').value = '0';
+      updateTimeline(0);
+    }
     playTimer = window.setInterval(() => {
       const next = timeValue + .015;
       if (next >= 5) { timeValue = 5; updateTimeline(5); playing = false; window.clearInterval(playTimer); event.currentTarget.setAttribute('aria-pressed', 'false'); event.currentTarget.textContent = 'Play change'; return; }
