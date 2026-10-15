@@ -203,6 +203,8 @@ button, input, select { font: inherit; }
 .facility-lens { color: var(--lens-color); font-weight: 800; }
 .facility-lens::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 50%; background: var(--lens-color); }
 .amenities-group { grid-column: 1 / -1; }
+.brochure-symbols { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+.brochure-symbols summary { color: var(--green); font-size: .62rem; font-weight: 800; cursor: pointer; }
 .footer { padding: 19px 4vw; border-top: 1px solid var(--line); color: var(--muted); font-size: .65rem; text-align: center; }
 .popup-title { margin-bottom: 4px; font: 500 1.05rem/1 Georgia, serif; }
 .popup-meta { color: var(--muted); font-size: .65rem; line-height: 1.35; }
