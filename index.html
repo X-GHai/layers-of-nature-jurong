@@ -29,7 +29,7 @@
     <section class="gis-workbench">
       <aside class="layer-panel">
         <div class="panel-heading"><span class="section-kicker">01 · LAYERS</span><h2>Spatial lenses</h2></div>
-        <p class="panel-intro">Explore independently: combine layers, move through time, and select a place for its evidence and in-depth case analysis on the right. Current facilities and reference geometry are not projected onto historical maps.</p>
+        <p class="panel-intro">Combine layers, move through time, and select a place for its evidence. Current facilities and reference geometry are hidden on historical maps.</p>
         <div id="layer-controls" class="layer-controls"></div>
         <div class="layer-actions" role="group" aria-label="Layer selection actions">
           <button id="select-all-layers" class="layer-action" type="button">Select all</button>
@@ -49,7 +49,7 @@
           <div><span class="key-swatch amenity"></span><span><b>Amenity / access</b><small>named current service point</small></span></div>
           <div><span class="key-swatch vector"></span><span><b>Vector reference</b><small>official or open-data geometry</small></span></div>
         </div>
-        <div class="panel-note">The old map is not a decorative overlay: the timeline changes the map canvas itself. Between documented years, the interface crossfades the two nearest dated maps and labels that interval as a visual transition.</div>
+        <div class="panel-note">Historical maps can be compared visually; the animation does not measure landscape change. The 2019 and 2024 stops show dated events over a present-day orientation map.</div>
       </aside>
 
       <section class="map-column">
@@ -64,6 +64,7 @@
             <button id="play-time" class="tool-button primary" type="button" aria-pressed="false">Play change</button>
           </div>
         </div>
+        <div id="map-state-notice" class="map-state-notice" role="status" aria-live="polite"></div>
         <div id="map" class="map-canvas" aria-label="Time-enabled Jurong Lake Gardens map"></div>
         <div class="timeline-dock">
           <div class="timeline-topline"><strong id="timeline-year">1975</strong><span id="timeline-context">Chinese Garden opens</span><span class="timeline-status" id="timeline-status">documented state</span></div>
@@ -71,7 +72,7 @@
           <div class="timeline-years"><span>1953</span><span>1963</span><span>1971</span><span>1975</span><span>2019</span><span>2024</span></div>
           <p id="timeline-description">The Chinese Garden was completed in 1975 on land described by NHB as formerly occupied by fish and prawn ponds beside Jurong River.</p>
         </div>
-        <div class="map-footer"><span class="live-dot"></span><span id="map-status">Current OneMap base · click a mapped object to inspect its evidence</span><span class="map-caution">visual fades between documented states do not invent intermediate boundaries</span></div>
+        <div class="map-footer"><span class="live-dot"></span><span id="map-status">Select a map state or object to inspect its evidence</span><span class="map-caution">Visual comparison only · no area or shoreline measurements</span></div>
       </section>
 
       <aside class="evidence-panel" id="evidence-panel" tabindex="0" aria-label="Selected place evidence and case analysis">
@@ -125,6 +126,11 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="case-research.js"></script>
-  <script src="app-54cdd289.js"></script>
+  <script src="public-research.js"></script>
+  <script src="atlas-articles.js"></script>
+  <script src="place-research.js"></script>
+  <script src="reference-snapshots.js"></script>
+  <script src="app-17db40cb.js"></script>
 </body>
 </html>
+

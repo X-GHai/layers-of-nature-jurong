@@ -89,7 +89,13 @@ const sources = {
   osmJurongEastMRT: { institution: 'OpenStreetMap contributors', title: 'Jurong East MRT station · named reference point', url: 'https://www.openstreetmap.org/node/209451066' },
   onemap: { institution: 'Singapore Land Authority', title: 'OneMap map service', url: 'https://www.onemap.gov.sg/docs/maps/index.html' }
 };
-Object.values(sources).forEach((source) => { source.date = checkedOn; });
+Object.assign(sources, {
+  cnaHang2026: { institution: 'CNA Luxury', title: 'How landscape architect Cathy Hang is shaping Singapore’s most loved public spaces', url: 'https://cnaluxury.channelnewsasia.com/people/cathy-hang-landscape-architect-singapore-public-spaces-292471', date: '15 October 2026', inTextAuthor: 'Low', apa: 'Low, S. P. (2026, February 17). How landscape architect Cathy Hang is shaping Singapore’s most loved public spaces. CNA Luxury. https://cnaluxury.channelnewsasia.com/people/cathy-hang-landscape-architect-singapore-public-spaces-292471' },
+  henningLarsenJLG: { institution: 'Henning Larsen', title: 'Jurong Lake Gardens project account', url: 'https://www.henninglarsen.com/projects/jurong-lake-gardens', date: '15 October 2026', inTextAuthor: 'Henning Larsen', apa: 'Henning Larsen. (n.d.). Jurong Lake Gardens. https://www.henninglarsen.com/projects/jurong-lake-gardens' },
+  habitatHandbook25: { institution: 'National Parks Board', title: 'Naturalising our Parks Framework, chapter 25 of Handbook on Habitat Restoration', url: 'https://www.nparks.gov.sg/docs/default-source/resources/2023/handbook-habitat-restoration-chapter25.pdf', date: '15 October 2026', inTextAuthor: 'Ong et al.', apa: 'Ong, C. R., Wright, J., Fairuz, A., Omar, K., & Yu, K. W. (2023). Naturalising our parks framework. In L. Chan, D. Ng, & L. J. Lim (Eds.), Handbook on habitat restoration: General principles and case studies in Singapore (chap. 25, pp. 285–300). National Parks Board. https://www.nparks.gov.sg/docs/default-source/resources/2023/handbook-habitat-restoration-chapter25.pdf' }
+});
+Object.assign(sources.nas1975, { title: 'Hon Sui Sen’s speech at the opening of Chinese Garden, 18 April 1975', date: '15 October 2026', inTextAuthor: 'Hon', apa: 'Hon, S. S. (1975, April 18). Speech at the official opening of the Chinese Garden (Yu-Hwa Yuan) [Speech]. National Archives of Singapore. https://www.nas.gov.sg/archivesonline/data/pdfdoc/PressR19750418e.pdf' });
+Object.values(sources).forEach((source) => { source.date ||= checkedOn; });
 
 // Citation register. These are deliberately conservative APA 7 records: when a
 // page does not expose a stable publication date in the public record, the UI uses
@@ -118,7 +124,31 @@ Object.assign(sources.straits2024Preview, { apa: 'The Straits Times. (2024, July
 Object.entries(caseResearch.newSources).forEach(([id, [title, path]]) => {
   sources[id] = { institution: 'National Parks Board', title, url: `https://juronglakegardens.nparks.gov.sg/discover/${path}`, date: checkedOn, evidenceScope: 'Current attraction description checked in 2026; not a dated 2024 observation.' };
 });
-sources.nparksFloral = { institution: 'National Parks Board', title: 'Floral Garden', url: 'https://juronglakegardens.nparks.gov.sg/floral-garden/', date: checkedOn, evidenceScope: 'Current attraction description checked in 2026; not a dated 2024 observation.' };
+sources.spFloral = { institution: 'Singapore Polytechnic', title: 'DLA planting ideas in Singapore’s third national gardens', url: 'https://www.sp.edu.sg/courses/schools/abe/happenings/detail/abe-happenings/dla--planting-ideas--in-singapore-s-third-national-gardens', date: checkedOn, inTextAuthor: 'Singapore Polytechnic', apa: 'Singapore Polytechnic. (n.d.). DLA planting ideas in Singapore’s third national gardens. https://www.sp.edu.sg/courses/schools/abe/happenings/detail/abe-happenings/dla--planting-ideas--in-singapore-s-third-national-gardens' };
+sources.nparksSunken = { institution: 'National Parks Board', title: 'Sunken Garden', url: 'https://juronglakegardens.nparks.gov.sg/discover/japanese-garden/sunken-garden/', date: checkedOn, inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (2026, September 10). Sunken Garden. https://juronglakegardens.nparks.gov.sg/discover/japanese-garden/sunken-garden/' };
+sources.ercoGuesthouse = { institution: 'ERCO', title: 'The Guesthouse at Japanese Gardens of Jurong Lake Gardens, Singapore', url: 'https://www.erco.com/en/inspiration/projects/the-guesthouse-at-japanese-gardens-of-jurong-lake-gardens-singapore/', date: checkedOn, inTextAuthor: 'ERCO', apa: 'ERCO. (n.d.). The Guesthouse at Japanese Gardens of Jurong Lake Gardens, Singapore. https://www.erco.com/en/inspiration/projects/the-guesthouse-at-japanese-gardens-of-jurong-lake-gardens-singapore/' };
+sources.nparksFloral = { institution: 'National Parks Board', title: 'Floral Garden', url: 'https://juronglakegardens.nparks.gov.sg/floral-garden/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (n.d.). Floral Garden. https://juronglakegardens.nparks.gov.sg/floral-garden/' };
+sources.nparksVenue = { institution: 'National Parks Board', title: 'Book a venue', url: 'https://juronglakegardens.nparks.gov.sg/book-now/book-a-venue/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (2026, September 6). Book a venue. https://juronglakegardens.nparks.gov.sg/book-now/book-a-venue/' };
+sources.nparksJapaneseGuide = { institution: 'National Parks Board', title: 'DIY Japanese Garden guide', url: 'https://lightsbythelake.nparks.gov.sg/files/DIY_JAPANESE_GARDEN_GUIDE.pdf', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (n.d.). DIY Japanese Garden guide [PDF]. https://lightsbythelake.nparks.gov.sg/files/DIY_JAPANESE_GARDEN_GUIDE.pdf' };
+sources.natureAssemblyJapanese = { institution: 'Nature Assembly', title: 'Japanese Gardens, Jurong Lake Gardens', url: 'https://natureassembly.com/portfolio/japanese-gardens', date: '18 October 2026', inTextAuthor: 'Nature Assembly', apa: 'Nature Assembly. (n.d.). Japanese Gardens, Jurong Lake Gardens. https://natureassembly.com/portfolio/japanese-gardens' };
+sources.nparksResthouse = { institution: 'National Parks Board', title: 'Resthouse', url: 'https://juronglakegardens.nparks.gov.sg/discover/japanese-garden/resthouse/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (2026, September 10). Resthouse. https://juronglakegardens.nparks.gov.sg/discover/japanese-garden/resthouse/' };
+sources.nparksFlautist = { institution: 'National Parks Board', title: 'Melodies in nature: A flautist’s musical escape in Japanese Garden', url: 'https://juronglakegardens.nparks.gov.sg/faces-of-jlg/example-titlemelodies-in-nature-a-flautist-s-musical-escape-in-japanese-garden/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (2024, October). Melodies in nature: A flautist’s musical escape in Japanese Garden. https://juronglakegardens.nparks.gov.sg/faces-of-jlg/example-titlemelodies-in-nature-a-flautist-s-musical-escape-in-japanese-garden/' };
+sources.nparksWaterLily = { institution: 'National Parks Board', title: 'Water Lily Garden', url: 'https://juronglakegardens.nparks.gov.sg/water-lily-garden/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (n.d.). Water Lily Garden. https://juronglakegardens.nparks.gov.sg/water-lily-garden/' };
+sources.nparksWaterLilyPavilion = { institution: 'National Parks Board', title: 'Water Lily Pavilion', url: 'https://juronglakegardens.nparks.gov.sg/venues/water-lily-pavilion/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (2026, September 6). Water Lily Pavilion. https://juronglakegardens.nparks.gov.sg/venues/water-lily-pavilion/' };
+sources.nparksBreathing = { institution: 'National Parks Board', title: 'Breathing Gallery', url: 'https://juronglakegardens.nparks.gov.sg/discover/japanese-garden/breathing-gallery/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (2026, September 10). Breathing Gallery. https://juronglakegardens.nparks.gov.sg/discover/japanese-garden/breathing-gallery/' };
+sources.nparksEdible = { institution: 'National Parks Board', title: 'Edible Garden', url: 'https://juronglakegardens.nparks.gov.sg/discover/chinese-garden/edible-garden/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (2026, July 8). Edible Garden. https://juronglakegardens.nparks.gov.sg/discover/chinese-garden/edible-garden/' };
+sources.nparksTwin = { institution: 'National Parks Board', title: 'Twin Pagoda', url: 'https://juronglakegardens.nparks.gov.sg/discover/chinese-garden/twin-pagoda/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (2026, September 13). Twin Pagoda. https://juronglakegardens.nparks.gov.sg/discover/chinese-garden/twin-pagoda/' };
+sources.nparksWaterWall = { institution: 'National Parks Board', title: 'Water Wall Court', url: 'https://juronglakegardens.nparks.gov.sg/water-wall-court/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (n.d.). Water Wall Court. https://juronglakegardens.nparks.gov.sg/water-wall-court/' };
+sources.nparksChineseGuide = { institution: 'National Parks Board', title: 'DIY Chinese Garden guide', url: 'https://juronglakegardens.nparks.gov.sg/files/Guided%20Tours/DIY_CHINESE_GARDEN_GUIDE.pdf', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (n.d.). DIY Chinese Garden guide [PDF]. https://juronglakegardens.nparks.gov.sg/files/Guided%20Tours/DIY_CHINESE_GARDEN_GUIDE.pdf' };
+sources.nlbStoneboat1982 = { institution: 'New Nation via NewspaperSG', title: 'Red for double happiness', url: 'https://eresources.nlb.gov.sg/newspapers/digitised/article/newnation19820627-1.2.15', date: '18 October 2026', inTextAuthor: 'Teo', apa: 'Teo, L. H. (1982, June 27). Red for double happiness. New Nation, p. 6. https://eresources.nlb.gov.sg/newspapers/digitised/article/newnation19820627-1.2.15', evidenceScope: 'The NewspaperSG issue index identifies the article, author, date, page and Stoneboat marriage-registry setting. Only claims visible in the indexed record are used because the full OCR was not accessible during this review.' };
+sources.sg101Chinese = { institution: 'SG101', title: 'Neighbourhood: Chinese Garden', url: 'https://www.sg101.gov.sg/resources/archives/neighbourhood-chinese-garden/', date: '18 October 2026', inTextAuthor: 'SG101', apa: 'SG101. (2026, September 25). Neighbourhood: Chinese Garden. https://www.sg101.gov.sg/resources/archives/neighbourhood-chinese-garden/', evidenceScope: 'Government educational account used for the attribution of the overall garden design to Professor Yu Yuen-Chen; it does not identify Stoneboat’s detailed-design author.' };
+sources.lpaJLG = { institution: 'Lighting Planners Associates', title: 'Jurong Lake Gardens', url: 'https://www.lighting.co.jp/en/projects/jurong-lake-gardens/', date: '18 October 2026', inTextAuthor: 'Lighting Planners Associates', apa: 'Lighting Planners Associates. (n.d.). Jurong Lake Gardens. https://www.lighting.co.jp/en/projects/jurong-lake-gardens/', evidenceScope: 'Project record identifying the 2024 lighting designer, client and architectural and landscape collaborators.' };
+sources.luxconexJLG = { institution: 'Luxconex', title: 'Jurong Lake Gardens', url: 'https://luxconex.com/project/jurong-lake-gardens/', date: '18 October 2026', inTextAuthor: 'Luxconex', apa: 'Luxconex. (n.d.). Jurong Lake Gardens. https://luxconex.com/project/jurong-lake-gardens/', evidenceScope: 'Project-supplier account used only for the specific claim that contour lighting was applied at Stoneboat and Tea Pavilion.' };
+sources.jldSmart2022 = { institution: 'Jurong Lake District', title: 'A place to go: Behind the scenes! Smart operations in Jurong Lake Gardens', url: 'https://www.jld.gov.sg/events-and-resources/smartjlg/', date: '18 October 2026', inTextAuthor: 'Jurong Lake District', apa: 'Jurong Lake District. (2022, May 5). A place to go: Behind the scenes! Smart operations in Jurong Lake Gardens. https://www.jld.gov.sg/events-and-resources/smartjlg/', evidenceScope: 'Dated government account of systems and trials operating or being trialled in 2022; it does not establish that every trial continued after that year.' };
+sources.ctrlShiftTech = { institution: 'CTRL Your Future, SHIFT Your Perspectives', title: 'Tech at play: Rolling out innovations at Jurong Lake Gardens', url: 'https://www.ctrlshift.gov.sg/stories/2021-stories/tech-innovations-jurong-lake-gardens/', date: '18 October 2026', inTextAuthor: 'CTRL Your Future, SHIFT Your Perspectives', apa: 'CTRL Your Future, SHIFT Your Perspectives. (2026, July 14). Tech at play: Rolling out innovations at Jurong Lake Gardens. https://www.ctrlshift.gov.sg/stories/2021-stories/tech-innovations-jurong-lake-gardens/', evidenceScope: 'Government interview with NParks deputy director Ong Chong Ren; used for the named sensor types, integration challenge and reported operational effects.' };
+sources.nparksAR2023 = { institution: 'National Parks Board', title: 'Annual report 2022/2023', url: 'https://www.nparks.gov.sg/-/media/annual-report-2023/nparks_ar23_forweb_231016.pdf', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (2023). Annual report 2022/2023. https://www.nparks.gov.sg/-/media/annual-report-2023/nparks_ar23_forweb_231016.pdf', evidenceScope: 'Agency annual-report account of the Integrated Garden Management System and JuLee robot; not an independent performance evaluation.' };
+sources.imdaSmartEstate2019 = { institution: 'Infocomm Media Development Authority', title: 'Call for innovative solutions for smart estates: NParks industry briefing', url: 'https://www.imda.gov.sg/-/media/Imda/Files/Industry-Development/Call-for-Proposals/Call-for-Innovative-Solutions-for-Smart-Estates-with-NParks/NParks-CFIS-Industry-Briefing-Slides.pdf', date: '18 October 2026', inTextAuthor: 'Infocomm Media Development Authority', apa: 'Infocomm Media Development Authority. (2019, July 29). Call for innovative solutions for smart estates: NParks industry briefing [PowerPoint slides]. https://www.imda.gov.sg/-/media/Imda/Files/Industry-Development/Call-for-Proposals/Call-for-Innovative-Solutions-for-Smart-Estates-with-NParks/NParks-CFIS-Industry-Briefing-Slides.pdf', evidenceScope: 'A 2019 problem-and-procurement briefing. Existing conditions are distinguished from desired technologies and later implementation.' };
+sources.nparksShuttle = { institution: 'National Parks Board', title: 'Garden Shuttle Service Trial', url: 'https://juronglakegardens.nparks.gov.sg/garden-shuttle-service-trial/', date: '18 October 2026', inTextAuthor: 'National Parks Board', apa: 'National Parks Board. (2026, September 17). Garden Shuttle Service Trial. https://juronglakegardens.nparks.gov.sg/garden-shuttle-service-trial/' };
 sources.nhbPioneers = { institution: 'National Heritage Board', title: 'Celebrating Jurong and its industrious pioneers', url: 'https://www.roots.gov.sg/stories-landing/stories/celebrating-jurong-and-its-industrious-pioneers/story', date: checkedOn };
 sources.academicNg = { institution: 'International Journal of Environmental Research and Public Health', title: 'Effects of horticultural therapy on Asian older adults: A randomized controlled trial', url: 'https://doi.org/10.3390/ijerph15081705', date: checkedOn, inTextAuthor: 'Ng et al.', apa: 'Ng, K. S. T., Sia, A., Ng, M. K. W., Tan, C. T. Y., Chan, H. Y., Tan, C. H., Rawtaer, I., Feng, L., Mahendran, R., Larbi, A., Kua, E. H., & Ho, R. C. M. (2018). Effects of horticultural therapy on Asian older adults: A randomized controlled trial. International Journal of Environmental Research and Public Health, 15(8), Article 1705. https://doi.org/10.3390/ijerph15081705', evidenceScope: 'Contextual programme study; not an evaluation of the mapped Jurong Lake Gardens feature.' };
 sources.academicStokols.inTextAuthor = 'Stokols';
@@ -142,6 +172,16 @@ sources.jld2019Opening.evidenceScope = 'Legacy link returned HTTP 404 on 13 Octo
   source.evidenceScope = `Original map year: ${year}; NUS is the digitisation host, not asserted to be the original cartographer.`;
 });
 Object.assign(sources.nus1963, { inTextAuthor: 'Assistant Director of Survey, Far East Land Forces', apa: 'Assistant Director of Survey, Far East Land Forces. (1963). Singapore, 1:63,360 (Series GSGS 4923, Sheet Singapore, Edition 2-GSGS) [Map]. War Office & Air Ministry. https://libmaps.nus.edu.sg/maps/1963/', evidenceScope: 'Original map attribution follows the NUS catalogue; scanned and georeferenced later at NUS.' });
+const originalMapCitations = {
+  1953: ['Surveyor General, Malaya', 'Singapore topographical maps, 1:25,000'],
+  1971: ['Mapping Unit, Ministry of Defence', 'Singapore topographical map, 1:63,360'],
+  1975: ['Mapping Unit, Ministry of Defence', 'Singapore topographical maps, 1:25,000']
+};
+Object.entries(originalMapCitations).forEach(([year, [author, title]]) => {
+  Object.assign(sources[`nus${year}`], { inTextAuthor: author, apa: `${author}. (${year}). ${title} [Map]. Digitised and served by National University of Singapore Libraries. ${sources[`nus${year}`].url}` });
+});
+Object.assign(sources.nparksParksGeo, { inTextAuthor: 'National Parks Board', apa: `National Parks Board. (2023). NParks Parks and Nature Reserves (2026) [Data set]. data.gov.sg. Retrieved 15 October 2026, from ${sources.nparksParksGeo.url}` });
+Object.assign(sources.uraWaterGeo, { inTextAuthor: 'Urban Redevelopment Authority', apa: `Urban Redevelopment Authority. (2026). Master Plan 2025 SDCP Waterbody layer [Data set]. data.gov.sg. Retrieved 15 October 2026, from ${sources.uraWaterGeo.url}` });
 // Matching author/date suffixes keep paragraph citations unambiguous, including
 // the many undated NParks pages. Retrieval dates are never publication dates.
 const citationGroups = new Map();
@@ -205,10 +245,14 @@ const attractionEvidence = {
   'Stoneboat': { purpose: 'NParks describes this two-storey Lotus Pond landmark as a former branch of the Registrar of Marriage and a present garden attraction.', source: sources.nparksStoneboat },
   'Tea Pavilion': { purpose: 'NParks places the Tea Pavilion with the Stoneboat beside the Lotus Pond, linking a pavilion for pause and viewing to the Chinese Garden’s traditional landscape vocabulary.', source: sources.nparksChinese },
   'Floral Garden': { purpose: 'NParks describes the Floral Garden as a Japanese-inspired landscape designed by students, making planting and interpretation part of the rejuvenated Japanese Garden.', source: sources.nparksJapanese },
-  'Sunken Garden': { purpose: 'NParks presents the Sunken Garden as a Japanese-inspired planted space within the rejuvenated garden.', source: sources.nparksJapanese, image: 'https://isomer-user-content.by.gov.sg/318/6a0b7d10-76f7-48b6-9f9f-5bf2dd24f057/Sunken%20Garden.webp', previewLabel: 'Official NParks facility image' },
+  'Teahouse': { purpose: 'NParks identifies the Teahouse as a sheltered event space adjacent to the Guesthouse; its 2024 opening account credits Tote Board funding for its development.', source: sources.nparks2024Opening },
+  'Guesthouse': { purpose: 'The Guesthouse opened in 2024 as a mass-engineered-timber multipurpose hall with capacity for up to 1,000 people. NParks credits Tote Board funding toward the building.', source: sources.nparks2024Opening },
+  'Guest Pavilion': { purpose: 'NParks describes the Guest Pavilion as a sheltered space beside the Guesthouse and Teahouse for smaller gatherings within the reopened Japanese Garden.', source: sources.nparks2024Opening },
+  'Sunken Garden': { purpose: 'The cenote-inspired centrepiece harvests rainwater. NParks describes Paras-stone moss walls with more than 200 epiphyte species, including orchids, ferns and bromeliads; it presents the planted enclosure as a constructed microclimate.', source: sources.nparksSunken, image: 'https://isomer-user-content.by.gov.sg/318/6a0b7d10-76f7-48b6-9f9f-5bf2dd24f057/Sunken%20Garden.webp', previewLabel: 'Official NParks facility image' },
+  'Floral Ridge': { purpose: 'NParks introduced Floral Ridge in the 2024 rejuvenation as a rustic trail lined with seasonally flowering trees.', source: sources.nparks2024Opening },
   'Water Lily Garden': { purpose: 'NParks describes the Water Lily Garden as a planted water landscape in the Japanese Garden.', source: sources.nparksJapanese, image: 'https://isomer-user-content.by.gov.sg/318/62624b32-0aaa-4fd6-80b3-c765aa8709c4/Water%20Lily%20Garden%202.webp', previewLabel: 'Official NParks facility image' },
   'Water Lily Pavilion': { purpose: 'NParks describes the Water Lily Pavilion as a viewing structure associated with water-lily terraces and the Water Lily Garden landscape.', source: sources.nparksJapanese },
-  'Breathing Gallery': { purpose: 'NParks describes the Breathing Gallery as a shaded garden structure for pause and passage through the Japanese Garden.', source: sources.nparksJapanese, image: 'https://isomer-user-content.by.gov.sg/318/438f8a15-f339-475b-95cf-8cef043e2a3b/Breathing%20Gallery%202.webp', previewLabel: 'Official NParks facility image' },
+  'Breathing Gallery': { purpose: 'At the 2024 reopening, NParks identified the Breathing Gallery as an indoor vivarium displaying terrestrial and aquatic species in terrariums, aquariums and paludariums.', source: sources.nparks2024Opening, image: 'https://isomer-user-content.by.gov.sg/318/438f8a15-f339-475b-95cf-8cef043e2a3b/Breathing%20Gallery%202.webp', previewLabel: 'Official NParks facility image' },
   'Resthouse': { purpose: 'NParks describes the Resthouse as a Japanese architectural structure providing a vantage point over cascading waters and the surrounding garden.', source: sources.nparksJapanese },
   'SkatePark @ Lakeside Garden': { purpose: 'NParks describes the Skatepark as five skill-level pods complemented by a parkour park and bouldering wall, making different forms of urban sport visible in the garden.', source: sources.nparksLakeside },
   'Rainforest Pavilion': { purpose: 'NParks presents the Rainforest Pavilion as a mass-engineered-timber building using sustainably sourced wood and storing carbon as part of the visitor landscape.', source: sources.nparksLakeside },
@@ -373,11 +417,11 @@ const planFeature = ([code, name, group, type], layer, legend = type) => {
       { label: 'NParks plan type', value: type },
       { label: 'Coordinate status', value: 'Position undergoing georeferencing audit' }
     ],
-    fact: `The current NParks brochure identifies ${name} in the ${group} plan. ${purpose}`,
-    analysis: isFacility ? 'This point turns a named attraction into a spatially discussable public, ecological or cultural infrastructure node. Its mapped use is a designed relation between habitat, movement, learning, care or leisure.' : 'This point makes access, service provision or visitor support visible as part of the park’s political ecology. The node asks who can reach, use or benefit from the public garden and under what management conditions.',
+    fact: `The current NParks brochure identifies ${name} in the ${group} plan.`,
+    analysis: null,
     limitation: 'The public brochure supplies a numbered plan position, not surveyed coordinates. Any point digitised from it is for present-day orientation, not a legal or survey boundary. The brochure does not establish that this exact point or use existed in 1953, 1963, 1971, 1975 or 2019.',
     periodEvidence: 'Documented in the current NParks brochure / current public attraction page only; earlier presence and historical use are not verified here.',
-    question: isFacility ? 'What kind of nature, heritage, care or public use is organised at this mapped node?' : 'Who can reach, use or benefit from this service, and under what management conditions?'
+    question: null
   };
 };
 
@@ -608,6 +652,14 @@ const historicalTileServices = {
   1971: 'https://libmaps.nus.edu.sg/services/png/1971/{z}/{y}/{x}',
   1975: 'https://libmaps.nus.edu.sg/services/png/1975/{z}/{y}/{x}'
 };
+// A published year alone is not enough to qualify a raster for this study area.
+const historicalMapEligibility = {
+  1953: { coverage: 'confirmed', publicationYear: 1953, surveyYear: null, scale: '1:25,000', maker: 'Surveyor General, Malaya' },
+  1963: { coverage: 'unconfirmed', publicationYear: 1963, surveyYear: null, scale: '1:63,360', maker: 'Assistant Director of Survey, Far East Land Forces' },
+  1971: { coverage: 'confirmed', publicationYear: 1971, surveyYear: null, scale: '1:63,360', maker: 'Mapping Unit, Ministry of Defence' },
+  1975: { coverage: 'confirmed', publicationYear: 1975, surveyYear: null, scale: '1:25,000', maker: 'Mapping Unit, Ministry of Defence' }
+};
+const eligibleHistoricalMap = (year) => Boolean(historicalMapEligibility[year]?.coverage === 'confirmed' && historicalMapEligibility[year]?.publicationYear === year && sources[`nus${year}`]?.url && historicalTileServices[year]);
 const navigationBounds = L.latLngBounds([1.326, 103.716], [1.348, 103.744]);
 const map = L.map('map', { zoomControl: false, minZoom: 13, maxZoom: 19, maxBounds: navigationBounds.pad(.16), maxBoundsViscosity: .86, preferCanvas: true }).setView([1.3375, 103.7285], 15.25);
 L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -631,6 +683,11 @@ const externalLayerDefinitions = {
   waterbodies: { mode: 'datagov', url: sources.uraWaterGeo.dataUrl, localUrl: 'data/ura-water-jlg.geojson', source: sources.uraWaterGeo, title: 'URA Master Plan 2025 indicative waterbodies', description: 'URA’s indicative Parks and Waterbodies Plan layer, filtered to the Jurong Lake Gardens map window.' },
   greenery: { mode: 'datagov', url: sources.nparksParksGeo.dataUrl, localUrl: 'data/nparks-jlg.geojson', source: sources.nparksParksGeo, title: 'NParks managed parks and nature reserves', description: 'NParks managed-area polygons, filtered to the Jurong Lake Gardens map window. Managed green is not synonymous with forest.' }
 };
+const datasetInformation = {
+  osm: { title: 'OpenStreetMap reference', date: 'Snapshot date not recorded in the local file', summary: 'Community-mapped present-day roads, paths, waterways, woodland and amenities. Not an official garden inventory or a historical map.', method: 'The local GeoJSON retains OSM IDs and tags, but not object type, version, edit time or download time. Real-time Overpass results retain those fields when supplied.' },
+  greenery: { title: 'NParks managed areas', date: 'Data period: November 2025; portal record created July 2023; local download date not recorded', summary: 'Indicative areas managed by NParks, not necessarily legal park boundaries or habitat surveys.', method: 'The data.gov.sg catalogue update date is separate from its data period. FMEL_UPD_D remains a raw attribute because the portal does not define it.' },
+  waterbodies: { title: 'URA planning waterbodies', date: 'Master Plan designation: 2025; portal dataset created September 2026; local download date not recorded', summary: 'Indicative planning polygons, not a surveyed historic shoreline or a water-quality record.', method: 'The plan year, portal update and object attributes describe different things. FMEL_UPD_D and PRP_STATUS are shown raw because their meanings are not documented here.' }
+};
 const externalLayerState = Object.fromEntries(externalLayerIds.map((id) => [id, { loading: false, loaded: false, count: 0, layer: null, error: null }]));
 
 const enabledLayers = new Set(Object.keys(layers));
@@ -638,8 +695,6 @@ const featureGroup = L.layerGroup().addTo(map);
 let selectedFeatureId = null;
 let provisionalLocator = null;
 let timeValue = 3;
-let historicalRasterErrors = 0;
-let historicalRasterLoaded = false;
 let playing = false;
 let playTimer = null;
 let showResearchLeads = true;
@@ -853,6 +908,7 @@ function updateMapStatus(message) {
 }
 
 function historicalLayerFor(year) {
+  if (!eligibleHistoricalMap(year)) return null;
   if (historicalRasterLayers[year]) return historicalRasterLayers[year];
   const layer = L.tileLayer(historicalTileServices[year], {
     opacity: 0,
@@ -864,8 +920,9 @@ function historicalLayerFor(year) {
     attribution: `<a href="${sources[`nus${year}`].url}" target="_blank" rel="noopener noreferrer">NUS Libraries · ${year} historical raster</a>`
   }).addTo(map);
   historicalRasterLayers[year] = layer;
-  historicalRasterState[year] = { status: 'loaded', service: historicalTileServices[year] };
-  historicalRasterLoaded = true;
+  historicalRasterState[year] = { status: 'loading', service: historicalTileServices[year] };
+  layer.on('tileload', () => { historicalRasterState[year].status = 'available'; updateRasterLayers(); });
+  layer.on('tileerror', () => { if (historicalRasterState[year].status !== 'available') { historicalRasterState[year].status = 'unavailable'; updateRasterLayers(); } });
   return layer;
 }
 historicalYears.forEach((year) => historicalLayerFor(year));
@@ -873,6 +930,8 @@ historicalYears.forEach((year) => historicalLayerFor(year));
 function spatialOpacity(item, value) {
   const start = item.from;
   const end = item.to;
+  // Current-only brochure and reference points never fade into an earlier state.
+  if (start === 5 && value < 5) return 0;
   if (value < start - .55 || value > end + .55) return 0;
   if (value < start) return Math.max(0, (value - (start - .55)) / .55);
   if (value > end) return Math.max(0, ((end + .55) - value) / .55);
@@ -938,10 +997,10 @@ function featureWithinMapWindow(feature) {
 function overpassToGeoJSON(payload, id) {
   const features = (payload.elements || []).filter((element) => element.type === 'way' && element.geometry?.length > 1).map((element) => ({
     type: 'Feature',
-    properties: { ...(element.tags || {}), osm_id: element.id, osm_type: id },
+    properties: { ...(element.tags || {}), osm_id: element.id, osm_type: element.type, ...(element.version != null ? { osm_version: element.version } : {}), ...(element.timestamp ? { osm_timestamp: element.timestamp } : {}) },
     geometry: { type: 'LineString', coordinates: element.geometry.map((point) => [point.lon, point.lat]) }
   }));
-  return { type: 'FeatureCollection', name: `OpenStreetMap ${id}`, features };
+  return { type: 'FeatureCollection', name: `OpenStreetMap ${id}`, metadata: { source: 'OpenStreetMap via Overpass', retrieved_at: new Date().toISOString() }, features };
 }
 
 function overpassToPointGeoJSON(payload, id) {
@@ -949,15 +1008,21 @@ function overpassToPointGeoJSON(payload, id) {
     const lat = element.lat ?? element.center?.lat;
     const lon = element.lon ?? element.center?.lon;
     if (typeof lat !== 'number' || typeof lon !== 'number') return null;
-    return { type: 'Feature', properties: { ...(element.tags || {}), osm_id: element.id, osm_type: id }, geometry: { type: 'Point', coordinates: [lon, lat] } };
+    return { type: 'Feature', properties: { ...(element.tags || {}), osm_id: element.id, osm_type: element.type, ...(element.version != null ? { osm_version: element.version } : {}), ...(element.timestamp ? { osm_timestamp: element.timestamp } : {}) }, geometry: { type: 'Point', coordinates: [lon, lat] } };
   }).filter(Boolean);
-  return { type: 'FeatureCollection', name: `OpenStreetMap ${id}`, features };
+  return { type: 'FeatureCollection', name: `OpenStreetMap ${id}`, metadata: { source: 'OpenStreetMap via Overpass', retrieved_at: new Date().toISOString() }, features };
 }
 
 async function loadExternalGeoJSON(definition) {
   if (definition.localUrl) {
-    const localResponse = await fetch(definition.localUrl);
-    if (localResponse.ok) return localResponse.json();
+    const bundled = window.jlgReferenceSnapshots?.[definition.localUrl];
+    if (bundled) return bundled;
+    try {
+      const localResponse = await fetch(definition.localUrl);
+      if (localResponse.ok) return localResponse.json();
+    } catch (_error) {
+      // A local-file preview may disallow fetch(); the bundled snapshot above still works.
+    }
   }
   const response = await fetch(definition.url);
   if (!response.ok) throw new Error(`Source request failed (${response.status})`);
@@ -966,7 +1031,8 @@ async function loadExternalGeoJSON(definition) {
     if (poll.code !== 0 || !poll.data?.url) throw new Error(poll.errMsg || 'data.gov.sg did not return a download URL');
     const datasetResponse = await fetch(poll.data.url);
     if (!datasetResponse.ok) throw new Error(`GeoJSON download failed (${datasetResponse.status})`);
-    return datasetResponse.json();
+    const data = await datasetResponse.json();
+    return { ...data, metadata: { source: definition.source.url, retrieved_at: new Date().toISOString() } };
   }
   const payload = await response.json();
   return definition.mode === 'overpass-points' ? overpassToPointGeoJSON(payload, definition.title) : overpassToGeoJSON(payload, definition.title);
@@ -974,24 +1040,23 @@ async function loadExternalGeoJSON(definition) {
 
 function externalFeatureDetails(id, properties, definition, geometryType) {
   const labelMap = {
-    NAME: 'Official layer name', N_RESERVE: 'Managed-area label', PRP_STATUS: 'Planning status', OBJECTID: 'Object ID',
+    NAME: 'Recorded name', OBJECTID: 'Object ID', OBJECTID_1: 'Object ID', osm_id: 'OSM ID', osm_type: 'OSM object type',
     amenity: 'Amenity tag', highway: 'Highway tag', waterway: 'Waterway tag', natural: 'Natural tag', landuse: 'Land-use tag',
     name: 'Mapped name', ref: 'Reference code', surface: 'Surface', access: 'Access', operator: 'Operator', opening_hours: 'Opening hours',
     wheelchair: 'Wheelchair access', covered: 'Covered', lit: 'Lit', drinking_water: 'Drinking water', toilets: 'Toilets', shelter_type: 'Shelter type',
     bicycle_parking: 'Bicycle parking', capacity: 'Capacity', seats: 'Seats', check_date: 'OSM check date', maxspeed: 'Max speed', oneway: 'One-way'
   };
   const preferredKeys = id === 'roads'
-    ? ['name', 'highway', 'ref', 'surface', 'access', 'lit', 'maxspeed', 'oneway']
+    ? ['osm_type', 'osm_id', 'name', 'highway', 'ref', 'surface', 'access', 'lit', 'maxspeed', 'oneway']
     : id === 'waterways'
-      ? ['name', 'waterway', 'intermittent', 'seasonal', 'tunnel']
+      ? ['osm_type', 'osm_id', 'name', 'waterway', 'intermittent', 'seasonal', 'tunnel']
       : id === 'woodland'
-        ? ['name', 'natural', 'landuse', 'access']
+        ? ['osm_type', 'osm_id', 'name', 'natural', 'landuse', 'access']
         : id === 'amenities_ref'
-          ? ['name', 'amenity', 'drinking_water', 'toilets', 'shelter_type', 'bicycle_parking', 'covered', 'wheelchair', 'opening_hours']
-          : ['NAME', 'N_RESERVE', 'PRP_STATUS', 'OBJECTID'];
+          ? ['osm_type', 'osm_id', 'name', 'amenity', 'drinking_water', 'toilets', 'shelter_type', 'bicycle_parking', 'covered', 'wheelchair', 'opening_hours']
+          : id === 'greenery' ? ['NAME', 'OBJECTID_1', 'L_CODE'] : ['OBJECTID'];
   const details = [
-    { label: 'Geometry', value: geometryType },
-    { label: 'Mapped source layer', value: definition.title }
+    { label: 'Geometry', value: geometryType }
   ];
   preferredKeys.forEach((key) => {
     const raw = properties[key];
@@ -1003,56 +1068,35 @@ function externalFeatureDetails(id, properties, definition, geometryType) {
   return details.slice(0, 10);
 }
 
-function externalFeatureItem(id, feature, index) {
+function externalFeatureItem(id, feature, index, metadata = {}) {
   const definition = externalLayerDefinitions[id];
   const properties = feature.properties || {};
-  const fallbackName = `${definition.title} feature ${index + 1}`;
-  const mappedName = properties.NAME || properties.name || properties.ref || null;
-  const name = mappedName || fallbackName;
+  const classTag = properties.amenity || properties.highway || properties.waterway || properties.natural || properties.landuse;
+  const mappedName = properties.NAME || properties.name || null;
+  const name = mappedName || (id === 'waterbodies' ? `Waterbody${properties.OBJECTID == null ? '' : ` · OBJECTID ${properties.OBJECTID}`}` : classTag ? String(classTag).replaceAll('_', ' ') : definition.title);
   const geometryType = feature.geometry?.type || 'unknown';
-  const fact = id === 'amenities_ref'
-    ? `OpenStreetMap maps this current amenity reference point as ${properties.amenity || 'a public amenity'}${name && name !== `${definition.title} feature ${index + 1}` ? ` named ${name}` : ''}.`
-    : id === 'roads'
-    ? `This current reference geometry is an OpenStreetMap way tagged ${properties.highway || 'highway'}${name ? ` and named ${name}` : ''}.`
-    : id === 'waterways'
-      ? `This current reference geometry is an OpenStreetMap waterway${properties.waterway ? ` tagged ${properties.waterway}` : ''}${name ? ` named ${name}` : ''}.`
-      : id === 'woodland'
-        ? `This polygon is an OpenStreetMap woodland / forest reference${name ? ` named ${name}` : ''}.`
-        : id === 'waterbodies'
-          ? `This polygon comes from the URA Master Plan 2025 SDCP Waterbody layer. It is an indicative planning layer, not a survey of every visible water edge.`
-          : `This polygon comes from the NParks Parks and Nature Reserves dataset and represents an indicative managed area${name ? ` named ${name}` : ''}.`;
-  const analysis = id === 'amenities_ref'
-    ? 'Small services such as drinking water, toilets, shelter and bicycle parking shape who can comfortably stay in the garden. Mapping them makes care and bodily infrastructure visible rather than treating amenities as an afterthought.'
-    : id === 'roads'
-    ? 'Roads and paths distribute access, shade, noise, maintenance and mobility. Making them a separate layer stops “nature” from appearing detached from the circulation infrastructure that produces the visit.'
-    : id === 'waterways' || id === 'waterbodies'
-      ? 'Water is both ecological medium and managed infrastructure. Its mapped form invites comparison between river, lake, drainage, waterbody planning and visitor scenery.'
-      : 'A green polygon is not automatically a wild ecosystem. Its management status, land-cover label and visitor access need to be read together rather than collapsed into “nature”.';
   return {
     id: `external-${id}-${properties.osm_id ?? properties.OBJECTID ?? properties.OBJECTID_1 ?? index}`,
     mapCode: id.slice(0, 3).toUpperCase(),
     name,
-    displayTitle: id === 'amenities_ref' ? properties.amenity : null,
-    displaySubtitle: id === 'amenities_ref' ? (mappedName || `Unnamed in OSM · feature ${index + 1}${properties.osm_id ? ` · OSM ID ${properties.osm_id}` : ''}`) : null,
+    displayTitle: name,
+    displaySubtitle: mappedName && properties.amenity ? `Amenity: ${String(properties.amenity).replaceAll('_', ' ')}` : null,
     group: definition.title,
     type: id,
     legend: id,
     layer: id,
     from: 5,
     to: 5,
-    documentedPeriod: id === 'waterbodies' ? 'URA Master Plan 2025 reference layer' : id === 'greenery' ? 'current NParks managed-area dataset; checked 2026' : 'current open reference layer; checked 2026',
+    documentedPeriod: 'Current reference; source snapshot date shown below',
     geometryType,
     geometry: feature.geometry,
     spatialStatus: id === 'waterbodies' || id === 'greenery' ? 'indicative-official' : 'open-reference',
     source: definition.source,
     details: externalFeatureDetails(id, properties, definition, geometryType),
-    fact,
-    analysis,
-    limitation: id === 'waterbodies' || id === 'greenery'
-      ? 'This official dataset is current / plan-based and has been filtered to this map window. It does not establish the feature’s exact appearance in 1953, 1963, 1971, 1975 or 2019.'
-      : 'OpenStreetMap is community-maintained reference data. It is useful for orientation and comparison, but it is not an NParks survey, not a historical reconstruction and not evidence of legal ownership or ecological condition.',
-    periodEvidence: 'Current reference layer only; it is deliberately hidden on the historical raster states to avoid projecting present-day geometry backward.',
-    question: id === 'amenities_ref' ? 'What everyday services make this public nature space usable, safe and comfortable?' : id === 'roads' ? 'Who can move through this landscape, and what infrastructure makes that movement possible?' : id === 'waterways' || id === 'waterbodies' ? 'How does managed water become both ecological infrastructure and a scenic public resource?' : 'Which kinds of green space are managed, labelled and made accessible here?'
+    rawProperties: properties,
+    extractedAt: metadata.retrieved_at || null,
+    datasetId: id === 'greenery' || id === 'waterbodies' ? id : 'osm',
+    recordType: 'gis-reference'
   };
 }
 
@@ -1072,7 +1116,7 @@ function addExternalGeoJSON(id, data) {
     style: () => externalStyle(id),
     pointToLayer: (_feature, latlng) => L.circleMarker(latlng, { ...externalStyle(id), radius: 4 }),
     onEachFeature: (feature, layer) => {
-      const item = externalFeatureItem(id, feature, featureIndexes.get(feature) ?? 0);
+      const item = externalFeatureItem(id, feature, featureIndexes.get(feature) ?? 0, data.metadata);
       bindInteractiveHoverCard(layer, item);
     }
   });
@@ -1091,7 +1135,7 @@ function featureBelongsToExternalLayer(id, feature) {
 }
 
 function updateExternalLayerVisibility() {
-  const currentState = timeValue >= 4.65;
+  const currentState = timeValue >= 5;
   externalLayerIds.forEach((id) => {
     const state = externalLayerState[id];
     if (!state.layer) return;
@@ -1175,7 +1219,8 @@ function renderFeatureSource(source) {
 function relatedSourcesFor(item) {
   const dossier = caseDossierFor(item);
   const cited = dossier?.sections.flatMap((section) => section.refs.map((id) => sources[id])) || [];
-  const related = [...cited, ...(!dossier ? (item.storySources || []) : []), item.source, item.purposeSource, item.imageSource, ...(item.spatialAudit?.sources || []), ...(item.relatedSources || [])];
+  const articleCited = atlasArticles[dossier?.articleId || dossier?.id]?.sections.flatMap((section) => section.paragraphs.flatMap((paragraph) => paragraph.refs.map((id) => sources[id]))) || [];
+  const related = [...cited, ...articleCited, ...(!dossier ? (item.storySources || []) : []), item.source, item.purposeSource, item.imageSource, ...(item.spatialAudit?.sources || []), ...(item.relatedSources || [])];
   if (item.group === 'Chinese Garden' || item.name === 'Chinese Garden') related.push(sources.nhbChinese, sources.nas1975, sources.cna2024Opening, sources.straits2024Preview, sources.academicStokols, sources.nparksAnnualReport);
   if (item.group === 'Japanese Garden' || item.name === 'Japanese Garden') related.push(sources.pmoOpening, sources.cna2024Opening, sources.straits2024Preview, sources.academicStokols, sources.nparksAnnualReport);
   if (item.group === 'Lakeside Garden' || item.name === 'Lakeside Garden') related.push(sources.mothership2019Opening, sources.cna2018Plan, sources.academicStokols, sources.nparksAnnualReport);
@@ -1192,7 +1237,8 @@ function relatedSourcesFor(item) {
 
 function citedSourcesFor(item) {
   const dossier = caseDossierFor(item);
-  const cited = [item.source, item.purposeSource, item.imageSource, ...(dossier?.sections.flatMap((section) => section.refs.map((id) => sources[id])) || []), ...(!dossier ? (item.storySources || []) : [])];
+  const articleCited = atlasArticles[dossier?.articleId || dossier?.id]?.sections.flatMap((section) => section.paragraphs.flatMap((paragraph) => paragraph.refs.map((id) => sources[id]))) || [];
+  const cited = [item.source, item.purposeSource, item.imageSource, ...articleCited, ...(dossier?.sections.flatMap((section) => section.refs.map((id) => sources[id])) || []), ...(!dossier ? (item.storySources || []) : [])];
   return [...new Map(cited.filter(Boolean).map((source) => [source.url, source])).values()];
 }
 
@@ -1202,7 +1248,7 @@ function renderRelatedSources(item) {
   const citedUrls = new Set(citedSourcesFor(item).map((source) => source.url));
   const render = (records) => `<div class="related-sources">${records.map((source) => `<div data-source-id="${escapeHtml(source.key)}"><b>${escapeHtml(source.institution)}</b>${sourceLink(source)}<span class="apa-citation">${escapeHtml(apaCitation(source))}</span>${source.evidenceScope ? `<small>${escapeHtml(source.evidenceScope)}</small>` : ''}<small>Checked ${escapeHtml(source.date)}</small></div>`).join('')}</div>`;
   const further = related.filter((source) => !citedUrls.has(source.url));
-  return `<h3>References</h3><h4 class="references-context">Cited in this card</h4>${render(related.filter((source) => citedUrls.has(source.url)))}${further.length ? `<h4 class="references-context further-reading-heading">Further reading / corroborating context</h4>${render(further)}` : ''}`;
+  return `<h3>References</h3>${render(related.filter((source) => citedUrls.has(source.url)))}${further.length ? `<details class="further-reading"><summary>Further reading / corroborating context</summary>${render(further)}</details>` : ''}`;
 }
 
 function verificationLabel(item) {
@@ -1225,6 +1271,7 @@ function renderFeatureDetails(item) {
 function renderEvidenceStory(item) {
   const dossier = caseDossierFor(item);
   if (dossier) return renderCaseDossier(item, dossier);
+  if (['facilities', 'amenities', 'amenities_ref'].includes(item.layer)) return '';
   if (!item.story) return '';
   const storySources = [...new Map((item.storySources || []).filter(Boolean).map((source) => [source.url, source])).values()];
   return `<div class="evidence-story"><h3>Evidence-led story</h3><p>${escapeHtml(item.story)} ${inlineCitations(storySources)}</p></div>`;
@@ -1236,25 +1283,43 @@ function inlineCitations(records) {
 }
 
 function caseDossierFor(item) {
-  const id = caseResearch.cases[item.id] ? item.id : caseResearch.aliases[item.name];
-  if (id) return { ...caseResearch.cases[id], id, contextual: id !== item.id && !['Stoneboat', 'Freshwater Swamp', 'Grasslands', 'Therapeutic Garden', 'The Lone Tree', 'Floral Garden', 'Grand Arch', 'Bonsai Garden', 'Rasau Walk', 'Neram Streams', 'Allotment Gardens', 'Water Lily Garden', 'Cascading Creek', 'Forest Ramble (Children’s Playground)'].includes(item.name) };
-  if (!['facilities', 'amenities', 'amenities_ref'].includes(item.layer)) return null;
-  const type = `${item.type || ''} ${item.purpose || ''}`.toLowerCase();
-  let question = `How is ${item.name} used, maintained and reached in practice?`;
-  if (/toilet|drinking|nursing|shelter|information/.test(type)) question = `Who can reach and use ${item.name}, and when is it available?`;
-  else if (/food|beverage|dining|restaurant/.test(type)) question = `How does paid service at ${item.name} affect a visit to this public garden?`;
-  else if (/sport|play|recreation|fitness/.test(type)) question = `Who is the activity at ${item.name} designed for, and who uses it in practice?`;
-  return { id: null, compact: true, sections: [{ title: 'Question for this place', kind: 'interpretation', text: question, refs: [] }], related: [] };
+  const place = placeResearch[item.id];
+  if (place) return { id: item.id, articleId: place.articleId || null, sections: place.sections, related: [], featured: Boolean(place.articleId), referenceOnly: !place.articleId, contextual: false };
+  const exactPlaceAliases = {
+    'Stoneboat': 'stoneboat', 'Grand Arch': 'grand-arch', 'Bonsai Garden': 'bonsai',
+    'Freshwater Swamp': 'freshwater-swamp', 'Grasslands': 'grasslands', 'The Lone Tree': 'lone-tree-memory',
+    'Forest Ramble (Children’s Playground)': 'forest-ramble', 'Therapeutic Garden': 'therapeutic-garden',
+    'Rasau Walk': 'rasau', 'Neram Streams': 'neram', 'Allotment Gardens': 'allotments',
+    'Cascading Creek': 'creek'
+  };
+  const alias = ['facilities', 'amenities'].includes(item.layer) ? exactPlaceAliases[item.name] : caseResearch.aliases[item.name];
+  const id = atlasArticles[item.id] ? item.id : caseResearch.cases[item.id] ? item.id : alias;
+  if (!id) return null;
+  const archive = caseResearch.cases[id];
+  const authored = publicResearch[id];
+  const sections = authored || [publicReference[id]].filter(Boolean);
+  return { id, sections, related: authored ? archive.related : [], featured: Boolean(authored || atlasArticles[id]), referenceOnly: !authored && !atlasArticles[id],
+    contextual: id !== item.id && !['Stoneboat', 'Freshwater Swamp', 'Grasslands', 'Therapeutic Garden', 'The Lone Tree', 'Floral Garden', 'Grand Arch', 'Bonsai Garden', 'Rasau Walk', 'Neram Streams', 'Allotment Gardens', 'Water Lily Garden', 'Cascading Creek', 'Forest Ramble (Children’s Playground)'].includes(item.name) };
 }
 
 function renderCaseDossier(item, dossier) {
-  const label = { record: 'Documented evidence', interpretation: 'Our interpretation', gap: 'Research limit / proposed check' };
   const related = dossier.related.map((id) => features.find((entry) => entry.id === id)).filter(Boolean);
-  return `<article class="case-dossier${dossier.featured ? ' featured-case' : ''}${dossier.compact ? ' compact-case' : ''}" aria-label="${dossier.compact ? 'Research question' : 'In-depth case analysis'}">
-    <h3>${dossier.compact ? 'Research question' : dossier.featured ? 'Place story and analysis' : 'In-depth case analysis'}</h3>
-    ${dossier.contextual ? '<p class="case-scope">This feature is connected to the wider case below. A record about the surrounding garden or system is not a finding about this individual point.</p>' : ''}
-    ${!dossier.featured && !dossier.compact ? '<p class="case-scope">Historical events use dated records. Current attraction descriptions explain the place as checked in 2026; they do not establish its condition in the selected map year.</p>' : ''}
-    ${dossier.sections.map((section) => `<section class="case-section ${section.kind}"><span class="case-evidence-kind">${label[section.kind]}</span><h4>${escapeHtml(section.title)}</h4><p>${escapeHtml(section.text)} ${inlineCitations(section.refs.map((id) => sources[id]))}</p></section>`).join('')}
+  const articleId = dossier.articleId || dossier.id;
+  const article = atlasArticles[articleId] && (!dossier.contextual || item.name === 'The Lone Tree') ? atlasArticles[articleId] : null;
+  if (article) {
+    const refs = [...new Set(article.sections.flatMap((section) => section.paragraphs.flatMap((paragraph) => paragraph.refs)))];
+    return `<article class="case-dossier featured-case atlas-inline-article" aria-label="Place story">
+      <h3>${article.status === 'case-study' ? 'Case study' : 'Expanded research draft'}</h3>
+      <h4 class="atlas-card-title">${escapeHtml(article.title)}</h4>
+      <p class="atlas-lead">${escapeHtml(article.lead)}</p>
+      ${article.sections.map((section) => `<section class="atlas-inline-section"><h4>${escapeHtml(section.heading)}</h4>${section.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph.text)} ${inlineCitations(paragraph.refs.map((key) => sources[key]).filter(Boolean))}</p>`).join('')}</section>`).join('')}
+      <details class="atlas-research-record"><summary>Research record and references</summary><div><p>${escapeHtml(article.audit.uncertainty)}</p><ol>${refs.map((key) => `<li>${sourceLink(sources[key], apaCitation(sources[key]))}</li>`).join('')}</ol></div></details>
+    </article>`;
+  }
+  return `<article class="case-dossier${dossier.featured ? ' featured-case' : ' compact-case'}" aria-label="${dossier.featured ? 'Place story' : 'Place record'}">
+    <h3>${dossier.featured ? 'Place story' : 'Place record'}</h3>
+    ${dossier.contextual ? '<p class="case-scope">This account describes the surrounding place, not the exact selected point.</p>' : ''}
+    ${dossier.sections.map((section) => `<section class="case-section record"><h4>${escapeHtml(section.title)}</h4><p>${escapeHtml(section.text)} ${inlineCitations(section.refs.map((id) => sources[id]).filter(Boolean))}</p></section>`).join('')}
     ${related.length ? `<div class="related-cases"><h4>Connected cases</h4>${related.map((entry) => `<button type="button" data-related-case="${escapeHtml(entry.id)}">${escapeHtml(entry.name)} →</button>`).join('')}<small>Mapped destinations are highlighted; research records open as text only.</small></div>` : ''}
   </article>`;
 }
@@ -1268,9 +1333,44 @@ function spatialBadgeLabel(item) {
   return 'mapped object';
 }
 
+function renderGISFeatureCard(item) {
+  const dataset = datasetInformation[item.datasetId];
+  const properties = item.rawProperties;
+  const recordDescription = item.datasetId === 'greenery'
+    ? `The selected NParks record names this managed area “${properties.NAME || 'not recorded'}”. Its polygon describes an indicative management area, not a habitat survey.`
+    : item.datasetId === 'waterbodies'
+      ? `The selected URA record is a planning waterbody polygon${properties.OBJECTID == null ? '' : ` (OBJECTID ${properties.OBJECTID})`}. This record does not provide a place name or a historical shoreline.`
+      : `The selected OpenStreetMap record${properties.name ? ` is named “${properties.name}”` : ' has no recorded name'}${properties.amenity ? ` and carries the amenity=${properties.amenity} tag` : properties.highway ? ` and carries the highway=${properties.highway} tag` : properties.waterway ? ` and carries the waterway=${properties.waterway} tag` : properties.natural ? ` and carries the natural=${properties.natural} tag` : ''}. This is a present-day map record, not a dated account of the earlier landscape.`;
+  const osmType = properties.osm_type;
+  const osmId = properties.osm_id;
+  const objectUrl = ['node', 'way', 'relation'].includes(osmType) && /^\d+$/.test(String(osmId ?? ''))
+    ? `https://www.openstreetmap.org/${osmType}/${osmId}` : null;
+  const sourceUrl = objectUrl || item.source.url;
+  const rawAttributes = Object.entries(properties).map(([key, value]) => `<div><dt>${escapeHtml(key)}</dt><dd>${escapeHtml(value == null ? 'Not recorded' : Array.isArray(value) ? value.join(', ') : value)}</dd></div>`).join('');
+  return `<div class="feature-card gis-card" style="--feature-color:${layers[item.layer].color}">
+    <div class="feature-kicker">CURRENT REFERENCE · ${escapeHtml(dataset.title)}</div>
+    <h2>${escapeHtml(item.name)}</h2>
+    ${item.displaySubtitle ? `<div class="feature-subtitle">${escapeHtml(item.displaySubtitle)}</div>` : ''}
+    <p class="dataset-summary">${escapeHtml(dataset.summary)}</p>
+    <p class="dataset-date">${escapeHtml(dataset.date)}${item.extractedAt ? ` · Retrieved ${escapeHtml(item.extractedAt.slice(0, 10))}` : ''}</p>
+    <h3>What this mapped object records</h3><p>${escapeHtml(recordDescription)}</p>
+    <h3>Selected record</h3><dl class="feature-details">${item.details.map(({ label, value }) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join('')}</dl>
+    <p class="dataset-date"><a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${objectUrl ? 'View this OSM object' : 'View source dataset'} ↗</a></p>
+    <details><summary>About this dataset</summary><div><p>${escapeHtml(dataset.method)}</p><p>${sourceLink(item.source)}</p><p>Source checked ${escapeHtml(item.source.date)}. This check date is not the object’s creation or survey date.</p><p class="source-url">${escapeHtml(item.source.url)}</p></div></details>
+    <details><summary>All source attributes</summary><div><dl class="feature-details">${rawAttributes}</dl></div></details>
+    <details><summary>Reference</summary><div><p>${escapeHtml(apaCitation(item.source))}</p></div></details>
+  </div>`;
+}
+
 function selectFeature(item) {
   selectedFeatureId = item.id;
   const panel = document.getElementById('evidence-panel');
+  if (item.recordType === 'gis-reference') {
+    panel.innerHTML = renderGISFeatureCard(item);
+    panel.scrollTop = 0;
+    renderFeatures();
+    return;
+  }
   const layer = layers[item.primaryLens || item.layer];
   const dossier = caseDossierFor(item);
   panel.innerHTML = `<div class="feature-card" style="--feature-color:${layer.color}">
@@ -1280,15 +1380,13 @@ function selectFeature(item) {
     <div class="feature-subtitle">Mapped period: ${escapeHtml(periodLabel(item))} · geometry: ${escapeHtml(item.geometryType)}</div>
     <div class="evidence-badges"><span class="evidence-badge ${escapeHtml(item.spatialStatus)}">${escapeHtml(spatialBadgeLabel(item))}</span><span class="evidence-badge">geometry: ${escapeHtml(item.geometryType)}</span>${verificationLabel(item) !== spatialBadgeLabel(item) ? `<span class="evidence-badge evidence-status">${escapeHtml(verificationLabel(item))}</span>` : ''}</div>
     <div class="feature-actions">${googleMapsAction(item, 'feature-map-link')}</div>
-    ${renderFeatureDetails(item)}
     ${item.image ? `<div class="feature-image-credit">Image source: ${sourceLink(item.imageSource || item.source)}</div>` : ''}
     ${!item.image && ['facilities', 'amenities'].includes(item.layer) && googleMapsLinkKind(item) === 'name-search' ? '<p class="feature-image-note">Google Maps name search; place listing not verified.</p>' : ''}
-    ${dossier?.featured ? '' : dossier?.compact ? `<h3>Place and intended use</h3><p>${escapeHtml(item.purpose || item.fact)} ${inlineCitations([item.purposeSource || item.source])}</p>` : `<h3>What this map object represents</h3><p>${escapeHtml(item.fact)} ${inlineCitations([item.source])}</p>${item.purpose ? `<h3>Documented purpose / use</h3><p>${escapeHtml(item.purpose)} ${inlineCitations([item.purposeSource || item.source])}</p>` : ''}`}
+    ${dossier ? '' : `<h3>What this place is</h3><p>${escapeHtml(item.purpose || item.fact)} ${inlineCitations([item.purposeSource || item.source])}</p>`}
     ${renderEvidenceStory(item)}
-    ${!dossier ? `<h3>Political ecology reading · our interpretation</h3><p>${escapeHtml(item.analysis)}</p>` : ''}
-    ${dossier?.featured ? `<details class="research-status"><summary>Research status and map position</summary>${item.periodEvidence ? `<p>${escapeHtml(item.periodEvidence)}</p>` : ''}<p>${escapeHtml(item.limitation)}</p>${item.spatialAudit?.basis ? `<p>${escapeHtml(item.spatialAudit.basis)}</p>` : ''}</details>` : `${item.periodEvidence ? `<h3>What the selected date does — and does not — establish</h3><p>${escapeHtml(item.periodEvidence)}</p>` : ''}<h3>What the geometry does not prove</h3><p>${escapeHtml(item.limitation)}</p>`}
+    <details class="research-status"><summary>Map record and research notes</summary>${renderFeatureDetails(item)}${item.periodEvidence ? `<p>${escapeHtml(item.periodEvidence)}</p>` : ''}${item.limitation ? `<p>${escapeHtml(item.limitation)}</p>` : ''}${item.spatialAudit?.basis ? `<p>${escapeHtml(item.spatialAudit.basis)}</p>` : ''}</details>
     ${renderRelatedSources(item)}
-    ${renderFeatureSource(item.source)}
+    <details class="source-record"><summary>Primary map / object record</summary>${renderFeatureSource(item.source)}</details>
   </div>`;
   panel.scrollTop = 0;
   panel.querySelectorAll('[data-related-case]').forEach((button) => button.addEventListener('click', () => {
@@ -1318,27 +1416,29 @@ function selectFeature(item) {
 function renderBaseEvidence(value) {
   if (selectedFeatureId) return;
   const display = timelineLabel(value);
-  const baseState = baseMapState(value);
-  const historical = value < 4;
-  const sourceYear = value < 1 ? 1953 : value < 2 ? 1963 : value < 3 ? 1971 : 1975;
-  const source = historical ? sources[`nus${sourceYear}`] : sources.onemap;
-  const baseDescription = historical
-    ? 'The map canvas is showing NUS’s georeferenced historical raster, not a modern basemap with a historical tint. The raster records mapped land, water and infrastructure for its publication year; it does not by itself recover every social use or prove a present-day park boundary.'
-    : 'The map canvas is showing OneMap’s current map service. It is used for present-day orientation only; it is not evidence that today’s boundaries existed in earlier periods.';
-  const sourceBlock = value > 0 && value < 1
-    ? `${sourceLink(sources.nus1953)}<br>${sourceLink(sources.nus1963)}`
-    : value > 1 && value < 2
-      ? `${sourceLink(sources.nus1963)}<br>${sourceLink(sources.nus1971)}`
-      : value > 2 && value < 3
-        ? `${sourceLink(sources.nus1971)}<br>${sourceLink(sources.nus1975)}`
-    : sourceLink(source);
+  const selected = Math.round(value);
+  const isStop = Math.abs(value - selected) < .06;
+  const year = years[selected].year;
+  const content = {
+    1953: { title: 'Before the lake gardens', text: 'The 1953 topographical sheets include a Jurong sheet with Sungei Jurong before the later lake-garden project. Its mapped river, routes and place names give visitors a starting point for investigating the landscape before the recreational lake. The sheet records cartographic observations, not a complete account of local livelihoods or ecology.', reading: 'Compare the water symbols and routes with the later sheets. Ask which features remain legible and which have been redrawn, without treating different map symbols as measured landscape change.', source: sources.nus1953 },
+    1963: { title: 'No confirmed Jurong map coverage', text: 'The 1963 publication belongs to the period of Jurong’s industrial transformation, but NUS describes this sheet as covering mainly eastern Singapore. That catalogue description does not establish that the map covers Jurong Lake Gardens. Until coverage is checked at the study-area coordinates, this stop has no historical raster or present-day replacement.', reading: 'Industrialisation is a documented historical process, but it cannot be presented as an observation on a map that may not cover this place.', source: sources.nus1963 },
+    1971: { title: 'Lake formation in context', text: 'The official account dates completion of the Jurong River sluice works and formation of Jurong Lake to 1971. The 1971 topographical map provides a separate spatial record of mapped water, routes and infrastructure during that transformation. Read the map and the dated account together: a sheet published in 1971 need not show the landscape after the works were completed.', reading: 'Compare its water and transport symbols with 1953 to investigate how the wider Jurong landscape was being remade. This is a question for visual comparison, not a measured inundation area.', source: sources.nus1971, eventSource: sources.pmoOpening },
+    1975: { title: 'Gardens in an engineered lake', text: 'The official chronology places the Japanese Garden’s completion in 1973 and the Chinese Garden’s in 1975. The 1975 Jurong sheet situates lake, islands, routes and surrounding land within the same mapped landscape. It allows the designed leisure spaces to be examined alongside the engineered water system and nearby development.', reading: 'Compare with earlier sheets to ask how a working river-and-lake landscape became a setting for public recreation. Apparent shoreline differences are not precise measurements, especially across maps of different scales.', source: sources.nus1975, eventSource: sources.pmoOpening },
+    2019: { title: 'Lakeside Garden opens', text: 'Lakeside Garden opened as the first phase of the present Jurong Lake Gardens in 2019. This dated event separates the earlier lake-and-garden landscape from the later three-garden redevelopment. The contemporary OneMap canvas helps locate the project, but it does not recreate the 2019 landscape or prove which facilities existed on opening day.', reading: 'Use dated plans and opening records, rather than today’s amenity layer, to investigate who the new public space was designed to serve and what changed on the ground.', source: sources.pmoOpening },
+    2024: { title: 'Three gardens together', text: 'The rejuvenated Chinese and Japanese Gardens reopened on 8 September 2024, completing the three-garden Jurong Lake Gardens project with Lakeside Garden. NParks documents retained landmarks as well as new gardens, pavilions and community spaces. The present-day OneMap canvas locates these places; it is not a map surveyed on the reopening date.', reading: 'Compare the official opening account with earlier mapped land and water, while keeping current OSM, NParks and URA features distinct from an opening-day inventory.', source: sources.nparks2024Opening }
+  };
+  const card = content[year];
+  const historical = year <= 1975 && year !== 1963;
+  const metadata = historicalMapEligibility[year];
+  const comparison = historical ? 'Visual comparison only: different survey dates, scales and cartographic conventions prevent precise area or shoreline measurements here.' : '';
   document.getElementById('evidence-panel').innerHTML = `<div class="base-card">
-    <span class="section-kicker">03 · BASE MAP EVIDENCE</span>
-    <h2>${escapeHtml(display.year)} · ${escapeHtml(baseState.label.replace('Base map: ', ''))}</h2>
-    <div class="evidence-badges"><span class="evidence-badge">${historical ? 'historical raster' : 'current reference map'}</span><span class="evidence-badge">${escapeHtml(display.status)}</span></div>
-    <h3>What the map can show</h3><p>${escapeHtml(baseDescription)}</p>
-    <h3>Why this matters politically</h3><p>${historical ? 'Changing the base map makes the transformation itself visible: the present garden is read against earlier mapped water, roads, settlement and productive landscapes, rather than treating history as a decorative overlay.' : 'The current map is a reference layer for locating present access and named facilities. It should not be projected backward onto the historical landscape.'}</p>
-    <h3>Source</h3><div class="feature-source">${sourceBlock}<span class="source-url">${escapeHtml(source.url)}</span>${source.serviceUrl ? `<br><br><b>Integrated GIS service</b><br><span class="source-url">NUS PNG tile template: ${escapeHtml(source.serviceUrl)}</span>` : ''}<br><br><b>Checked</b><br>${escapeHtml(source.date)}</div>
+    <span class="section-kicker">03 · ${historical ? 'HISTORICAL MAP' : year === 1963 ? 'MAP AVAILABILITY' : 'DOCUMENTED EVENT'}</span>
+    <h2>${escapeHtml(display.year)} · ${escapeHtml(isStop ? card.title : 'Visual transition')}</h2>
+    <div class="evidence-badges"><span class="evidence-badge">${historical ? 'historical evidence' : year === 1963 ? 'coverage unconfirmed' : 'documented event'}</span>${year >= 2019 ? '<span class="evidence-badge">present-day orientation map</span>' : ''}</div>
+    <h3>What this state shows</h3><p>${escapeHtml(isStop ? card.text : 'This is an exploratory visual transition, not an intermediate historical survey or a measurement of landscape change.')}</p>
+    ${isStop ? `<h3>Why compare it?</h3><p>${escapeHtml(card.reading)}</p>` : ''}
+    <h3>Sources</h3><p>${sourceLink(card.source)}${card.eventSource ? ` · ${sourceLink(card.eventSource, 'Dated event account')}` : ''}</p>
+    <details><summary>Map information and references</summary><div><p>${escapeHtml(historical ? `Original map publication: ${year}; ${metadata.scale}; ${metadata.maker}. NUS later digitised and georeferenced the map. Study-area survey date is not established here.` : year === 1963 ? 'NUS publishes a 1963 map, but study-area coverage is unconfirmed. Its publication date does not establish local landscape conditions.' : `Event date: ${year}. The OneMap tiles are contemporary and have no ${year} survey date in this project.`)}</p>${comparison ? `<p>${escapeHtml(comparison)}</p>` : ''}${historical && year === 1971 ? '<p>NUS reports later SVY21 registration using control points and transformation tests; this is separate from the original map production.</p>' : ''}${historical ? `<p>Integrated map service: <span class="source-url">${escapeHtml(card.source.serviceUrl)}</span></p>` : ''}<p>Source checked ${escapeHtml(card.source.date)}; this is not the map’s survey or event date.</p><p>${escapeHtml(apaCitation(card.source))}</p>${card.eventSource ? `<p>${escapeHtml(apaCitation(card.eventSource))}</p>` : ''}</div></details>
   </div>`;
 }
 
@@ -1351,26 +1451,24 @@ function baseMapState(value) {
   if (value < 1) {
     const t = clamp01(value);
     state[1953] = 1 - t;
-    state[1963] = t;
-    state.label = t < .06 ? 'Base map: NUS 1953 georeferenced raster' : 'Base map: visual transition · NUS 1953 → 1963';
+    state.label = t < .06 ? 'Historical map: 1953' : '1953 map fading before an unverified 1963 state';
   } else if (value < 2) {
     const t = clamp01(value - 1);
-    state[1963] = 1 - t;
     state[1971] = t;
-    state.label = t < .06 ? 'Base map: NUS 1963 georeferenced raster' : 'Base map: visual transition · NUS 1963 → 1971';
+    state.label = t < .06 ? 'No eligible 1963 map for this study area' : '1971 historical map fading in after the 1963 gap';
   } else if (value < 3) {
     const t = clamp01(value - 2);
     state[1971] = 1 - t;
     state[1975] = t;
-    state.label = t < .06 ? 'Base map: NUS 1971 georeferenced raster' : 'Base map: visual transition · NUS 1971 → 1975';
+    state.label = t < .06 ? 'Historical map: 1971' : 'Visual comparison · NUS 1971 → 1975';
   } else if (value < 4) {
     const t = clamp01((value - 3) / .65);
     state[1975] = 1 - t;
     state.current = t;
-    state.label = t < .06 ? 'Base map: NUS 1975 georeferenced raster' : 'Base map: visual transition · NUS 1975 → OneMap';
+    state.label = t < .06 ? 'Historical map: 1975' : 'Visual transition · 1975 map → present-day OneMap';
   } else {
     state.current = 1;
-    state.label = 'Base map: OneMap current map service';
+    state.label = 'Present-day OneMap for orientation · not a map of the selected event year';
   }
   return state;
 }
@@ -1380,26 +1478,33 @@ function updateRasterLayers() {
   currentBaseLayer.setOpacity(state.current);
   historicalYears.forEach((year) => {
     const layer = historicalLayerFor(year);
-    if (layer && typeof layer.setOpacity === 'function') layer.setOpacity(state[year]);
+    if (layer && typeof layer.setOpacity === 'function') layer.setOpacity(historicalRasterState[year]?.status === 'unavailable' ? 0 : state[year]);
   });
   document.getElementById('base-map-label').textContent = state.label;
-  const pointEvidenceNote = timeValue < 4.65
-    ? ' · current brochure points and reference GIS layers are hidden before their documented current state'
-    : '';
-  if (historicalRasterLoaded && state.current < .5) updateMapStatus(`Historical raster loaded · NUS georeferenced PNG tile service · click a mapped object${pointEvidenceNote}`);
-  else if (state.current >= .5) updateMapStatus(`Current OneMap base · click a mapped object to inspect its evidence${pointEvidenceNote}`);
-  else if (historicalRasterErrors >= historicalYears.length) updateMapStatus('Historical raster could not load from NUS · source register remains available');
+  const notice = document.getElementById('map-state-notice');
+  const eventYear = timeValue >= 4 && Math.abs(timeValue - Math.round(timeValue)) < .06 ? years[Math.round(timeValue)].year : null;
+  const missing1963 = Math.abs(timeValue - 1) < .06;
+  notice.className = `map-state-notice${eventYear ? ' event' : missing1963 ? ' unavailable' : ''}`;
+  notice.textContent = eventYear ? `${eventYear} documented event · present-day OneMap is for orientation, not a ${eventYear} survey.`
+    : missing1963 ? '1963 map not shown: coverage of this study area is unconfirmed. No present-day map has been substituted.'
+      : timeValue < 4 ? 'Historical map comparison is visual and exploratory; it does not measure changes in area or shoreline.'
+        : 'Transition to the present-day orientation map; intervening landscape states are not measured.';
+  if (missing1963) updateMapStatus('No eligible 1963 map for the study area · open the NUS source to inspect coverage');
+  else if (state.current > .5) updateMapStatus('Present-day OneMap for orientation · select an object to inspect its source');
+  else if (historicalYears.some((year) => state[year] > .5 && historicalRasterState[year]?.status === 'unavailable')) updateMapStatus('Selected historical map service is unavailable · no current-map substitute');
+  else updateMapStatus('NUS historical map · visual comparison only');
 }
 
 function timelineLabel(value) {
   const lower = Math.floor(value);
   const upper = Math.ceil(value);
-  if (lower === upper || Math.abs(value - lower) < .06) return { year: years[lower].year, context: years[lower].context, status: 'documented state' };
+  if (lower === upper || Math.abs(value - lower) < .06) return { year: years[lower].year, context: years[lower].context, status: lower >= 4 ? 'documented event' : lower === 1 ? 'coverage unconfirmed' : 'published map' };
   return { year: `c. ${years[lower].year}–${years[upper].year}`, context: `transition between documented states`, status: 'visual transition' };
 }
 
 function updateTimeline(value) {
   timeValue = Number(value);
+  if (timeValue < 5 && (selectedFeatureId?.startsWith('external-') || features.some((item) => item.id === selectedFeatureId && item.from === 5))) selectedFeatureId = null;
   const lower = Math.floor(timeValue);
   const display = timelineLabel(timeValue);
   document.getElementById('timeline-year').textContent = display.year;
@@ -1424,7 +1529,7 @@ function renderPeriodPhotos(value) {
   const cards = records.length ? records.map((item) => `<article class="photo-card ${item.image ? '' : 'source-only'}">
     ${item.image ? `<a class="photo-image-link" href="${escapeHtml(item.videoUrl || item.source.url)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.imageAlt)}" loading="lazy" /></a>` : `<a class="photo-source-placeholder" href="${escapeHtml(item.source.url)}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(item.sourceOnlyLabel || 'ARCHIVE IMAGE')}</span><b>${escapeHtml(item.sourceOnlyTitle || item.imageLinkLabel || 'Open the source record ↗')}</b></a>`}
     <div class="photo-card-body"><span class="photo-meta">${escapeHtml(item.source.institution)} · ${escapeHtml(item.evidenceLabel || (item.exact ? 'exactly dated' : 'nearest dated reference'))}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.note)}</p>${item.videoUrl ? `<a class="inline-source video-source" href="${escapeHtml(item.videoUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.videoLinkLabel || 'Open the video ↗')}</a>` : ''}${item.videoSource ? `<span class="source-url">Video source: ${escapeHtml(item.videoSource.url)}</span>` : ''}<a class="inline-source" href="${escapeHtml(item.source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.source.title)} ↗</a><span class="source-url">${escapeHtml(item.source.url)}</span><span class="source-date">Checked ${escapeHtml(item.source.date)}</span></div>
-  </article>`).join('') : `<article class="photo-card source-only photo-gap"><div class="photo-source-placeholder"><span>NO CLAIM</span><b>No period photograph located in the selected official sources</b></div><div class="photo-card-body"><span class="photo-meta">Research limitation · ${year}</span><h3>The historical map remains the evidence for this date</h3><p>For ${year}, the current source register provides a georeferenced historical map but not a photograph that can be shown here with a verified date and reusable image URL. The interface does not substitute a modern photograph.</p><a class="inline-source" href="${sources[`nus${year}`]?.url ?? sources.nusAbout.url}" target="_blank" rel="noopener noreferrer">Open the dated map source ↗</a></div></article>`;
+  </article>`).join('') : `<article class="photo-card source-only photo-gap"><div class="photo-source-placeholder"><span>NO PERIOD PHOTO</span><b>No dated photograph is available in this register</b></div><div class="photo-card-body"><span class="photo-meta">Image availability · ${year}</span><h3>Use the mapped and written sources</h3><p>The current source register has no displayable photograph dated to this selected state. A modern image is not substituted for it.</p>${year < 2019 ? `<a class="inline-source" href="${sources[`nus${year}`]?.url ?? sources.nusAbout.url}" target="_blank" rel="noopener noreferrer">Open NUS map information ↗</a>` : ''}</div></article>`;
   document.getElementById('period-photos').innerHTML = cards;
 }
 
@@ -1497,3 +1602,4 @@ document.getElementById('timeline').value = '3';
 updateTimeline(3);
 renderPeriodPhotos(3);
 window.setTimeout(() => map.invalidateSize(), 250);
+
