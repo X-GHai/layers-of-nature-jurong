@@ -213,8 +213,10 @@ button, input, select { font: inherit; }
 .inline-source { color: var(--green); font-size: .67rem; font-weight: 800; line-height: 1.35; text-decoration: none; }
 .inline-source:hover { text-decoration: underline; }
 .photo-card .source-url { margin-top: 7px; }
-.facility-section { display: grid; grid-template-columns: .62fr 1.38fr; gap: 50px; align-items: start; }
-.facility-register { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.facility-section { display: block; }
+.facility-section-head { display: grid; grid-template-columns: minmax(0, .85fr) minmax(340px, 1.15fr); gap: 50px; align-items: end; margin-bottom: 22px; }
+.facility-section-head p { justify-self: end; }
+.facility-register { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .facility-group { min-width: 0; padding: 14px; border: 1px solid var(--line); background: var(--card); }
 .facility-group-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .facility-group-head h3 { margin: 0; font: 500 1.25rem/.98 Georgia, serif; letter-spacing: -.025em; }
@@ -231,7 +233,8 @@ button, input, select { font: inherit; }
 .facility-code { display: inline-block; min-width: 2.8em; margin-right: 5px; color: var(--green); font-size: .84em; font-weight: 850; }
 .facility-lens { color: var(--lens-color); font-weight: 800; }
 .facility-lens::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 50%; background: var(--lens-color); }
-.amenities-group { grid-column: 1 / -1; }
+.facility-group--lakeside-garden, .amenities-group { grid-column: 1 / -1; }
+.facility-group--lakeside-garden ul, .amenities-group > ul { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; }
 .brochure-symbols { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
 .brochure-symbols summary { color: var(--green); font-size: .62rem; font-weight: 800; cursor: pointer; }
 .footer { padding: 19px 4vw; border-top: 1px solid var(--line); color: var(--muted); font-size: .65rem; text-align: center; }
@@ -290,10 +293,11 @@ button, input, select { font: inherit; }
   .map-column { height: 740px; }
   .method-section { display: block; }
   .source-details { margin-top: 24px; }
-  .photo-section-heading, .facility-section { display: block; }
-  .photo-section-heading p, .facility-section > div:first-child p { margin-top: 16px; }
+  .photo-section-heading, .facility-section, .facility-section-head { display: block; }
+  .photo-section-heading p, .facility-section-head p { margin-top: 16px; }
   .period-photos { grid-template-columns: 1fr; }
   .facility-register { grid-template-columns: 1fr; margin-top: 20px; }
+  .facility-group--lakeside-garden ul, .amenities-group > ul { grid-template-columns: 1fr; }
 }
 @media (max-width: 700px) {
   .topbar { padding: 20px 16px 17px; }
