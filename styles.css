@@ -275,7 +275,6 @@ button, input, select { font: inherit; }
 .map-hover-pin:hover { background: var(--feature-color); color: #fffdf8; }
 .plan-marker { display: grid; place-items: center; width: 23px; height: 23px; border: 2px solid #fffdf8; border-radius: 50%; box-shadow: 0 2px 7px rgba(23,35,30,.34); color: #fffdf8; background: var(--marker-color); font-size: .52rem; font-weight: 850; line-height: 1; }
 .plan-marker.amenity { width: 19px; height: 19px; font-size: .42rem; }
-.plan-marker.heritage-trail-marker { width: 29px; height: 29px; border-color: #fff7e8; background: var(--brown); font-size: .58rem; }
 .plan-marker.selected { outline: 5px solid #ffd54f; outline-offset: 2px; }
 .leaflet-marker-icon.plan-marker-wrap { background: transparent; border: 0; }
 .facility-jump { display: inline; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
@@ -287,19 +286,20 @@ button, input, select { font: inherit; }
 .facility-group li.mapped { background: linear-gradient(90deg, rgba(224,82,45,.05), transparent); }
 .facility-group li.mapped.selected { background: #eef4eb; }
 .facility-group li.unmapped { color: var(--muted); }
-.heritage-trail-section { margin-top: 42px; padding-top: 27px; border-top: 1px solid var(--line); }
-.heritage-trail-heading { display: flex; justify-content: space-between; align-items: end; gap: 32px; margin-bottom: 22px; }
-.heritage-trail-heading h2 { margin: 9px 0 10px; font: 500 clamp(1.8rem, 3vw, 2.7rem)/1 Georgia, serif; letter-spacing: -.04em; }
-.heritage-trail-heading p { max-width: 760px; margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.5; }
-.heritage-trail-heading .tool-button { flex: none; max-width: 235px; }
-.heritage-trail-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
-.heritage-trail-list li { min-width: 0; }
-.heritage-jump { display: grid; grid-template-columns: 28px minmax(0, 1fr); grid-template-rows: auto auto; align-content: start; column-gap: 9px; width: 100%; height: 100%; min-height: 74px; padding: 11px; border: 1px solid var(--line); background: var(--card); color: var(--ink); text-align: left; cursor: pointer; }
-.heritage-jump:hover, .heritage-trail-list li.selected .heritage-jump { border-color: var(--brown); background: #f7eee7; }
-.heritage-jump b { grid-row: 1 / 3; display: grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; background: var(--brown); color: #fffdf8; font-size: .68rem; }
-.heritage-jump span { font-size: .73rem; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
-.heritage-jump small { align-self: end; margin-top: 6px; color: var(--muted); font-size: .58rem; }
-.heritage-trail-credit { margin: 15px 0 0; color: var(--muted); font-size: .7rem; line-height: 1.4; }
+.heritage-trail-section .facility-section-head { margin-bottom: 16px; }
+.heritage-trail-section h2 { font-size: clamp(1.55rem, 2.35vw, 2.1rem); }
+.heritage-trail-register { grid-column: 1 / -1; }
+.heritage-trail-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; margin: 10px 0 0; padding: 0; list-style: none; }
+.heritage-trail-list li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(7rem, .35fr); align-items: baseline; gap: 14px; min-width: 0; padding: 7px 0; border-top: 1px solid #ece9df; font-size: .67rem; line-height: 1.25; }
+.heritage-trail-list li.selected { margin-inline: -7px; padding-inline: 7px; background: #f7eee7; box-shadow: inset 3px 0 0 var(--brown); }
+.heritage-jump { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 9px; align-items: center; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.heritage-jump:hover { color: var(--green); text-decoration: underline; }
+.heritage-jump b { color: var(--brown); font-size: .66rem; }
+.heritage-jump span { min-width: 0; overflow-wrap: anywhere; }
+.heritage-trail-list em { min-width: 0; color: var(--muted); font-size: .55rem; font-style: normal; line-height: 1.3; text-align: right; overflow-wrap: anywhere; }
+.heritage-map-button { padding: 0; border: 0; background: transparent; color: var(--green); font: inherit; font-weight: 800; cursor: pointer; }
+.heritage-map-button:hover { text-decoration: underline; }
+.heritage-trail-credit { margin: 11px 0 0; color: var(--muted); font-size: .65rem; line-height: 1.4; }
 .heritage-trail-credit a { color: var(--green); font-weight: 800; }
 .heritage-trail-card { margin: 20px 0; border-top: 2px solid var(--brown); }
 .heritage-trail-card > h3 { color: var(--brown); }
@@ -315,7 +315,6 @@ button, input, select { font: inherit; }
 @media (max-width: 1240px) {
   .gis-workbench { grid-template-columns: 215px minmax(500px, 1fr) 310px; }
   .source-list { grid-template-columns: 1fr; }
-  .heritage-trail-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width: 980px) {
   .gis-workbench { height: auto; min-height: 0; grid-template-columns: 220px 1fr; }
@@ -328,7 +327,6 @@ button, input, select { font: inherit; }
   .period-photos { grid-template-columns: 1fr; }
   .facility-register { grid-template-columns: 1fr; margin-top: 20px; }
   .facility-group--lakeside-garden ul, .amenities-group > ul { grid-template-columns: 1fr; }
-  .heritage-trail-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 700px) {
   .topbar { padding: 20px 16px 17px; }
@@ -359,9 +357,6 @@ button, input, select { font: inherit; }
   .facility-group-head div { text-align: left; }
   .facility-group ul { grid-template-columns: 1fr; }
   .facility-group li { grid-template-columns: minmax(0, 1fr) minmax(5.3rem, .55fr); }
-  .heritage-trail-heading { display: block; }
-  .heritage-trail-heading .tool-button { max-width: none; margin-top: 17px; }
-  .heritage-trail-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 460px) {
   .heritage-trail-list { grid-template-columns: 1fr; }

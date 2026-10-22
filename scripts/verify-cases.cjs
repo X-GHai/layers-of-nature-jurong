@@ -166,9 +166,10 @@ assert(stoneboatArticleText.includes('Yu Yuen-Chen'), 'Stoneboat must situate th
 assert(renderEvidenceStory(features.find(item => item.id === 'facilities-c8')).includes('Expanded research draft'), 'Bonsai Garden needs its own expanded draft');
 assert(renderEvidenceStory(features.find(item => item.id === 'facilities-c9')).includes('shuttle'), 'Pagoda Plaza needs its current access role');
 assert(renderEvidenceStory(features.find(item => item.id === 'facilities-c13')).includes('without transferring'), 'Cascade Pavilion must not inherit the creek ecology');
-const namedRecords = features.filter(item => ['ecology', 'engineered', 'heritage', 'governance', 'public', 'hidden', 'facilities', 'amenities'].includes(item.layer));
+const namedRecords = features.filter(item => ['ecology', 'engineered', 'heritage', 'governance', 'public', 'hidden', 'nhb', 'facilities', 'amenities'].includes(item.layer));
 assert.equal(namedRecords.length, 110, 'Named-place inventory must include thematic, facility, amenity and deduplicated trail records');
 assert.equal(new Set(namedRecords.map(item => item.id)).size, 110, 'Named-place identifiers must remain unique');
+assert.equal(features.filter(item => item.layer === 'nhb').length, 22, 'NHB-only stops must remain separate from Hidden Histories');
 for (const item of namedRecords) {
   assert(item.name && item.source?.url?.startsWith('https://'), `${item.id}: missing name or map provenance`);
   if (item.purposeSource) assert(item.purposeSource.url.startsWith('https://'), `${item.id}: missing purpose provenance`);
