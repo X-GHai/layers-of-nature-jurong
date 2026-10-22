@@ -35,6 +35,11 @@ button, input, select { font: inherit; }
 .panel-heading h2, .map-toolbar h2 { margin: 7px 0 0; font: 500 1.55rem/1 Georgia, serif; letter-spacing: -.035em; }
 .panel-intro { margin: 15px 0 17px; color: var(--muted); font-size: .73rem; line-height: 1.45; }
 .layer-controls { display: grid; gap: 5px; }
+.layer-status { min-height: 2.5em; margin: 10px 0 0; padding: 7px 8px; border-left: 3px solid #c8d5ca; background: #f3f6f0; color: var(--muted); font-size: .61rem; line-height: 1.35; }
+.layer-control-group { display: grid; gap: 5px; }
+.layer-control-group + .layer-control-group { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.layer-control-group-title { margin: 0 0 2px; color: var(--green); font-size: .58rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+.layer-control-group-note { margin: -1px 0 3px; color: var(--muted); font-size: .61rem; line-height: 1.35; }
 .layer-actions { display: flex; gap: 7px; margin-top: 12px; }
 .layer-action { flex: 1; padding: 7px 5px; border: 1px solid var(--line); background: var(--card); color: var(--green); font-size: .63rem; font-weight: 800; cursor: pointer; }
 .layer-action:hover { border-color: var(--green); background: #eef3e7; }

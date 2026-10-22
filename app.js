@@ -680,6 +680,9 @@ const currentDataBounds = { minLat: 1.326, maxLat: 1.348, minLng: 103.716, maxLn
 const overpassBounds = `${currentDataBounds.minLat},${currentDataBounds.minLng},${currentDataBounds.maxLat},${currentDataBounds.maxLng}`;
 const overpassUrl = (query) => `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
 const externalLayerIds = ['roads', 'waterways', 'waterbodies', 'greenery', 'woodland', 'amenities_ref'];
+const thematicLayerIds = ['ecology', 'engineered', 'heritage', 'governance', 'public', 'hidden'];
+const namedRecordLayerIds = ['facilities', 'amenities'];
+const currentOnlyLayerIds = [...namedRecordLayerIds, ...externalLayerIds];
 const externalLayerDefinitions = {
   roads: { mode: 'overpass', url: overpassUrl(`[out:json][timeout:25];way["highway"](${overpassBounds});out geom;`), localUrl: 'data/osm-jlg.geojson', source: sources.osmReference, title: 'OpenStreetMap road and path reference', description: 'OpenStreetMap ways tagged as highways, including roads, paths and cycleways. Current reference geometry only; not a historical road layer.' },
   waterways: { mode: 'overpass', url: overpassUrl(`[out:json][timeout:25];way["waterway"](${overpassBounds});out geom;`), localUrl: 'data/osm-jlg.geojson', source: sources.osmReference, title: 'OpenStreetMap waterway reference', description: 'OpenStreetMap ways tagged as waterways. Current reference geometry only; not a reconstructed pre-lake river centreline.' },
@@ -1168,32 +1171,66 @@ async function ensureExternalLayer(id) {
 
 function renderFeatures() {
   featureGroup.clearLayers();
-  features.filter((item) => enabledLayers.has(item.layer) && (!item.primaryLens || enabledLayers.has(item.primaryLens)) && (!item.researchOnly || showResearchLeads) && item.spatialStatus !== 'quarantined' && item.mapDisplay !== 'source-only').forEach((item) => {
+  features.filter((item) => isFeatureVisible(item) && (!item.researchOnly || showResearchLeads) && item.spatialStatus !== 'quarantined' && item.mapDisplay !== 'source-only').forEach((item) => {
     const opacity = spatialOpacity(item, timeValue);
     if (opacity > .03) featureGroup.addLayer(item.mapDisplay === 'source-only' ? makeProvisionalPlanLayer(item, opacity) : makeFeatureLayer(item, opacity));
   });
   updateExternalLayerVisibility();
 }
 
+function isFeatureVisible(item) {
+  if (!item.primaryLens) return enabledLayers.has(item.layer);
+  // Plan-derived facilities and amenities have two deliberate paths to the map:
+  // their named collection, or their assigned research lens. This prevents a
+  // single Facilities checkbox from becoming a hidden prerequisite for every
+  // place in the 53-record collection.
+  return enabledLayers.has(item.layer) || enabledLayers.has(item.primaryLens);
+}
+
 function renderLayerControls() {
   const control = document.getElementById('layer-controls');
-  control.innerHTML = Object.entries(layers).map(([id, layer]) => {
+  const controlMarkup = (id, layer) => {
     const suffix = externalLayerState[id]?.loading ? ' · loading' : externalLayerState[id]?.error ? ' · unavailable' : '';
     return `<label class="layer-toggle" title="${escapeHtml(layer.description)}">
       <input type="checkbox" data-layer="${id}" ${enabledLayers.has(id) ? 'checked' : ''} aria-label="Toggle ${escapeHtml(layer.label)}" />
       <span class="layer-swatch" style="--layer:${layer.color}"></span><span>${escapeHtml(layer.label)}${suffix}</span>
     </label>`;
-  }).join('');
+  };
+  const group = (title, note, ids) => `<section class="layer-control-group"><p class="layer-control-group-title">${title}</p><p class="layer-control-group-note">${note}</p>${ids.map((id) => controlMarkup(id, layers[id])).join('')}</section>`;
+  control.innerHTML = [
+    group('Research lenses', 'A lens shows its thematic research objects and matching named plan records.', thematicLayerIds),
+    group('Named plan records', 'Use these to show all Facilities or all Amenities, regardless of research lens.', namedRecordLayerIds),
+    group('Current reference data', 'These datasets are available only in the present-day map state.', externalLayerIds)
+  ].join('');
   control.querySelectorAll('input[data-layer]').forEach((input) => input.addEventListener('change', (event) => {
     const id = event.target.dataset.layer;
     if (event.target.checked) {
       enabledLayers.add(id);
       if (externalLayerState[id]) ensureExternalLayer(id);
     } else enabledLayers.delete(id);
+    renderLayerControls();
     renderFeatures();
-
   }));
+  renderLayerStatus();
+}
 
+function renderLayerStatus() {
+  const status = document.getElementById('layer-status');
+  if (!status) return;
+  if (!enabledLayers.size) {
+    status.textContent = 'No map layers selected. Choose a research lens, a named-record collection, or a current reference dataset.';
+    return;
+  }
+  const currentOnlySelected = currentOnlyLayerIds.filter((id) => enabledLayers.has(id));
+  if (timeValue < 4 && currentOnlySelected.length) {
+    const labels = currentOnlySelected.map((id) => layers[id].label).join(', ');
+    status.textContent = `${labels} selected; these current records appear when the timeline reaches 2024.`;
+    return;
+  }
+  const thematicSelected = thematicLayerIds.filter((id) => enabledLayers.has(id));
+  status.textContent = thematicSelected.length
+    ? `${thematicSelected.map((id) => layers[id].label).join(', ')} selected. Matching named plan records follow their assigned research lens.`
+    : `${enabledLayers.size} map dataset${enabledLayers.size === 1 ? '' : 's'} selected.`;
 }
 
 function setAllLayers(enabled) {
@@ -1207,6 +1244,11 @@ function setAllLayers(enabled) {
   }
   renderLayerControls();
   renderFeatures();
+}
+
+function enableFeatureVisibility(item) {
+  enabledLayers.add(item.primaryLens || item.layer);
+  if (externalLayerState[item.primaryLens || item.layer]) ensureExternalLayer(item.primaryLens || item.layer);
 }
 
 document.getElementById('select-all-layers').addEventListener('click', () => setAllLayers(true));
@@ -1398,8 +1440,7 @@ function selectFeature(item) {
     const related = features.find((entry) => entry.id === button.dataset.relatedCase);
     if (!related) return;
     if (related.geometry?.type === 'Point' && related.mapDisplay !== 'source-only') {
-      enabledLayers.add(related.layer);
-      if (related.primaryLens) enabledLayers.add(related.primaryLens);
+      enableFeatureVisibility(related);
       renderLayerControls();
       if (timeValue < related.from || timeValue > related.to) {
         document.getElementById('timeline').value = String(related.from);
@@ -1511,6 +1552,7 @@ function updateTimeline(value) {
   document.getElementById('timeline-description').textContent = years[Math.round(timeValue)].description;
   document.getElementById('map-title').textContent = `Jurong Lake Gardens · ${display.year}`;
   renderFeatures();
+  renderLayerStatus();
   updateRasterLayers();
   renderBaseEvidence(timeValue);
   renderPeriodPhotos(timeValue);
@@ -1558,8 +1600,7 @@ function renderFacilityRegister() {
   document.querySelectorAll('.facility-jump').forEach((button) => button.addEventListener('click', () => {
     const item = features.find((featureItem) => featureItem.id === button.dataset.featureId);
     if (!item) return;
-    enabledLayers.add(item.layer);
-    enabledLayers.add(item.primaryLens);
+    enableFeatureVisibility(item);
     renderLayerControls();
     document.getElementById('timeline').value = String(item.from);
     updateTimeline(item.from);
