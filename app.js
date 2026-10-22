@@ -19,7 +19,6 @@ const layers = {
 
 const years = [
   { year: 1953, context: 'pre-industrialisation map reference', description: 'The NUS 1953 map is used as a historical raster reference. It records mapped land and water, but does not reveal every lived use or provide a modern park boundary.' },
-  { year: 1963, context: 'industrial estate taking shape', description: 'NHB records Jurong’s transformation through factories, roads, housing and amenities after the first bulldozer entered the area in 1961.' },
   { year: 1971, context: 'lake formation by water engineering', description: 'The official opening account dates the sluice-gate works and formation of Jurong Lake to 1971. The NUS 1971 georeferenced raster is used as the period base map; it remains map evidence, not a complete record of lived use.' },
   { year: 1975, context: 'Chinese Garden opens', description: 'NHB records that Chinese Garden was completed in 1975 on land formerly occupied by fish and prawn ponds beside Jurong River.' },
   { year: 2019, context: 'Lakeside Garden opens', description: 'NParks records Lakeside Garden as the first phase of Jurong Lake Gardens, centred on nature, play and community.' },
@@ -629,6 +628,14 @@ features.push(
 );
 
 features.push(...facilityFeatures, ...amenityFeatures);
+// The public timeline omits the non-covering 1963 sheet. Compress the previous
+// six-state feature chronology onto the five displayed states without changing
+// any feature's documented historical meaning.
+const compressTimelineValue = (value) => value <= 2 ? value / 2 : value - 1;
+features.forEach((item) => {
+  item.from = compressTimelineValue(item.from);
+  item.to = compressTimelineValue(item.to);
+});
 // Narrative and spatial dates are separate. A current rule page is not proof
 // that the same rule applied throughout 2019–2024.
 const engagementCase = features.find((item) => item.id === 'community-engagement');
@@ -643,19 +650,17 @@ features.filter((item) => item.spatialAudit).forEach((item) => {
   item.limitation = `${item.spatialAudit.basis} No individual historical boundary or ecological outcome is established by this anchor.`;
 });
 
-const historicalYears = [1953, 1963, 1971, 1975];
+const historicalYears = [1953, 1971, 1975];
 const historicalRasterLayers = {};
 const historicalRasterState = {};
 const historicalTileServices = {
   1953: 'https://libmaps.nus.edu.sg/services/png/1953/{z}/{y}/{x}',
-  1963: 'https://libmaps.nus.edu.sg/services/png/1963/{z}/{y}/{x}',
   1971: 'https://libmaps.nus.edu.sg/services/png/1971/{z}/{y}/{x}',
   1975: 'https://libmaps.nus.edu.sg/services/png/1975/{z}/{y}/{x}'
 };
 // A published year alone is not enough to qualify a raster for this study area.
 const historicalMapEligibility = {
   1953: { coverage: 'confirmed', publicationYear: 1953, surveyYear: null, scale: '1:25,000', maker: 'Surveyor General, Malaya' },
-  1963: { coverage: 'outside-study-area', publicationYear: 1963, surveyYear: null, scale: '1:63,360', maker: 'Assistant Director of Survey, Far East Land Forces' },
   1971: { coverage: 'confirmed', publicationYear: 1971, surveyYear: null, scale: '1:63,360', maker: 'Mapping Unit, Ministry of Defence' },
   1975: { coverage: 'confirmed', publicationYear: 1975, surveyYear: null, scale: '1:25,000', maker: 'Mapping Unit, Ministry of Defence' }
 };
@@ -694,7 +699,7 @@ const enabledLayers = new Set(Object.keys(layers));
 const featureGroup = L.layerGroup().addTo(map);
 let selectedFeatureId = null;
 let provisionalLocator = null;
-let timeValue = 3;
+let timeValue = 2;
 let playing = false;
 let playTimer = null;
 let showResearchLeads = true;
@@ -829,7 +834,7 @@ function buildHoverCard(item) {
     <b>${escapeHtml(item.displayTitle || item.name)}</b>
     ${item.displaySubtitle ? `<span class="map-hover-name">${escapeHtml(item.displaySubtitle)}</span>` : ''}
     <span class="map-hover-purpose">${escapeHtml(item.purpose || item.fact)}</span>
-    <span class="map-hover-status">${escapeHtml(item.spatialStatus)} · ${escapeHtml(item.from === 5 ? 'current reference only' : periodLabel(item))}</span>
+    <span class="map-hover-status">${escapeHtml(item.spatialStatus)} · ${escapeHtml(item.from === 4 ? 'current reference only' : periodLabel(item))}</span>
     <span class="map-hover-links">${googleMapsAction(item)}${googleMapsLink(item) ? ' · ' : ''}${sourceLink(item.purposeSource || item.source, item.spatialStatus === 'open-reference' ? 'OpenStreetMap source' : 'official source')}</span>
     <button class="map-hover-pin" type="button">Pin this evidence card ↗</button></div>
   </div>`;
@@ -931,7 +936,7 @@ function spatialOpacity(item, value) {
   const start = item.from;
   const end = item.to;
   // Current-only brochure and reference points never fade into an earlier state.
-  if (start === 5 && value < 5) return 0;
+  if (start === 4 && value < 4) return 0;
   if (value < start - .55 || value > end + .55) return 0;
   if (value < start) return Math.max(0, (value - (start - .55)) / .55);
   if (value > end) return Math.max(0, ((end + .55) - value) / .55);
@@ -1135,7 +1140,7 @@ function featureBelongsToExternalLayer(id, feature) {
 }
 
 function updateExternalLayerVisibility() {
-  const currentState = timeValue >= 5;
+  const currentState = timeValue >= 4;
   externalLayerIds.forEach((id) => {
     const state = externalLayerState[id];
     if (!state.layer) return;
@@ -1421,24 +1426,23 @@ function renderBaseEvidence(value) {
   const year = years[selected].year;
   const content = {
     1953: { title: 'Before the lake gardens', text: 'The 1953 topographical sheets include a Jurong sheet with Sungei Jurong before the later lake-garden project. Its mapped river, routes and place names give visitors a starting point for investigating the landscape before the recreational lake. The sheet records cartographic observations, not a complete account of local livelihoods or ecology.', reading: 'Compare the water symbols and routes with the later sheets. Ask which features remain legible and which have been redrawn, without treating different map symbols as measured landscape change.', source: sources.nus1953 },
-    1963: { title: 'The published sheet does not cover Jurong', text: 'NUS describes its 1963 sheet as covering the Johor Strait and places in eastern Singapore, including Punggol, Bedok, Changi and Pulau Ubin. It does not cover Jurong Lake Gardens. This timeline stop therefore shows an explicit source-coverage gap instead of substituting a present-day map or treating eastern Singapore as evidence for Jurong.', reading: 'Industrialisation in Jurong is documented by other sources, but the available 1963 raster cannot show its local spatial form. The blank state preserves that distinction.', source: sources.nus1963 },
     1971: { title: 'Lake formation in context', text: 'The official account dates completion of the Jurong River sluice works and formation of Jurong Lake to 1971. The 1971 topographical map provides a separate spatial record of mapped water, routes and infrastructure during that transformation. Read the map and the dated account together: a sheet published in 1971 need not show the landscape after the works were completed.', reading: 'Compare its water and transport symbols with 1953 to investigate how the wider Jurong landscape was being remade. This is a question for visual comparison, not a measured inundation area.', source: sources.nus1971, eventSource: sources.pmoOpening },
     1975: { title: 'Gardens in an engineered lake', text: 'The official chronology places the Japanese Garden’s completion in 1973 and the Chinese Garden’s in 1975. The 1975 Jurong sheet situates lake, islands, routes and surrounding land within the same mapped landscape. It allows the designed leisure spaces to be examined alongside the engineered water system and nearby development.', reading: 'Compare with earlier sheets to ask how a working river-and-lake landscape became a setting for public recreation. Apparent shoreline differences are not precise measurements, especially across maps of different scales.', source: sources.nus1975, eventSource: sources.pmoOpening },
     2019: { title: 'Lakeside Garden opens', text: 'Lakeside Garden opened as the first phase of the present Jurong Lake Gardens in 2019. This dated event separates the earlier lake-and-garden landscape from the later three-garden redevelopment. The contemporary OneMap canvas helps locate the project, but it does not recreate the 2019 landscape or prove which facilities existed on opening day.', reading: 'Use dated plans and opening records, rather than today’s amenity layer, to investigate who the new public space was designed to serve and what changed on the ground.', source: sources.pmoOpening },
     2024: { title: 'Three gardens together', text: 'The rejuvenated Chinese and Japanese Gardens reopened on 8 September 2024, completing the three-garden Jurong Lake Gardens project with Lakeside Garden. NParks documents retained landmarks as well as new gardens, pavilions and community spaces. The present-day OneMap canvas locates these places; it is not a map surveyed on the reopening date.', reading: 'Compare the official opening account with earlier mapped land and water, while keeping current OSM, NParks and URA features distinct from an opening-day inventory.', source: sources.nparks2024Opening }
   };
   const card = content[year];
-  const historical = year <= 1975 && year !== 1963;
+  const historical = year <= 1975;
   const metadata = historicalMapEligibility[year];
   const comparison = historical ? 'Visual comparison only: different survey dates, scales and cartographic conventions prevent precise area or shoreline measurements here.' : '';
   document.getElementById('evidence-panel').innerHTML = `<div class="base-card">
-    <span class="section-kicker">03 · ${historical ? 'HISTORICAL MAP' : year === 1963 ? 'MAP AVAILABILITY' : 'DOCUMENTED EVENT'}</span>
+    <span class="section-kicker">03 · ${historical ? 'HISTORICAL MAP' : 'DOCUMENTED EVENT'}</span>
     <h2>${escapeHtml(display.year)} · ${escapeHtml(isStop ? card.title : 'Visual transition')}</h2>
-    <div class="evidence-badges"><span class="evidence-badge">${historical ? 'historical evidence' : year === 1963 ? 'outside study area' : 'documented event'}</span>${year >= 2019 ? '<span class="evidence-badge">present-day orientation map</span>' : ''}</div>
+    <div class="evidence-badges"><span class="evidence-badge">${historical ? 'historical evidence' : 'documented event'}</span>${year >= 2019 ? '<span class="evidence-badge">present-day orientation map</span>' : ''}</div>
     <h3>What this state shows</h3><p>${escapeHtml(isStop ? card.text : 'This is an exploratory visual transition, not an intermediate historical survey or a measurement of landscape change.')}</p>
     ${isStop ? `<h3>Why compare it?</h3><p>${escapeHtml(card.reading)}</p>` : ''}
     <h3>Sources</h3><p>${sourceLink(card.source)}${card.eventSource ? ` · ${sourceLink(card.eventSource, 'Dated event account')}` : ''}</p>
-    <details><summary>Map information and references</summary><div><p>${escapeHtml(historical ? `Original map publication: ${year}; ${metadata.scale}; ${metadata.maker}. NUS later digitised and georeferenced the map. Study-area survey date is not established here.` : year === 1963 ? 'NUS publishes a 1963 map service, but its catalogue identifies eastern-Singapore coverage rather than Jurong. Publication year alone cannot establish local landscape conditions.' : `Event date: ${year}. The OneMap tiles are contemporary and have no ${year} survey date in this project.`)}</p>${comparison ? `<p>${escapeHtml(comparison)}</p>` : ''}${historical && year === 1971 ? '<p>NUS reports later SVY21 registration using control points and transformation tests; this is separate from the original map production.</p>' : ''}${historical ? `<p>Integrated map service: <span class="source-url">${escapeHtml(card.source.serviceUrl)}</span></p>` : ''}<p>Source checked ${escapeHtml(card.source.date)}; this is not the map’s survey or event date.</p><p>${escapeHtml(apaCitation(card.source))}</p>${card.eventSource ? `<p>${escapeHtml(apaCitation(card.eventSource))}</p>` : ''}</div></details>
+    <details><summary>Map information and references</summary><div><p>${escapeHtml(historical ? `Original map publication: ${year}; ${metadata.scale}; ${metadata.maker}. NUS later digitised and georeferenced the map. Study-area survey date is not established here.` : `Event date: ${year}. The OneMap tiles are contemporary and have no ${year} survey date in this project.`)}</p>${comparison ? `<p>${escapeHtml(comparison)}</p>` : ''}${historical && year === 1971 ? '<p>NUS reports later SVY21 registration using control points and transformation tests; this is separate from the original map production.</p>' : ''}${historical ? `<p>Integrated map service: <span class="source-url">${escapeHtml(card.source.serviceUrl)}</span></p>` : ''}<p>Source checked ${escapeHtml(card.source.date)}; this is not the map’s survey or event date.</p><p>${escapeHtml(apaCitation(card.source))}</p>${card.eventSource ? `<p>${escapeHtml(apaCitation(card.eventSource))}</p>` : ''}</div></details>
   </div>`;
 }
 
@@ -1447,22 +1451,19 @@ function clamp01(value) {
 }
 
 function baseMapState(value) {
-  const state = { 1953: 0, 1963: 0, 1971: 0, 1975: 0, current: 0, label: '' };
+  const state = { 1953: 0, 1971: 0, 1975: 0, current: 0, label: '' };
   if (value < 1) {
     const t = clamp01(value);
     state[1953] = 1 - t;
-    state.label = t < .06 ? 'Historical map: 1953' : '1953 map fading before the 1963 coverage gap';
+    state[1971] = t;
+    state.label = t < .06 ? 'Historical map: 1953' : 'Visual comparison · NUS 1953 → 1971';
   } else if (value < 2) {
     const t = clamp01(value - 1);
-    state[1971] = t;
-    state.label = t < .06 ? '1963 source gap: available sheet does not cover Jurong' : '1971 historical map fading in after the 1963 gap';
-  } else if (value < 3) {
-    const t = clamp01(value - 2);
     state[1971] = 1 - t;
     state[1975] = t;
     state.label = t < .06 ? 'Historical map: 1971' : 'Visual comparison · NUS 1971 → 1975';
-  } else if (value < 4) {
-    const t = clamp01((value - 3) / .65);
+  } else if (value < 3) {
+    const t = clamp01((value - 2) / .65);
     state[1975] = 1 - t;
     state.current = t;
     state.label = t < .06 ? 'Historical map: 1975' : 'Visual transition · 1975 map → present-day OneMap';
@@ -1482,16 +1483,12 @@ function updateRasterLayers() {
   });
   document.getElementById('base-map-label').textContent = state.label;
   const notice = document.getElementById('map-state-notice');
-  const eventYear = timeValue >= 4 && Math.abs(timeValue - Math.round(timeValue)) < .06 ? years[Math.round(timeValue)].year : null;
-  const missing1963 = Math.abs(timeValue - 1) < .06;
-  document.getElementById('map-availability-message').hidden = !missing1963;
-  notice.className = `map-state-notice${eventYear ? ' event' : missing1963 ? ' unavailable' : ''}`;
+  const eventYear = timeValue >= 3 && Math.abs(timeValue - Math.round(timeValue)) < .06 ? years[Math.round(timeValue)].year : null;
+  notice.className = `map-state-notice${eventYear ? ' event' : ''}`;
   notice.textContent = eventYear ? `${eventYear} documented event · present-day OneMap is for orientation, not a ${eventYear} survey.`
-    : missing1963 ? '1963 map not shown: the available NUS sheet covers eastern Singapore, not Jurong. No present-day map has been substituted.'
-      : timeValue < 4 ? 'Historical map comparison is visual and exploratory; it does not measure changes in area or shoreline.'
-        : 'Transition to the present-day orientation map; intervening landscape states are not measured.';
-  if (missing1963) updateMapStatus('1963 source coverage gap · available NUS sheet does not cover Jurong');
-  else if (state.current > .5) updateMapStatus('Present-day OneMap for orientation · select an object to inspect its source');
+    : timeValue < 3 ? 'Historical map comparison is visual and exploratory; it does not measure changes in area or shoreline.'
+      : 'Transition to the present-day orientation map; intervening landscape states are not measured.';
+  if (state.current > .5) updateMapStatus('Present-day OneMap for orientation · select an object to inspect its source');
   else if (historicalYears.some((year) => state[year] > .5 && historicalRasterState[year]?.status === 'unavailable')) updateMapStatus('Selected historical map service is unavailable · no current-map substitute');
   else updateMapStatus('NUS historical map · visual comparison only');
 }
@@ -1499,13 +1496,13 @@ function updateRasterLayers() {
 function timelineLabel(value) {
   const lower = Math.floor(value);
   const upper = Math.ceil(value);
-  if (lower === upper || Math.abs(value - lower) < .06) return { year: years[lower].year, context: years[lower].context, status: lower >= 4 ? 'documented event' : lower === 1 ? 'source coverage gap' : 'published map' };
+  if (lower === upper || Math.abs(value - lower) < .06) return { year: years[lower].year, context: years[lower].context, status: lower >= 3 ? 'documented event' : 'published map' };
   return { year: `c. ${years[lower].year}–${years[upper].year}`, context: `transition between documented states`, status: 'visual transition' };
 }
 
 function updateTimeline(value) {
   timeValue = Number(value);
-  if (timeValue < 5 && (selectedFeatureId?.startsWith('external-') || features.some((item) => item.id === selectedFeatureId && item.from === 5))) selectedFeatureId = null;
+  if (timeValue < 4 && (selectedFeatureId?.startsWith('external-') || features.some((item) => item.id === selectedFeatureId && item.from === 4))) selectedFeatureId = null;
   const lower = Math.floor(timeValue);
   const display = timelineLabel(timeValue);
   document.getElementById('timeline-year').textContent = display.year;
@@ -1582,13 +1579,13 @@ document.getElementById('play-time').addEventListener('click', (event) => {
   event.currentTarget.setAttribute('aria-pressed', String(playing));
   event.currentTarget.textContent = playing ? 'Pause change' : 'Play change';
   if (playing) {
-    if (timeValue >= 5) {
+    if (timeValue >= 4) {
       document.getElementById('timeline').value = '0';
       updateTimeline(0);
     }
     playTimer = window.setInterval(() => {
       const next = timeValue + .015;
-      if (next >= 5) { timeValue = 5; updateTimeline(5); playing = false; window.clearInterval(playTimer); event.currentTarget.setAttribute('aria-pressed', 'false'); event.currentTarget.textContent = 'Play change'; return; }
+      if (next >= 4) { timeValue = 4; updateTimeline(4); playing = false; window.clearInterval(playTimer); event.currentTarget.setAttribute('aria-pressed', 'false'); event.currentTarget.textContent = 'Play change'; return; }
       document.getElementById('timeline').value = next;
       updateTimeline(next);
     }, 65);
@@ -1600,8 +1597,8 @@ renderSourceLedger();
 renderFacilityRegister();
 renderFeatures();
 externalLayerIds.forEach((id) => ensureExternalLayer(id));
-document.getElementById('timeline').value = '3';
-updateTimeline(3);
-renderPeriodPhotos(3);
+document.getElementById('timeline').value = '2';
+updateTimeline(2);
+renderPeriodPhotos(2);
 window.setTimeout(() => map.invalidateSize(), 250);
 
