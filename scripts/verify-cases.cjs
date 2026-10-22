@@ -8,6 +8,7 @@ const research = fs.readFileSync(path.join(root, 'case-research.js'), 'utf8');
 const publicResearchCode = fs.readFileSync(path.join(root, 'public-research.js'), 'utf8');
 const atlasCode = fs.readFileSync(path.join(root, 'atlas-articles.js'), 'utf8');
 const placeResearchCode = fs.readFileSync(path.join(root, 'place-research.js'), 'utf8');
+const heritageCode = fs.readFileSync(path.join(root, 'heritage-trail.js'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const styles = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const publishedAppAsset = html.match(/<script src="(app-[a-f0-9]{8}\.js)"><\/script>/)?.[1];
@@ -17,6 +18,7 @@ const brochureAudit = JSON.parse(fs.readFileSync(path.join(root, 'data', 'brochu
 assert(!html.includes('layer-atlas') && !code.includes('renderLayerProfiles'));
 assert(html.indexOf('case-research.js') < html.indexOf(publishedAppAsset));
 assert(html.indexOf('case-research.js') < html.indexOf('public-research.js') && html.indexOf('public-research.js') < html.indexOf('atlas-articles.js') && html.indexOf('atlas-articles.js') < html.indexOf('place-research.js') && html.indexOf('place-research.js') < html.indexOf(publishedAppAsset));
+assert(html.indexOf('heritage-trail.js') > html.indexOf('place-research.js') && html.indexOf('heritage-trail.js') < html.indexOf(publishedAppAsset));
 assert(!html.includes('<b>Spatial audit.</b>'));
 assert(html.includes('Show research anchors'));
 assert(code.includes("group('Research lenses'") && code.includes("group('Named plan records'") && code.includes("group('Current reference data'"), 'Layer controls must distinguish lenses, named records and reference data');
@@ -24,8 +26,15 @@ const preMap = code.slice(0, code.indexOf('const navigationBounds ='));
 const helpers = code.slice(code.indexOf('const escapeHtml ='), code.indexOf('function buildHoverCard'));
 const renderers = code.slice(code.indexOf('function renderFeatureSource'), code.indexOf('function spatialBadgeLabel'));
 const context = vm.createContext({ console });
-vm.runInContext(research + '\n' + publicResearchCode + '\n' + atlasCode + '\n' + placeResearchCode + '\n' + preMap + '\n' + helpers + '\n' + renderers + '\nthis.result = {features, sources, caseResearch, publicResearch, publicReference, atlasArticles, placeResearch, caseDossierFor, relatedSourcesFor, renderEvidenceStory, googleMapsLink, googleMapsLinkKind};', context);
+vm.runInContext(research + '\n' + publicResearchCode + '\n' + atlasCode + '\n' + placeResearchCode + '\n' + heritageCode + '\n' + preMap + '\n' + helpers + '\nlet focusedHeritageStop = null;\n' + renderers + '\nthis.result = {features, sources, caseResearch, publicResearch, publicReference, atlasArticles, placeResearch, caseDossierFor, relatedSourcesFor, renderEvidenceStory, renderHeritageTrailCard, googleMapsLink, googleMapsLinkKind};', context);
 const { features, sources, caseResearch, publicResearch, publicReference, atlasArticles, placeResearch, caseDossierFor, relatedSourcesFor, renderEvidenceStory, googleMapsLink, googleMapsLinkKind } = context.result;
+assert.equal(features.filter(item => item.id.startsWith('nhb-trail-')).length, 22, 'NHB trail should add 22 markers after deduplication');
+assert.equal(features.filter(item => item.heritageTrailStops).reduce((count, item) => count + item.heritageTrailStops.length, 0), 25, 'All 25 stops must be reachable through a map card');
+assert(features.find(item => item.id === 'chinese-garden').heritageTrailStops[0].number === 17);
+assert(features.find(item => item.id === 'japanese-garden').heritageTrailStops[0].number === 18);
+assert(features.find(item => item.id === 'nhb-trail-8').heritageTrailStops.length === 2, 'Jurong Hill and port viewpoint should share one marker');
+assert(context.result.renderHeritageTrailCard(features.find(item => item.id === 'nhb-trail-1')).includes('Read the full NHB account'));
+assert(context.result.renderHeritageTrailCard(features.find(item => item.id === 'nhb-trail-20')).includes('closed on 3 January 2023'));
 for (const [id, article] of Object.entries(atlasArticles)) {
   assert(caseResearch.cases[id] || /^facilities-[cjl]\d+$/.test(id), `${id}: article has no recognized place identity`);
   assert(article.sections.length >= 2, `${id}: no substantial article sections`);
@@ -72,6 +81,11 @@ for (const [id, section] of Object.entries(publicReference)) {
 }
 for (const item of features) {
   const dossier = caseDossierFor(item);
+  if (item.id.startsWith('nhb-trail-')) {
+    assert.equal(dossier, null, `${item.id}: trail reference must not inherit an unrelated deep case`);
+    assert(item.heritageTrailStops.every(stop => sources[`nhbTrail${stop.number}`]?.url.endsWith(stop.path)));
+    continue;
+  }
   if (['ecology', 'engineered', 'heritage', 'governance', 'public', 'hidden'].includes(item.layer)) assert(dossier, `${item.id}: no deep case`);
   if (!dossier) continue;
   const bibliography = new Set(relatedSourcesFor(item).map(source => source.url));
@@ -153,8 +167,8 @@ assert(renderEvidenceStory(features.find(item => item.id === 'facilities-c8')).i
 assert(renderEvidenceStory(features.find(item => item.id === 'facilities-c9')).includes('shuttle'), 'Pagoda Plaza needs its current access role');
 assert(renderEvidenceStory(features.find(item => item.id === 'facilities-c13')).includes('without transferring'), 'Cascade Pavilion must not inherit the creek ecology');
 const namedRecords = features.filter(item => ['ecology', 'engineered', 'heritage', 'governance', 'public', 'hidden', 'facilities', 'amenities'].includes(item.layer));
-assert.equal(namedRecords.length, 88, 'Named-place inventory must include all thematic, facility and amenity records');
-assert.equal(new Set(namedRecords.map(item => item.id)).size, 88, 'Named-place identifiers must remain unique');
+assert.equal(namedRecords.length, 110, 'Named-place inventory must include thematic, facility, amenity and deduplicated trail records');
+assert.equal(new Set(namedRecords.map(item => item.id)).size, 110, 'Named-place identifiers must remain unique');
 for (const item of namedRecords) {
   assert(item.name && item.source?.url?.startsWith('https://'), `${item.id}: missing name or map provenance`);
   if (item.purposeSource) assert(item.purposeSource.url.startsWith('https://'), `${item.id}: missing purpose provenance`);
@@ -241,7 +255,8 @@ context.selectedGISObject = namedAmenity;
 const gisCard = vm.runInContext('renderGISFeatureCard(selectedGISObject)', context);
 assert(gisCard.includes('Garden shelter') && gisCard.includes('OpenStreetMap reference') && gisCard.includes('All source attributes'), 'A real selected OSM object needs a readable reference card');
 assert.equal(namedAmenity.displaySubtitle, 'Amenity: shelter');
-assert.equal((code.match(/escapeHtml\(item\.displayTitle \|\| item\.name\)/g) || []).length, 2, 'Popup and evidence panel both show the tag first');
+assert.equal((code.match(/escapeHtml\(item\.displayTitle \|\| item\.name\)/g) || []).length, 1, 'Hover card keeps the readable title');
+assert(code.includes('?.name || item.displayTitle || item.name'), 'Evidence panel shows the selected heritage stop on a shared viewpoint');
 assert(styles.includes('.feature-place-name') && styles.includes('.map-hover-name'), 'Original names need a second line in both cards');
 assert(code.includes("item.spatialStatus === 'open-reference' ? 'OpenStreetMap source' : 'official source'"), 'Community data must not be labelled as an official source');
 const mappedPlanRecords = planRecords.filter(item => item.spatialStatus === 'plan-derived');
@@ -287,4 +302,3 @@ assert(code.includes('properties.OBJECTID_1 ?? index'), 'NParks features need st
 assert(code.includes('featureBelongsToExternalLayer'), 'OSM application categories must not depend on the numeric vertical layer tag');
 assert(code.includes('featureIndexes.get(feature)'), 'External fallback labels and IDs need per-feature indexes');
 console.log(JSON.stringify({pass:true, archivedCaseDossiers:caseCount, publicStories:Object.keys(publicResearch).length, conciseReferences:Object.keys(publicReference).length, archivedSections:sections, paragraphCitations:citationCount, thematicCases:features.filter(item => ['ecology','engineered','heritage','governance','public','hidden'].includes(item.layer)).length, facilitiesWithCaseAnalysis:features.filter(item => item.layer==='facilities' && caseDossierFor(item)).length, mappedPlanRecords:mappedPlanRecords.length, unresolvedPlanRecords:unresolvedPlanRecords.map(item => item.mapCode), brochureControlMeanResidualMetres:brochureAudit.meanFitResidualMetres, japaneseGardenAnchor:japaneseGarden.geometry.coordinates}, null, 2));
-

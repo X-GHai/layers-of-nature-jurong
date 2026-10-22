@@ -181,6 +181,14 @@ Object.entries(originalMapCitations).forEach(([year, [author, title]]) => {
 });
 Object.assign(sources.nparksParksGeo, { inTextAuthor: 'National Parks Board', apa: `National Parks Board. (2023). NParks Parks and Nature Reserves (2026) [Data set]. data.gov.sg. Retrieved 15 October 2026, from ${sources.nparksParksGeo.url}` });
 Object.assign(sources.uraWaterGeo, { inTextAuthor: 'Urban Redevelopment Authority', apa: `Urban Redevelopment Authority. (2026). Master Plan 2025 SDCP Waterbody layer [Data set]. data.gov.sg. Retrieved 15 October 2026, from ${sources.uraWaterGeo.url}` });
+jurongHeritageTrail.forEach((stop) => {
+  sources[`nhbTrail${stop.number}`] = {
+    institution: 'National Heritage Board', title: `${stop.name} · Jurong Heritage Trail`,
+    url: `https://www.roots.gov.sg${stop.path}`, date: '23 October 2026',
+    evidenceScope: `NHB directions point: ${stop.address}. ${stop.positionNote}`
+  };
+});
+sources.mandaiBirdClosure = { institution: 'Mandai Wildlife Group', title: 'Visitors bid farewell to Jurong Bird Park · 3 January 2023', url: 'https://www.mandai.com/en/about-mandai/media-centre/Visitors-bid-farewell-to-Jurong-Bird-Park.html', date: '23 October 2026', apa: 'Mandai Wildlife Group. (2023, January 3). Visitors bid farewell to Jurong Bird Park. https://www.mandai.com/en/about-mandai/media-centre/Visitors-bid-farewell-to-Jurong-Bird-Park.html' };
 // Matching author/date suffixes keep paragraph citations unambiguous, including
 // the many undated NParks pages. Retrieval dates are never publication dates.
 const citationGroups = new Map();
@@ -636,6 +644,30 @@ features.forEach((item) => {
   item.from = compressTimelineValue(item.from);
   item.to = compressTimelineValue(item.to);
 });
+// The trail is a 2024 map-state reading layer. Each Roots directions point is
+// an orientation anchor; former sites and regional histories are not recast as
+// present-day buildings or exact historic footprints.
+jurongHeritageTrail.forEach((stop) => {
+  const target = stop.existingId
+    ? features.find((item) => item.id === stop.existingId)
+    : stop.sharedWith
+      ? features.find((item) => item.id === `nhb-trail-${stop.sharedWith}`)
+      : null;
+  if (target) {
+    target.heritageTrailStops ||= [];
+    target.heritageTrailStops.push(stop);
+    target.additionalLenses = [...new Set([...(target.additionalLenses || []), 'hidden'])];
+    return;
+  }
+  features.push(feature({
+    id: `nhb-trail-${stop.number}`, name: stop.name, layer: 'hidden', from: 4, to: 4,
+    geometry: { type: 'Point', coordinates: stop.coordinates }, spatialStatus: 'orientation',
+    mapCode: `H${stop.number}`, source: sources[`nhbTrail${stop.number}`],
+    fact: stop.summary, heritageTrailStops: [stop],
+    documentedPeriod: 'NHB heritage trail record, shown on the present-day reference map',
+    details: [{ label: 'NHB directions address', value: stop.address }, { label: 'Coordinate meaning', value: stop.positionNote }]
+  }));
+});
 // Narrative and spatial dates are separate. A current rule page is not proof
 // that the same rule applied throughout 2019–2024.
 const engagementCase = features.find((item) => item.id === 'community-engagement');
@@ -665,8 +697,8 @@ const historicalMapEligibility = {
   1975: { coverage: 'confirmed', publicationYear: 1975, surveyYear: null, scale: '1:25,000', maker: 'Mapping Unit, Ministry of Defence' }
 };
 const eligibleHistoricalMap = (year) => Boolean(historicalMapEligibility[year]?.coverage === 'confirmed' && historicalMapEligibility[year]?.publicationYear === year && sources[`nus${year}`]?.url && historicalTileServices[year]);
-const navigationBounds = L.latLngBounds([1.326, 103.716], [1.348, 103.744]);
-const map = L.map('map', { zoomControl: false, minZoom: 13, maxZoom: 19, maxBounds: navigationBounds.pad(.16), maxBoundsViscosity: .86, preferCanvas: true }).setView([1.3375, 103.7285], 15.25);
+const navigationBounds = L.latLngBounds([1.309, 103.670], [1.358, 103.766]);
+const map = L.map('map', { zoomControl: false, minZoom: 11, maxZoom: 19, maxBounds: navigationBounds.pad(.16), maxBoundsViscosity: .86, preferCanvas: true }).setView([1.3375, 103.7285], 15.25);
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
 const currentBaseLayer = L.tileLayer('https://www.onemap.gov.sg/maps/tiles/Default/{z}/{x}/{y}.png', {
@@ -701,6 +733,7 @@ const externalLayerState = Object.fromEntries(externalLayerIds.map((id) => [id, 
 const enabledLayers = new Set(Object.keys(layers));
 const featureGroup = L.layerGroup().addTo(map);
 let selectedFeatureId = null;
+let focusedHeritageStop = null;
 let provisionalLocator = null;
 let timeValue = 2;
 let playing = false;
@@ -837,8 +870,8 @@ function buildHoverCard(item) {
     <b>${escapeHtml(item.displayTitle || item.name)}</b>
     ${item.displaySubtitle ? `<span class="map-hover-name">${escapeHtml(item.displaySubtitle)}</span>` : ''}
     <span class="map-hover-purpose">${escapeHtml(item.purpose || item.fact)}</span>
-    <span class="map-hover-status">${escapeHtml(item.spatialStatus)} · ${escapeHtml(item.from === 4 ? 'current reference only' : periodLabel(item))}</span>
-    <span class="map-hover-links">${googleMapsAction(item)}${googleMapsLink(item) ? ' · ' : ''}${sourceLink(item.purposeSource || item.source, item.spatialStatus === 'open-reference' ? 'OpenStreetMap source' : 'official source')}</span>
+    <span class="map-hover-status">${escapeHtml(item.spatialStatus)} · ${escapeHtml(item.heritageTrailStops ? 'NHB directions point' : item.from === 4 ? 'current reference only' : periodLabel(item))}</span>
+    <span class="map-hover-links">${item.id.startsWith('nhb-trail-') ? sourceLink(item.source, 'Read NHB account ↗') : `${googleMapsAction(item)}${googleMapsLink(item) ? ' · ' : ''}${sourceLink(item.purposeSource || item.source, item.spatialStatus === 'open-reference' ? 'OpenStreetMap source' : 'official source')}`}</span>
     <button class="map-hover-pin" type="button">Pin this evidence card ↗</button></div>
   </div>`;
 }
@@ -958,6 +991,7 @@ function makeFeatureLayer(item, opacity) {
   if (item.geometry.type === 'Polygon') layer = L.polygon(item.geometry.coordinates[0], style);
   else if (item.geometry.type === 'LineString') layer = L.polyline(item.geometry.coordinates, style);
   else if (item.spatialStatus === 'plan-derived') layer = L.marker(item.geometry.coordinates, { zIndexOffset: selectedFeatureId === item.id ? 1000 : 0, icon: L.divIcon({ className: 'plan-marker-wrap', html: `<span class="plan-marker ${item.layer === 'amenities' ? 'amenity' : ''} ${selectedFeatureId === item.id ? 'selected' : ''}" style="--marker-color:${layers[item.primaryLens].color}">${escapeHtml(item.mapCode || layers[item.layer].icon)}</span>`, iconSize: [25, 25], iconAnchor: [12, 12] }) });
+  else if (item.id.startsWith('nhb-trail-')) layer = L.marker(item.geometry.coordinates, { zIndexOffset: selectedFeatureId === item.id ? 1000 : 0, icon: L.divIcon({ className: 'plan-marker-wrap', html: `<span class="plan-marker heritage-trail-marker ${selectedFeatureId === item.id ? 'selected' : ''}" style="--marker-color:${layers.hidden.color}">${escapeHtml(item.mapCode)}</span>`, iconSize: [31, 31], iconAnchor: [15, 15] }) });
   else layer = L.circleMarker(item.geometry.coordinates, { ...style, radius: selectedFeatureId === item.id ? 10 : 7, fillOpacity: Math.min(.85, opacity * .8) });
   bindInteractiveHoverCard(layer, item);
   layer.on('mouseover', () => { if (layer.setStyle) layer.setStyle({ weight: 5, fillOpacity: Math.min(.4, opacity * .35) }); else layer.getElement()?.querySelector('.plan-marker')?.classList.add('feature-pulse'); });
@@ -1179,6 +1213,7 @@ function renderFeatures() {
 }
 
 function isFeatureVisible(item) {
+  if (item.additionalLenses?.some((id) => enabledLayers.has(id))) return true;
   if (!item.primaryLens) return enabledLayers.has(item.layer);
   // Plan-derived facilities and amenities have two deliberate paths to the map:
   // their named collection, or their assigned research lens. This prevents a
@@ -1264,6 +1299,9 @@ function renderFeatureSource(source) {
 }
 
 function relatedSourcesFor(item) {
+  if (item.id.startsWith('nhb-trail-')) {
+    return [...item.heritageTrailStops.map((stop) => sources[`nhbTrail${stop.number}`]), ...(item.heritageTrailStops.some((stop) => stop.number === 20) ? [sources.mandaiBirdClosure] : [])];
+  }
   const dossier = caseDossierFor(item);
   const cited = dossier?.sections.flatMap((section) => section.refs.map((id) => sources[id])) || [];
   const articleCited = atlasArticles[dossier?.articleId || dossier?.id]?.sections.flatMap((section) => section.paragraphs.flatMap((paragraph) => paragraph.refs.map((id) => sources[id]))) || [];
@@ -1277,6 +1315,7 @@ function relatedSourcesFor(item) {
   if (item.layer === 'hidden') related.push(sources.nhbIndustrial, sources.nlbJurong, sources.academicStokols, sources.pubJurongGuide);
   if (item.layer === 'engineered') related.push(sources.pmoOpening, sources.pubJurongGuide, sources.academicStokols);
   if (item.layer === 'governance') related.push(sources.nparks2024Opening, sources.nparksVisitorGuidelines, sources.nparksSmart, sources.nparksWaterSystems, sources.uraJurongLakeDistrict, sources.academicStokols);
+  if (item.heritageTrailStops) related.push(...item.heritageTrailStops.map((stop) => sources[`nhbTrail${stop.number}`]));
   // Never truncate sources used in this case. A bibliography limit previously
   // allowed narrative citations to disappear behind a generic reading list.
   return [...new Map(related.filter(Boolean).map((source) => [source.url, source])).values()].sort((a, b) => apaCitation(a).localeCompare(apaCitation(b)));
@@ -1285,7 +1324,7 @@ function relatedSourcesFor(item) {
 function citedSourcesFor(item) {
   const dossier = caseDossierFor(item);
   const articleCited = atlasArticles[dossier?.articleId || dossier?.id]?.sections.flatMap((section) => section.paragraphs.flatMap((paragraph) => paragraph.refs.map((id) => sources[id]))) || [];
-  const cited = [item.source, item.purposeSource, item.imageSource, ...articleCited, ...(dossier?.sections.flatMap((section) => section.refs.map((id) => sources[id])) || []), ...(!dossier ? (item.storySources || []) : [])];
+  const cited = [item.source, item.purposeSource, item.imageSource, ...articleCited, ...(dossier?.sections.flatMap((section) => section.refs.map((id) => sources[id])) || []), ...(!dossier ? (item.storySources || []) : []), ...(item.heritageTrailStops || []).map((stop) => sources[`nhbTrail${stop.number}`]), ...(item.heritageTrailStops?.some((stop) => stop.number === 20) ? [sources.mandaiBirdClosure] : [])];
   return [...new Map(cited.filter(Boolean).map((source) => [source.url, source])).values()];
 }
 
@@ -1316,12 +1355,28 @@ function renderFeatureDetails(item) {
 }
 
 function renderEvidenceStory(item) {
+  if (item.id.startsWith('nhb-trail-')) return '';
   const dossier = caseDossierFor(item);
   if (dossier) return renderCaseDossier(item, dossier);
   if (['facilities', 'amenities', 'amenities_ref'].includes(item.layer)) return '';
   if (!item.story) return '';
   const storySources = [...new Map((item.storySources || []).filter(Boolean).map((source) => [source.url, source])).values()];
   return `<div class="evidence-story"><h3>Evidence-led story</h3><p>${escapeHtml(item.story)} ${inlineCitations(storySources)}</p></div>`;
+}
+
+function renderHeritageTrailCard(item) {
+  if (!item.heritageTrailStops?.length) return '';
+  const stops = [...item.heritageTrailStops].sort((a, b) => a.number === focusedHeritageStop ? -1 : b.number === focusedHeritageStop ? 1 : a.number - b.number);
+  return `<section class="heritage-trail-card" aria-label="Jurong Heritage Trail account">
+    <h3>Jurong Heritage Trail · National Heritage Board</h3>
+    ${stops.map((stop) => `<article class="heritage-stop-account">
+      <h4>${stop.number}. ${escapeHtml(stop.name)}</h4>
+      <p>${escapeHtml(stop.summary)}</p>
+      <p class="heritage-position"><b>Map position:</b> ${escapeHtml(stop.positionNote)}</p>
+      <a class="heritage-source-action" href="${escapeHtml(sources[`nhbTrail${stop.number}`].url)}" target="_blank" rel="noopener noreferrer">Read the full NHB account ↗</a>
+      ${stop.number === 20 ? `<p class="heritage-update">Jurong Bird Park closed on 3 January 2023. ${sourceLink(sources.mandaiBirdClosure, 'Operator’s closure notice ↗')}</p>` : ''}
+    </article>`).join('')}
+  </section>`;
 }
 
 function inlineCitations(records) {
@@ -1421,15 +1476,16 @@ function selectFeature(item) {
   const layer = layers[item.primaryLens || item.layer];
   const dossier = caseDossierFor(item);
   panel.innerHTML = `<div class="feature-card" style="--feature-color:${layer.color}">
-    <div class="feature-kicker">${layer.icon} ${escapeHtml(layers[item.layer].label)}${item.primaryLens ? ` · ${escapeHtml(layer.label)}` : ''}</div>
-    <h2>${escapeHtml(item.displayTitle || item.name)}</h2>
+    <div class="feature-kicker">${layer.icon} ${escapeHtml(layers[item.layer].label)}${item.primaryLens ? ` · ${escapeHtml(layer.label)}` : ''}${item.layer !== 'hidden' && item.additionalLenses?.includes('hidden') ? ' · Hidden Histories' : ''}</div>
+    <h2>${escapeHtml(item.heritageTrailStops?.find((stop) => stop.number === focusedHeritageStop)?.name || item.displayTitle || item.name)}</h2>
     ${item.displaySubtitle ? `<div class="feature-subtitle feature-place-name">${escapeHtml(item.displaySubtitle)}</div>` : ''}
     <div class="feature-subtitle">Mapped period: ${escapeHtml(periodLabel(item))} · geometry: ${escapeHtml(item.geometryType)}</div>
     <div class="evidence-badges"><span class="evidence-badge ${escapeHtml(item.spatialStatus)}">${escapeHtml(spatialBadgeLabel(item))}</span><span class="evidence-badge">geometry: ${escapeHtml(item.geometryType)}</span>${verificationLabel(item) !== spatialBadgeLabel(item) ? `<span class="evidence-badge evidence-status">${escapeHtml(verificationLabel(item))}</span>` : ''}</div>
-    <div class="feature-actions">${googleMapsAction(item, 'feature-map-link')}</div>
+    <div class="feature-actions">${item.id.startsWith('nhb-trail-') ? '' : googleMapsAction(item, 'feature-map-link')}</div>
     ${item.image ? `<div class="feature-image-credit">Image source: ${sourceLink(item.imageSource || item.source)}</div>` : ''}
     ${!item.image && ['facilities', 'amenities'].includes(item.layer) && googleMapsLinkKind(item) === 'name-search' ? '<p class="feature-image-note">Google Maps name search; place listing not verified.</p>' : ''}
-    ${dossier ? '' : `<h3>What this place is</h3><p>${escapeHtml(item.purpose || item.fact)} ${inlineCitations([item.purposeSource || item.source])}</p>`}
+    ${dossier || item.heritageTrailStops ? '' : `<h3>What this place is</h3><p>${escapeHtml(item.purpose || item.fact)} ${inlineCitations([item.purposeSource || item.source])}</p>`}
+    ${renderHeritageTrailCard(item)}
     ${renderEvidenceStory(item)}
     <details class="research-status"><summary>Map record and research notes</summary>${renderFeatureDetails(item)}${item.periodEvidence ? `<p>${escapeHtml(item.periodEvidence)}</p>` : ''}${item.limitation ? `<p>${escapeHtml(item.limitation)}</p>` : ''}${item.spatialAudit?.basis ? `<p>${escapeHtml(item.spatialAudit.basis)}</p>` : ''}</details>
     ${renderRelatedSources(item)}
@@ -1452,6 +1508,12 @@ function selectFeature(item) {
   }));
   document.querySelectorAll('.facility-jump').forEach((button) => {
     const selected = button.dataset.featureId === item.id;
+    button.closest('li')?.classList.toggle('selected', selected);
+    if (selected) button.setAttribute('aria-current', 'true');
+    else button.removeAttribute('aria-current');
+  });
+  document.querySelectorAll('.heritage-jump').forEach((button) => {
+    const selected = button.dataset.featureId === item.id && (!focusedHeritageStop || Number(button.dataset.trailNumber) === focusedHeritageStop);
     button.closest('li')?.classList.toggle('selected', selected);
     if (selected) button.setAttribute('aria-current', 'true');
     else button.removeAttribute('aria-current');
@@ -1613,7 +1675,38 @@ function renderFacilityRegister() {
   }));
 }
 
+function renderHeritageTrailRegister() {
+  document.getElementById('heritage-trail-register').innerHTML = `<ol class="heritage-trail-list">${jurongHeritageTrail.map((stop) => {
+    const featureId = stop.existingId || `nhb-trail-${stop.sharedWith || stop.number}`;
+    return `<li><button class="heritage-jump" type="button" data-feature-id="${escapeHtml(featureId)}" data-trail-number="${stop.number}"><b>${stop.number}</b><span>${escapeHtml(stop.name)}</span><small>${stop.existingId ? 'Existing map place' : stop.sharedWith ? 'Shared viewpoint' : 'NHB directions point'}</small></button></li>`;
+  }).join('')}</ol>`;
+  document.querySelectorAll('.heritage-jump').forEach((button) => button.addEventListener('click', () => {
+    const item = features.find((entry) => entry.id === button.dataset.featureId);
+    if (!item?.geometry?.coordinates) return;
+    focusedHeritageStop = Number(button.dataset.trailNumber);
+    enabledLayers.add('hidden');
+    showResearchLeads = true;
+    document.getElementById('show-research-leads').checked = true;
+    renderLayerControls();
+    document.getElementById('timeline').value = '4';
+    updateTimeline(4);
+    map.setView(item.geometry.coordinates, 15.5);
+    selectFeature(item);
+    document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }));
+}
+
 document.getElementById('timeline').addEventListener('input', (event) => updateTimeline(event.target.value));
+document.getElementById('show-heritage-trail').addEventListener('click', () => {
+  enabledLayers.add('hidden');
+  showResearchLeads = true;
+  document.getElementById('show-research-leads').checked = true;
+  renderLayerControls();
+  document.getElementById('timeline').value = '4';
+  updateTimeline(4);
+  map.fitBounds(jurongHeritageTrail.map((stop) => stop.coordinates), { padding: [28, 28], maxZoom: 12 });
+  document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
 document.getElementById('reset-view').addEventListener('click', () => map.setView([1.3375, 103.7285], 15.25));
 document.getElementById('play-time').addEventListener('click', (event) => {
   playing = !playing;
@@ -1636,10 +1729,10 @@ document.getElementById('play-time').addEventListener('click', (event) => {
 renderLayerControls();
 renderSourceLedger();
 renderFacilityRegister();
+renderHeritageTrailRegister();
 renderFeatures();
 externalLayerIds.forEach((id) => ensureExternalLayer(id));
 document.getElementById('timeline').value = '2';
 updateTimeline(2);
 renderPeriodPhotos(2);
 window.setTimeout(() => map.invalidateSize(), 250);
-
