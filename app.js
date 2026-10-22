@@ -7,7 +7,6 @@ const layers = {
   governance: { label: 'Governance', color: '#e8a14d', icon: '⌂', description: 'Planning, consultation, stewardship and rules that decide how the garden is made usable' },
   public: { label: 'Public Use', color: '#7d6ab0', icon: '◎', description: 'Access, play and designed users' },
   hidden: { label: 'Hidden Histories', color: '#795548', icon: '◈', description: 'Productive water, industrial transformation, labour and archival traces beneath the garden story' },
-  nhb: { label: 'NHB Heritage Trail', color: '#795548', icon: '◌', description: 'National Heritage Board’s 25-stop Jurong trail; directions points and existing mapped places' },
   facilities: { label: 'Facilities & Attractions', color: '#e0522d', icon: '●', description: 'NParks brochure attractions digitised as plan-derived points' },
   amenities: { label: 'Amenities & Access', color: '#26312b', icon: '•', description: 'Named amenities and access nodes with cited locations' },
   roads: { label: 'Roads & paths', color: '#8a5d3b', icon: '━', description: 'Current OpenStreetMap reference ways; not a historical road layer' },
@@ -657,11 +656,11 @@ jurongHeritageTrail.forEach((stop) => {
   if (target) {
     target.heritageTrailStops ||= [];
     target.heritageTrailStops.push(stop);
-    target.additionalLenses = [...new Set([...(target.additionalLenses || []), 'nhb'])];
+    target.additionalLenses = [...new Set([...(target.additionalLenses || []), 'hidden'])];
     return;
   }
   features.push(feature({
-    id: `nhb-trail-${stop.number}`, name: stop.name, layer: 'nhb', from: 4, to: 4,
+    id: `nhb-trail-${stop.number}`, name: stop.name, layer: 'hidden', from: 4, to: 4,
     geometry: { type: 'Point', coordinates: stop.coordinates }, spatialStatus: 'orientation',
     mapCode: `H${stop.number}`, source: sources[`nhbTrail${stop.number}`],
     fact: stop.summary, heritageTrailStops: [stop],
@@ -714,7 +713,6 @@ const overpassBounds = `${currentDataBounds.minLat},${currentDataBounds.minLng},
 const overpassUrl = (query) => `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
 const externalLayerIds = ['roads', 'waterways', 'waterbodies', 'greenery', 'woodland', 'amenities_ref'];
 const thematicLayerIds = ['ecology', 'engineered', 'heritage', 'governance', 'public', 'hidden'];
-const heritageTrailLayerIds = ['nhb'];
 const namedRecordLayerIds = ['facilities', 'amenities'];
 const currentOnlyLayerIds = [...namedRecordLayerIds, ...externalLayerIds];
 const externalLayerDefinitions = {
@@ -993,7 +991,7 @@ function makeFeatureLayer(item, opacity) {
   if (item.geometry.type === 'Polygon') layer = L.polygon(item.geometry.coordinates[0], style);
   else if (item.geometry.type === 'LineString') layer = L.polyline(item.geometry.coordinates, style);
   else if (item.spatialStatus === 'plan-derived') layer = L.marker(item.geometry.coordinates, { zIndexOffset: selectedFeatureId === item.id ? 1000 : 0, icon: L.divIcon({ className: 'plan-marker-wrap', html: `<span class="plan-marker ${item.layer === 'amenities' ? 'amenity' : ''} ${selectedFeatureId === item.id ? 'selected' : ''}" style="--marker-color:${layers[item.primaryLens].color}">${escapeHtml(item.mapCode || layers[item.layer].icon)}</span>`, iconSize: [25, 25], iconAnchor: [12, 12] }) });
-  else if (item.id.startsWith('nhb-trail-')) layer = L.circleMarker(item.geometry.coordinates, { ...style, radius: selectedFeatureId === item.id ? 10 : 7, fillOpacity: Math.min(.85, opacity * .8) });
+  else if (item.id.startsWith('nhb-trail-')) layer = L.marker(item.geometry.coordinates, { zIndexOffset: selectedFeatureId === item.id ? 1000 : 0, icon: L.divIcon({ className: 'plan-marker-wrap', html: `<span class="plan-marker heritage-trail-marker ${selectedFeatureId === item.id ? 'selected' : ''}" style="--marker-color:${layers.hidden.color}">${escapeHtml(item.mapCode)}</span>`, iconSize: [31, 31], iconAnchor: [15, 15] }) });
   else layer = L.circleMarker(item.geometry.coordinates, { ...style, radius: selectedFeatureId === item.id ? 10 : 7, fillOpacity: Math.min(.85, opacity * .8) });
   bindInteractiveHoverCard(layer, item);
   layer.on('mouseover', () => { if (layer.setStyle) layer.setStyle({ weight: 5, fillOpacity: Math.min(.4, opacity * .35) }); else layer.getElement()?.querySelector('.plan-marker')?.classList.add('feature-pulse'); });
@@ -1236,7 +1234,6 @@ function renderLayerControls() {
   const group = (title, note, ids) => `<section class="layer-control-group"><p class="layer-control-group-title">${title}</p><p class="layer-control-group-note">${note}</p>${ids.map((id) => controlMarkup(id, layers[id])).join('')}</section>`;
   control.innerHTML = [
     group('Research lenses', 'A lens shows its thematic research objects and matching named plan records.', thematicLayerIds),
-    group('NHB Heritage Trail', 'A separate 25-stop National Heritage Board route. Numbers remain in its register and cards.', heritageTrailLayerIds),
     group('Named plan records', 'Use these to show all Facilities or all Amenities, regardless of research lens.', namedRecordLayerIds),
     group('Current reference data', 'These datasets are available only in the present-day map state.', externalLayerIds)
   ].join('');
@@ -1266,11 +1263,8 @@ function renderLayerStatus() {
     return;
   }
   const thematicSelected = thematicLayerIds.filter((id) => enabledLayers.has(id));
-  const heritageTrailSelected = heritageTrailLayerIds.some((id) => enabledLayers.has(id));
   status.textContent = thematicSelected.length
-    ? `${thematicSelected.map((id) => layers[id].label).join(', ')} selected.${heritageTrailSelected ? ' NHB Heritage Trail is also selected as a separate route.' : ''} Matching named plan records follow their assigned research lens.`
-    : heritageTrailSelected
-      ? 'NHB Heritage Trail selected. Its directions points appear on the present-day map.'
+    ? `${thematicSelected.map((id) => layers[id].label).join(', ')} selected. Matching named plan records follow their assigned research lens.`
     : `${enabledLayers.size} map dataset${enabledLayers.size === 1 ? '' : 's'} selected.`;
 }
 
@@ -1482,7 +1476,7 @@ function selectFeature(item) {
   const layer = layers[item.primaryLens || item.layer];
   const dossier = caseDossierFor(item);
   panel.innerHTML = `<div class="feature-card" style="--feature-color:${layer.color}">
-    <div class="feature-kicker">${layer.icon} ${escapeHtml(layers[item.layer].label)}${item.primaryLens ? ` · ${escapeHtml(layer.label)}` : ''}${item.layer !== 'nhb' && item.additionalLenses?.includes('nhb') ? ' · NHB Heritage Trail' : ''}</div>
+    <div class="feature-kicker">${layer.icon} ${escapeHtml(layers[item.layer].label)}${item.primaryLens ? ` · ${escapeHtml(layer.label)}` : ''}${item.layer !== 'hidden' && item.additionalLenses?.includes('hidden') ? ' · Hidden Histories' : ''}</div>
     <h2>${escapeHtml(item.heritageTrailStops?.find((stop) => stop.number === focusedHeritageStop)?.name || item.displayTitle || item.name)}</h2>
     ${item.displaySubtitle ? `<div class="feature-subtitle feature-place-name">${escapeHtml(item.displaySubtitle)}</div>` : ''}
     <div class="feature-subtitle">Mapped period: ${escapeHtml(periodLabel(item))} · geometry: ${escapeHtml(item.geometryType)}</div>
@@ -1682,18 +1676,15 @@ function renderFacilityRegister() {
 }
 
 function renderHeritageTrailRegister() {
-  document.getElementById('heritage-trail-register').innerHTML = `<div class="facility-group-head">
-    <h3>25 mapped trail stops</h3>
-    <div><a href="${escapeHtml(sources.nhbJurongTrail.url)}" target="_blank" rel="noopener noreferrer">NHB trail ↗</a> · <button id="show-heritage-trail" class="heritage-map-button" type="button">show all on map</button></div>
-  </div><ol class="heritage-trail-list">${jurongHeritageTrail.map((stop) => {
+  document.getElementById('heritage-trail-register').innerHTML = `<ol class="heritage-trail-list">${jurongHeritageTrail.map((stop) => {
     const featureId = stop.existingId || `nhb-trail-${stop.sharedWith || stop.number}`;
-    return `<li><button class="heritage-jump" type="button" data-feature-id="${escapeHtml(featureId)}" data-trail-number="${stop.number}"><b>${stop.number}</b><span>${escapeHtml(stop.name)}</span></button><em>${stop.existingId ? 'Existing map place' : stop.sharedWith ? 'Shared viewpoint' : 'NHB directions point'}</em></li>`;
-  }).join('')}</ol><p class="heritage-trail-credit">Accounts are independently summarised from National Heritage Board records; each card links to the full original entry.</p>`;
+    return `<li><button class="heritage-jump" type="button" data-feature-id="${escapeHtml(featureId)}" data-trail-number="${stop.number}"><b>${stop.number}</b><span>${escapeHtml(stop.name)}</span><small>${stop.existingId ? 'Existing map place' : stop.sharedWith ? 'Shared viewpoint' : 'NHB directions point'}</small></button></li>`;
+  }).join('')}</ol>`;
   document.querySelectorAll('.heritage-jump').forEach((button) => button.addEventListener('click', () => {
     const item = features.find((entry) => entry.id === button.dataset.featureId);
     if (!item?.geometry?.coordinates) return;
     focusedHeritageStop = Number(button.dataset.trailNumber);
-    enabledLayers.add('nhb');
+    enabledLayers.add('hidden');
     showResearchLeads = true;
     document.getElementById('show-research-leads').checked = true;
     renderLayerControls();
@@ -1706,9 +1697,8 @@ function renderHeritageTrailRegister() {
 }
 
 document.getElementById('timeline').addEventListener('input', (event) => updateTimeline(event.target.value));
-document.addEventListener('click', (event) => {
-  if (event.target.id !== 'show-heritage-trail') return;
-  enabledLayers.add('nhb');
+document.getElementById('show-heritage-trail').addEventListener('click', () => {
+  enabledLayers.add('hidden');
   showResearchLeads = true;
   document.getElementById('show-research-leads').checked = true;
   renderLayerControls();
