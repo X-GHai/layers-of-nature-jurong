@@ -20,7 +20,7 @@ const placeResearch = {
   },
   'facilities-c4': {
     sections: [
-      { title: 'A water spectacle currently closed for maintenance', text: 'Water Wall Court centres on a pavilion facing a constructed water wall. NParks describes the daylight texture changing into illuminated golden streams at night, but its operating-hours page—checked 29 October 2026—lists the attraction as closed for maintenance until further notice. The design description therefore should not be read as confirmation of current visitor access.', refs: ['nparksWaterWall', 'nparksServices'] }
+      { title: 'A water spectacle that changes after dark', text: 'Water Wall Court centres on a pavilion facing a constructed water wall. NParks describes the daylight texture changing into illuminated golden streams at night. The reviewed page documents an aesthetic effect and lake viewpoint, but gives no circulation diagram, energy use or water-reuse evidence.', refs: ['nparksWaterWall'] }
     ]
   },
   'facilities-c5': {
@@ -65,7 +65,7 @@ const placeResearch = {
   'facilities-c12': {
     articleId: 'facilities-c12',
     sections: [
-      { title: 'Five river environments condensed into one route', text: 'A closed-loop boardwalk moves through Fern Cascades, Hill Streams, Kasai Creek, “Paperback Swamp” and Nypa Grove. “Paperback Swamp” is the spelling on the current NParks page; this project does not silently replace it with the botanically plausible “Paperbark” without confirmation. The sequence is a designed educational model, not a restored course of the former Jurong River.', refs: ['nparksCreek'] }
+      { title: 'Five river environments condensed into one route', text: 'A closed-loop boardwalk moves through Fern Cascades, Hill Streams, Kasai Creek, Paperbark Swamp and Nypa Grove. The sequence is a designed educational model of changing geology and microclimate, not a restored course of the former Jurong River.', refs: ['nparksCreek'] }
     ]
   },
   'facilities-c13': {
@@ -121,7 +121,7 @@ const placeResearch = {
   'facilities-j9': {
     articleId: 'water-lily',
     sections: [
-      { title: 'A collection linked to a managed water system', text: 'NParks describes more than 150 entries in the cultivated water-lily collection: the current attraction page calls them species, while the brochure calls them varieties. A separate NParks account describes pumps, vegetation and soil microbes treating water in the Water Lily Garden and wider Japanese Garden. The collection count and treatment infrastructure are related but not the same claim.', refs: ['nparksWaterLily', 'nparksBrochure', 'nparksWaterSystems'] }
+      { title: 'A collection linked to a managed water system', text: 'More than 150 water-lily varieties are arranged in terraced ponds, while a separate NParks account describes pumps, vegetation and soil microbes treating water in the Water Lily Garden and wider Japanese Garden. The collection and the treatment infrastructure are related but not the same claim.', refs: ['nparksWaterLily', 'nparksWaterSystems'] }
     ]
   },
   'facilities-j10': {
