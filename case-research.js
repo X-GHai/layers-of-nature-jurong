@@ -1,7 +1,7 @@
 /* Right-hand case dossiers only. No coordinates, boundaries or layer controls.
  * Source keys resolve against the shared source register; each paragraph carries
  * its own citations. Interpretations and proposed tests are not reported findings.
- * Live attraction descriptions checked 13 October 2026 are not 2024 observations.
+ * Live attraction descriptions rechecked 29 October 2026 are not 2024 observations.
  */
 const caseResearch = (() => {
   const record = (title, text, refs) => ({ title, text, refs, kind: 'record' });
@@ -21,6 +21,7 @@ const caseResearch = (() => {
     nparksBonsai: ['Bonsai Garden', 'chinese-garden/bonsai-garden/'],
     nparksCreek: ['Cascading Creek', 'chinese-garden/cascading-creek/'],
     nparksLily: ['Water Lily Garden', 'japanese-garden/water-lily-garden/'],
+    nparksHeron: ['Heron Island', 'lakeside-garden/heron-island/'],
     nparksSmart: ['Smart Technology', 'building-a-smart-sustainable-garden-district/smart-technology/'],
     nparksWaterSystems: ['Sustainability', 'building-a-smart-sustainable-garden-district/sustainability/']
   };
@@ -219,7 +220,7 @@ const caseResearch = (() => {
     gap('Seek allocation rules, waiting lists, renewal practices and consented interviews. Plot count is capacity, not participation frequency, food output or a census of gardeners. No household productivity estimate has been inferred.')
   ], ['floral-community-plots', 'community-engagement']);
   cases['water-lily'] = dossier([
-    record('A collection is not a wild species census', 'The dedicated NParks page promotes a collection of more than 150 water lily species and a panorama from the pavilion. This is a stated horticultural collection, not a count of locally native species or independent ecological sampling.', ['nparksLily']),
+    record('A collection is not a wild species census', 'The dedicated NParks page describes more than 150 water lily species, while the brochure calls the same collection more than 150 varieties. The terminology is retained with its source rather than silently harmonised. Either way, this is a stated horticultural collection, not a count of locally native species or independent ecological sampling.', ['nparksLily', 'nparksBrochure']),
     record('The display depends on water management', 'NParks’ Sustainability page connects the Japanese Garden’s vegetation-and-microbe filtration with a pumped water system and a named donation. Living plants and engineered circulation jointly support the display.', ['nparksWaterSystems']),
     reading('Political ecology: ecological spectacle and operations', 'A large collection gives visitors an accessible way to encounter aquatic plants while making specialist cultivation less visible. Our analysis distinguishes horticultural richness, habitat function and resource demand. A visually diverse collection could be valuable without demonstrating native biodiversity recovery or self-sustaining ecological processes.'),
     gap('Verify collection records and taxonomic definitions, water/energy monitoring and maintenance practices. Never convert a collection total into a habitat-health score. The pavilion and garden are related but not interchangeable polygons.')
