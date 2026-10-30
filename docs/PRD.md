@@ -8,7 +8,6 @@
 | Product | Layers of Nature · Jurong Lake Gardens GIS |
 | Repository | <https://github.com/X-GHai/layers-of-nature-jurong> |
 | Version | 0.1 — design draft |
-| Publication date | 12 September 2026 |
 | Intended delivery | Static public website, initially on GitHub Pages |
 | Status | Pre-development requirements; changes require review before implementation |
 

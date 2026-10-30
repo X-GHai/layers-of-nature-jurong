@@ -7,7 +7,6 @@
 | Document type | Software/System Design Document (SSD) |
 | Repository | <https://github.com/X-GHai/layers-of-nature-jurong> |
 | Version | 0.1 — proposed implementation design |
-| Publication date | 12 September 2026 |
 | Deployment model | Static client-side application on GitHub Pages |
 | Implementation status | Not yet built; this document is the design and review baseline |
 
@@ -111,7 +110,6 @@ layers-of-nature-jurong/
 │   └── brochure-point-audit.json
 └── scripts/
     ├── audit-brochure-georef.py
-    ├── build-reference-snapshots.cjs
     └── verify-cases.cjs
 ```
 
